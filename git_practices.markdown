@@ -1,8 +1,10 @@
+Below is a straightforward workflow that I wrote for people without much git experience. At the end, there is a list of common git commands that may be useful to reference. 
+
+(Aditya Mukerjee [chimeracoder], 2011)
+
 Git Intro & Style
 ==============
 
-
-Below is a straightforward workflow for people without much git experience. At the end, there is a list of common git commands that may be useful to reference. 
 
 The Simple, Straightforward, Inelegant-but-Foolproof Git Workflow
 --------------------------
@@ -101,3 +103,7 @@ To avoid confusion, if you are not used to Git, it is a good idea to make sure t
 
 Fetches the changes from [BRANCH] located at origin and merges them into the current branch. (Literally - this command just runs git fetch; git merge). Make sure that you have committed all staged/unstaged changes before pulling! 
 
+
+
+
+###### Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.3 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts and no Back-Cover Texts.
