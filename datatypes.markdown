@@ -70,7 +70,9 @@ Oftentimes, we will refer to the duration of individual phrases. Remember that t
 
 ######Trill
 
-A trill is a pair of notes that are played
+A trill is a pair of notes that are close to each other and played in rapid succession. (For example, in classical music, which has 12 notes on the chromatic scale, the two notes must be two adjacent notes on the chromatic scale, like an F# and a G).
+
+
 
 
 ####Extra
