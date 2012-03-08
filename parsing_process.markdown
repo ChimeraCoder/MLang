@@ -23,7 +23,7 @@ The above is equivalent to something like
 
 > ((lambda () '(466 50) ))
 
-(Try it out for yourself, and you'll see that it's really just saying that the anonymous function takes zero parameters and always returns the two-element list '(466 50). Of course, our note literal representation might be a bit different from '(FREQ TIME), but you get the idea).
+(Try it out for yourself in CLISP, and you'll see that it's really just saying that the anonymous function takes zero parameters and always returns the two-element list '(466 50). Of course, our note literal representation might be a bit different from '(FREQ TIME), but you get the idea).
 
 Unlike Lisp, the user will not need to use atomic values - MNotes are secretly lists of length 1 (for technical reasons), but the syntax will conceal this.
 
