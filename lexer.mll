@@ -1,14 +1,14 @@
 {
   open Parser
-  exception eof
+  exception Eof
 
-  let keyword_table = Hashtbl.create 53
+  (*let keyword_table = Hashtbl.create 53
   let _ = List.iter (fun (k, v) -> Hashtbl.add keyword_table k v)
               [
 		"add", KW1;
                 "keyword", KW2;
                 "here", KW3
-	      ]
+	      ]*)
 }
 
 let alpha = ['A'-'z' '0'-'9' '*']+

@@ -15,11 +15,11 @@ mexp:
 ;
 
 list:
-  LPAREN RPAREN                      { Mexp.null }
+  LPAREN RPAREN                      { Mexp.Null }
 | LPAREN list_contents RPAREN        { $2 }
 
 list_contents:
-  | mexp                             { Mexp.mcons $1 Mexp.null }
+  | mexp                             { Mexp.cons $1 Mexp.Null }
   | mexp list_contents               { Mexp.cons $1 $2 }
 ;
 

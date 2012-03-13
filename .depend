@@ -1,0 +1,10 @@
+builtins.cmo: symtab.cmo mexp.cmo environment.cmo
+builtins.cmx: symtab.cmx mexp.cmx environment.cmx
+environment.cmo: mexp.cmo
+environment.cmx: mexp.cmx
+main.cmo: symtab.cmo mexp.cmo environment.cmo builtins.cmo
+main.cmx: symtab.cmx mexp.cmx environment.cmx builtins.cmx
+mexp.cmo:
+mexp.cmx:
+symtab.cmo: mexp.cmo
+symtab.cmx: mexp.cmx
