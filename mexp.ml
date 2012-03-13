@@ -9,16 +9,16 @@ type t = Atom of string
 let car o =
   match o with
       Cons (c) -> c.car
-  | _ -> bad_arg "bad argument"
+  | _ -> invalid_arg "bad argument"
 
 let cdr o =
   match o with
       Cons (c) -> c.cdr
-  | _ -> bad_arg "bad argument"
+  | _ -> invalid_arg "bad argument"
 
 let cons first second = Cons { car = first ; cdr = second }
   
 let name o =
   match o with
       Atom (s) -> s
-  | _ -> bad_arg "bad argument"
+  | _ -> invalid_arg "bad argument"
