@@ -1,8 +1,12 @@
 open Mexp
 open Environment
 
+(** Eventually, we will want to use a lambda expression instead of an atom to
+ * represent the 'true' value **)
 let tee = (Atom "#T")
 
+(** We are already expressing the false value (nil) as an empty list, so the
+ * 'conversion' to lambda expression is trivial **)
 let nil = cons Null Null
 
 let fn_car args _ = car (car args)
@@ -98,21 +102,36 @@ let fn_is_note args _ =
     
 
 let fn_boolean_note args _ = 
-    (** This is a function that returns true if and only if the first argument
+    (** This is a function that returns true if and only if the argument
      * is non-empty/non-nil **)
-    if (car args) = ()
+    if args = ()
         (falsenote)
     else
         (truenote)
 
 let fn_truenote args _ =
     (** A lambda calculus formulation of 'true' **)
+    (** Eventually, we will combine this with the definition of 'tee', so that
+     * one evaluates to the other, thus ensuring that both have the same musical
+     * representation **)
     (lambda (x) (lambda (y) x))
 
 let fn_falsenote args _ = 
     (** A lambda calculus formulation of 'false' **)
     (lambda (x) (lambda (y) y))
 
+let fn_if args _ = 
+    (** Pattern matching and error catching needs to be done here, but as it
+     * stands, this should provide correct output for any valid input
+     * The three arguments in an if statement are the predicate, the value of
+     * the entire expression if the predicate is true, and the value of the
+     * entire expression if the predicate is false. 
+     * Because the predicate is simply (car args), if the predicate is either
+     * true or false, by the definitions of fn_truenote and fn_falsenote, then
+     * the correct value will be chosen **)
+    ((boolean (car args))       (** Evaluates to the appropriate lambda selector **)
+      (car (cdr args))          (** The 'true' selector chooses this value **)
+      (car (cdr (cdr args))))   (** The 'false' selector chooses this value **)
 
 let fn_note args _ = cons (car args) (cons (cdr args) Null)
 
