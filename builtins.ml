@@ -34,6 +34,12 @@ let fn_double_note args _ =
         (**TODO it could also be a function **)
         (mapcar doublenote args)
 
+let fn_concatenate args _ = 
+    (** Concatenating two (or more) notes is simply the same as placing them all
+     * as elements within a list, since the notes in the list will be played
+     * sequentially **)
+    (cons (car args) (cdr args)) (**Currently, this is redundant, but it won't
+    be later on. **)
       
 let rec fn_recursive_mapcar args _ = 
     (** This function takes a SINGLE argument, which is a list of length 2.
@@ -57,7 +63,7 @@ let rec fn_recursive_mapcar args _ =
 
 let rec fn_duration args _ = 
     (** Find the duration of the specified section of music **) 
-    if (car args) = note then
+    if (is_note args) then
         (note                      (* Create a note*) 
           50000                    (* The frequency is irrelevant*)
           (car (cdr (cdr args))))  (* The duration is the
