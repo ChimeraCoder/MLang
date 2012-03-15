@@ -34,16 +34,78 @@ let fn_double_note args _ =
         (**TODO it could also be a function **)
         (mapcar doublenote args)
 
-
-let fn_mapcar args _ = 
-    let operator = (car args) in
-    let operands = (cdr args) in 
-    let first_operand = (car operands) in
-    let first_value = (operator first_operand) in 
-       (cons first_value (mapcar operator (cdr operands)))
-
       
+let rec fn_recursive_mapcar args _ = 
+    (** This function takes a SINGLE argument, which is a list of length 2.
+     * The first argument is the function to be applied.
+     * The second argument is the list of values to which it is to be applied.
+     * **)
+    '(operator (val1 val2 val3) (arg1 arg2... argn))
+    if (car (cdr (cdr args))) = nil then
+        (**If there are no more operands left, we are done, so return the result**)
+        (car (cdr args))
+    else
+        let first_operand = (car (car (cdr (cdr args)))) in
+          (** Flatten takes two lists and returns a single list of atoms **)
+          (mapcar 
+            operator 
+            (flatten 
+              (car (cdr args)) 
+              (operator first_operand))
+            (cdr args))
 
+
+let rec fn_duration args _ = 
+    (** Find the duration of the specified section of music **) 
+    if (car args) = note then
+        (note                      (* Create a note*) 
+          50000                    (* The frequency is irrelevant*)
+          (car (cdr (cdr args))))  (* The duration is the
+        cumulative (recursive) duration **)
+    else
+      (**Args is not a note, so it is a list of notes/functions
+       * and the duration of a list of notes/functions is the sum of the durations of the
+       * individual notes/functions**)
+      (reduce 
+        (lambda 
+          (x y) 
+          (note 5000 (+ (atomic_duration x) (atomic_duration y)))) (** Atomic_duration
+          returns a number, not a note *)
+        args) 
+
+let rec atomic_duration args _ = 
+    (** This function is ONLY used internally - MLang programmers will never
+     * use it, since they deal ONLY with notes (lists), and never numbers
+     * directly **)
+    (car (cdr (cdr args)))
+
+let fn_is_note args _ = 
+    (** This function takes an S-expression and checks if it is a note **)
+    if (cdr args) = 0 then
+        if (car (cdr args)) = note then
+            (booleannote note) (**The argument itself is arbitrary, as long as
+            it is not () **)
+        else
+            (booleannote ())
+    else
+        invalid_arg "Too many arguments passed"
+    
+
+let fn_boolean_note args _ = 
+    (** This is a function that returns true if and only if the first argument
+     * is non-empty/non-nil **)
+    if (car args) = ()
+        (falsenote)
+    else
+        (truenote)
+
+let fn_truenote args _ =
+    (** A lambda calculus formulation of 'true' **)
+    (lambda (x) (lambda (y) x))
+
+let fn_falsenote args _ = 
+    (** A lambda calculus formulation of 'false' **)
+    (lambda (x) (lambda (y) y))
 
 
 let fn_note args _ = cons (car args) (cons (cdr args) Null)
