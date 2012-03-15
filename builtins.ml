@@ -127,6 +127,18 @@ let fn_label args env =
   Symtab.add env (name (car args))
     (car (cdr args)) ;
   tee
+
+let fn_mg_defhead args env =
+  print_string "Not implemented";
+  nil
+
+let fn_mg_defchannel args env =
+  print_string "Not implemented";
+  nil
+
+let fn_mg_defbody channels env =
+  print_string "Not implemented";
+  nil
       
 let rec mlang_pprint mexp =
   match mexp with
