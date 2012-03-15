@@ -17,13 +17,34 @@ let fn_double_note args _ =
     (* If the note is a single note, double the duration
      * Otherwise, double the duration of all notes contained
      *)
-    let pitch = (car (cdr args)) in
-    let duration = (car (cdr (cdr args))) in
-      if pitch = duration then
-          pitch
-      else
-          nil
+    let unwrapped = car args in
+    (**If unwrapped is a single note, then (car unwrapped) will simply be note
+     * **)
+    if (car unwrapped) = note then
+        (** Double a single note **)
+        let pitch = (car (cdr unwrapped)) in
+        let duration = (car (cdr (cdr unwrapped))) in
+          if pitch = duration then
+              pitch
+          else
+              nil
+    else
+        (** Double everything contained **)
+        (** If unwrapped is not a single note, then it is a list of notes **)
+        (**TODO it could also be a function **)
+        (mapcar doublenote args)
+
+
+let fn_mapcar args _ = 
+    let operator = (car args) in
+    let operands = (cdr args) in 
+    let first_operand = (car operands) in
+    let first_value = (operator first_operand) in 
+       (cons first_value (mapcar operator (cdr operands)))
+
       
+
+
 
 let fn_note args _ = cons (car args) (cons (cdr args) Null)
 
