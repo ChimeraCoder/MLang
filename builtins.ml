@@ -11,6 +11,22 @@ let fn_cdr args _ = cdr (car args)
 
 let fn_quote args _ = car args
 
+let fn_double_length args _ = car (car args)
+
+let fn_double_note args _ = 
+    (* If the note is a single note, double the duration
+     * Otherwise, double the duration of all notes contained
+     *)
+    let pitch = (car (cdr args)) in
+    let duration = (car (cdr (cdr args))) in
+      if pitch = duration then
+          pitch
+      else
+          nil
+      
+
+let fn_note args _ = cons (car args) (cons (cdr args) Null)
+
 let fn_cons args _ =
   let lst = cons (car args) Null in
 
@@ -65,6 +81,7 @@ let rec fn_lambda args env =
           let mexp = replace_atom lmexp lst in
             eval mexp env
     | _ -> invalid_arg "Argument to lambda must be a Lambda"
+
 and eval mexp env =
   match mexp with
       Null -> nil

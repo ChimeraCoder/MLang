@@ -15,6 +15,9 @@ let init_env () =
                "EQUAL", fn_equal;
                "ATOM", fn_atom;
                "COND", fn_cond;
+               "NOTE", fn_note;
+               "DOUBLELENGTH", fn_double_length;
+               "DOUBLENOTE", fn_double_note;
                "LAMBDA", fn_lambda]
   in
     List.iter (fun (name, sym) ->
