@@ -15,7 +15,10 @@ let init_env () =
                "EQUAL", fn_equal;
                "ATOM", fn_atom;
                "COND", fn_cond;
-               "LAMBDA", fn_lambda]
+               "LAMBDA", fn_lambda;
+	       "HEAD", fn_mg_defhead;
+	       "CHANNEL", fn_mg_defchannel;
+	       "BODY", fn_mg_defbody]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
