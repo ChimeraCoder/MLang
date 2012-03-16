@@ -21,7 +21,8 @@ let init_env () =
                "NOTE", fn_note;
                "DOUBLELENGTH", fn_double_length;
                "DOUBLENOTE", fn_double_note;
-               "LAMBDA", fn_lambda]
+               "LAMBDA", fn_lambda;
+               "LABEL", fn_label]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
