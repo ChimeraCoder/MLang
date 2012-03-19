@@ -4,3 +4,5 @@
 (LABEL FF (LAMBDA (X Y) (CONS (CAR X) Y))) \n (FF (QUOTE (A B)) (CDR (QUOTE (C D)))) | (LABEL FF #(X Y)(CONS (CAR X) Y)) | Tests the LABEL statement
 (cdr (5 6 7)) | (6 7) | Tests (cdr ..) function
 (car (cdr (5 6 7))) | 6 | Tests (car (cdr ..)) composition
+(equal 5 6) | () | Tests (equal ...) on unequal numerical values
+(equal 5 5) | #T | Tests (equal ...) on equal numerical values 
