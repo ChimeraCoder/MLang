@@ -25,6 +25,9 @@ mlang: .depend $(MAIN_OBJS)
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
 
+test: $(MLANG)
+	./run_test.sh test_repl_input.txt
+
 clean:
 	rm -f mlang
 	rm -f *~
