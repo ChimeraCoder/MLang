@@ -1,1 +1,4 @@
-(car (5 6)) | 5
+||Format is <mlang-input> <PIPE> <correct-output>. If there is a second pipe after correct-output, all following text will be ignored (as in this line).
+(car (5 6)) | 5 | Tests (car ...) function
+((LAMBDA (X Y) (CONS (CAR X) Y)) (QUOTE (A B)) (CDR (QUOTE (C D)))) | (A D) | Tests creation of lambda and lambda application
+(LABEL FF (LAMBDA (X Y) (CONS (CAR X) Y))) \n (FF (QUOTE (A B)) (CDR (QUOTE (C D)))) | (LABEL FF #(X Y)(CONS (CAR X) Y)) | Tests the LABEL statement
