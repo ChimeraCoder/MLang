@@ -16,6 +16,7 @@ let init_env () =
                "ATOM", fn_atom;
                "COND", fn_cond;
                "LAMBDA", fn_lambda;
+               "LABEL", fn_label;
 	       "HEAD", fn_mg_defhead;
 	       "CHANNEL", fn_mg_defchannel;
 	       "BODY", fn_mg_defbody]
