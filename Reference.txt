@@ -99,8 +99,9 @@ Nearly all MLang modules are implemented in pure MLang as compositions of other 
 
 The following functions are defined in pure MLang and available for use in the standard library.
 
-4.1 Phrase
-A phrase consists of an arbitrary number of notes/functions with a total duration specified. The duration is not known at compile-time.
+4.1 Duration
+
+Evaluates to the duration (in milliseconds) of the musical passage represented by its parameter
 
 An example of a phrase can be given by -
 
