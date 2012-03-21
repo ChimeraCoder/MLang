@@ -19,12 +19,12 @@ open-paren name-of-play duration close-paren
 
 Eg:
 
-(rondo 100) calls the function 'rondo' that plays the musical piece "rondo" for 100 ms.
+(rondo rondo-components) calls the function 'rondo' that plays, as a rondo, the individual components specified by rondo-components (the sole parameter).
 
 1.3 Acknowledgements
 
 2 MLang Data Types
-In MLang the primitive data type is the note. An MNote can be considered to be a function that takes in zero parameters and has a single fixed output.
+In MLang the primitive data type is the MNote, which is treated entirely equivalently to a function. In fact, an MNote is simply a function that takes in zero parameters and has a single fixed output. (Because MLang is homoiconic, notes may also be used where functions are expected, and this is perfectly valid syntax; this practice has semantic meaning when metaprogramming in MLang, which is discussed later).
 
 A single note in MLang can be written as -
 
