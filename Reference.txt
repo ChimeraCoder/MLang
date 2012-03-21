@@ -35,7 +35,7 @@ Here '%' is a note identifier rather than a shell prompt. An example of a note c
 %A {format}
 
 This represents the musical note 'A' with a play time of 50ms. 
- 
+
 Similar to the single-quote in Common Lisp, % is simply syntactic sugar for (make-note \emph{args})
 
 (Veteran Lispers may be interested to note that, unlike most Lisp dialects, MLang does not have literal atomic values - the above representation of a note is simply syntactic sugar for the equivalent lambda function composition. Even when metaprogramming higher-order functions, the user never specifies literal notes. Instead, the user specifies functions that always evaluate to a single, fixed value, which is the desired note. This feature of MLang allows MLang to be more homoiconic than Lisp dialects with atomic literals, which allows for metaprogramming in ways that many Lisp dialects do not allow without macros)
@@ -117,7 +117,9 @@ Example:
 (trill first-measure) ;;Will trill all notes specified by first-measure, where first-measure is a variable defined in this environment
 
 5 Lists
-Similar to Lisp, MLang processes all the objects as lists. The primitive data type MNote can be considered as a list of size 1. Functions are a series of MNotes. If the cdr of a list contains a value, then the list is evaluated as a function, and if the cdr is empty, then the list is considered to be a single note. 
+Similar to Lisp, MLang processes all values as lists. The primitive data type MNote can be considered as a list of size 1. Functions are a series of MNotes. If the cdr of a list contains a value, then the list is evaluated as a function, and if the cdr is empty, then the list is considered to be a single note. 
+
+(Note: New Lispers may be wondering how all values are lists, if all values are notes. The truth is that there's not much of a difference. A note is uniquely specified by two values - its pitch/frequency and duration. Thus, a note can be represented as a two-element list. In Lisp, lists are actually chains of two-element cells known as cons cells, where the elements of a cell may be of any type (including other cells). Thus, everything that is a list in Lisp is really a chain of cons cells. In MLang, cons cells are really notes, where the two elements may be used as pitch and frequency, or they may be used to build linked lists in the way that cons cells are used in Lisp.)
 
 6 Evaluation of an MLang Expression
 
