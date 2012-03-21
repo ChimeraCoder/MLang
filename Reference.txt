@@ -51,8 +51,6 @@ Eg:
 ;this is a comment
 (play (treble 5)) 
 
-(Comments can be written only at the start or end of the program - do we make this restriction? Also we're using only ';' for all types of comments)
-
 For commenting out functions, the ';' symbol must be used at the beginning of every like of the function.
 Eg:
 
