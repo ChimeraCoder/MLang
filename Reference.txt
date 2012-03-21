@@ -62,7 +62,35 @@ Eg:
 Ommiting any of the three semicolons above would result in a syntax error.
 
 3 MLang Functions
-In MLang, functions are defined by a set of enclosing parenthesis.The function is can be considered to be defined like a lambda, which is eventually evaluated to a series of notes. During evaluation, a function is treated just like a note (or a series of notes) but with arguments.
+In MLang, functions are defined by a set of enclosing parenthesis. The function is can be considered to be defined like a lambda, which is eventually evaluated to a series of notes. During evaluation, a function is treated just like a note (or a series of notes) but with arguments.
+
+3.1 Variable Scope
+Like Common Lisp and Scheme (and unlike EmacsLisp), Mlang is primarilly lexically scoped by default. $label$ may be used to create lexical bindings, while $define$ creates dynamically scoped variables. For example:
+
+>(define *key* D)
+*KEY*
+
+>(defun check-key() *key*)
+CHECK-KEY
+
+>(check-key)
+
+>(defun mystery-key (change-key)
+  (if change-key
+    (let ((*key* B)) (check-key))
+    (check-key)))
+
+>(mystery-key FALSE)
+D
+
+>(mystery-key TRUE)
+B
+
+>*key*
+D
+
+This same process can be used to modify other characteristics of a musical passage, such as the tempo, without any change to the passage itself.
+
 
 4 Modules
 These are defined by the MLang standard library and will be available for use.
