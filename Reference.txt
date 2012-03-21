@@ -93,7 +93,11 @@ This same process can be used to modify other characteristics of a musical passa
 
 
 4 Modules
-These are defined by the MLang standard library and will be available for use.
+MLang modules are simply functions that may be defined, exported, and imported freely. Since MLang is homoiconic, any valid S-expression can be imported or exported as a module and substituted for either a function or a note, as if it were defined natively within the program. The MLang composer's ability to define, import, and export arbitrary functions, combined with the powerful scoping, means that MLang allows arbirary modularity in its musical compositions. A composition can be written as a template - complete except for a single missing component, which is to be provided as the argument to a function. \emph{Any} MLang expression can be provided as the argument to the function; as long as the function application evaluates to a semantically meaningful value, the result is an entire, complete composition. 
+
+Nearly all MLang modules are implemented in pure MLang as compositions of other MLang functions, of lambda functions (which are implemented in OCaml), or a combination of both. For functions defined in pure MLang, there is no distinction between the standard library functions and those defined by the user; the former are simply functions that are automatically defined when the program is loaded and provided dynamic scope. Because of the MLang scoping rules, it is possible to redefine these functions, and the new definitions will apply to all applications of the function within the same dynamic scoping environment. (Yes, this means that you can redefine TRUE to FALSE and FALSE to TRUE, as long as you do it in the topmost function call provided. MLang is non-judgemental when it comes to your experimental performance art).
+
+The following functions are defined in pure MLang and available for use in the standard library.
 
 4.1 Phrase
 A phrase consists of an arbitrary number of notes/functions with a total duration specified. The duration is not known at compile-time.
