@@ -4,7 +4,7 @@ This manual serves to provide an in-depth description of the Turing Complete pro
 1.1 MLang History
 MLang was developed in 2012 at Columbia University, New York. The motive behind the project was to create a Turing Complete programming language that could be used to create music in a grammatically accurate manner. 
 
-MLang is inspired largely by Lisp, and it is likely that there would be many syntactical similarities between MLang and Lisp. Like Lisp, MLang is a homoiconic language, with musical notes serving as the primitive data types. MLang's interpreter though is written in Ocaml.
+MLang may or may not be a Lisp, as there is no unifying specification that defines a Lisp dialect, as compared to a language that is merely Lisp-like. MLang shares many common properties with the two most popular Lisp implementations: Common Lisp and Scheme. Like both languages, MLang is a functional language. Like both languages, MLang supports higher-order functions. Like both languages, MLang uses S-expressions for its syntax. Like Scheme, MLang uses the same namespace for variables and functions (such languages are known as Lisp-1 dialects, as opposed to Lisp-2 dialects). Like Common Lisp and Scheme, MLang is homoiconic. Unlike other Lisp dialects, however, the homoiconicity uses the concept of a \emph{note} (as in musical note) as the internal equivalence point for functions. MLang's interpreter is written in Ocaml.
 
 1.2 Conventions
 This details how the code is constructed in MLang.
