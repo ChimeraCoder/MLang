@@ -108,7 +108,11 @@ Evaluates to the duration (in milliseconds) of the musical passage represented b
 
 
 4.2 Trill
-A trill is a musical feature that involves playing two notes in quick succession to each other. 
+A musical trill is a rapid sucession of alternating, adjacent notes (such as B and C). The trill function will turn each individual note in the musical segment provided into a trilled version of the note. The duration of the trilled version will be the same as the duration of the original.
+
+Example:
+
+(trill C)
 
 An example of a trill can be seen below -
 
