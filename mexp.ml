@@ -9,16 +9,16 @@ type t = Atom of string
 let car o =
   match o with
       Cons (c) -> c.car
-  | _ -> invalid_arg "bad argument"
+  | _ -> invalid_arg "bad argument when constructing mexp from car"
 
 let cdr o =
   match o with
       Cons (c) -> c.cdr
-  | _ -> invalid_arg "bad argument"
+  | _ -> invalid_arg "bad argument when constructing mexp from cdr"
 
 let cons first second = Cons { car = first ; cdr = second }
   
 let name o =
   match o with
       Atom (s) -> s
-  | _ -> invalid_arg "bad argument"
+  | _ -> invalid_arg "bad argument when constructing mexp from name"
