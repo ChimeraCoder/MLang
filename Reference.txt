@@ -58,6 +58,9 @@ Eg:
  ; (play (canon 500) 
  ;  	 	(rondo 100))
 
+
+Ommiting any of the three semicolons above would result in a syntax error.
+
 3 MLang Functions
 In MLang, functions are defined by a set of enclosing parenthesis.The function is can be considered to be defined like a lambda, which is eventually evaluated to a series of notes. During evaluation, a function is treated just like a note (or a series of notes) but with arguments.
 
