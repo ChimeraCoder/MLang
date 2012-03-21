@@ -15,4 +15,10 @@
 
 (LABEL IFELSE (LAMBDA (X) ((X TRUE) FALSE)))   ;;IF FIRST IS TRUE, SELECTS SECOND.  FIRST IS FALSE, SELECTS THIRD 
 
+;;Remember, MLang has only one datatype - the function - what are these 'number literals' of which you all speak?
+;;This is how numbers should be defined, eventually:
+;;We need to be careful with the way they are stored as notes, though, to ensure that (equal 1 1) always returns true - since the two arguments are actually separate lambdas, we need to make sure that they end up referencing the same point in memory
 
+(define 0 (lambda (f) (lambda (x) x)))
+(define 1 (lambda (f) (lambda (x) (f x))))
+(define add1 (lambda (n) (lambda (f) (lambda (x) (f n f x))))) ;;This is the successor function - using it, we can recursively define all of the positive numbers
