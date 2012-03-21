@@ -43,14 +43,22 @@ let fn_setcdr args _ =
     | _ -> invalid_arg "First argument to setcdr must be a Cons") ;
     tee
 
-let fn_equal args _ =
+let fn_equal args env =
   let first = car args in
   let second = car (cdr args) in
     if (name first) = (name second) then
       tee
     else
-      nil
-        
+        nil
+        (** We may need to add something along the lines of the following
+         * Remember that all values should be immutable, and therefore values can be
+         * memoized in a way that imperative languages do not allow 
+         * (and they should be, or else equality is violated)
+      if Symtab.lookup env first = Symtab.lookup env second then
+        tee
+      else
+        nil**)
+   
 let fn_atom args _ =
   match (car args) with
       Atom (_) -> tee
