@@ -125,15 +125,19 @@ Similar to Lisp, MLang processes all values as lists. The primitive data type MN
 
 When a function written in MLang is called, the value of the function is computed by evaluating the expressions written in the function body. Evaluation of an expression written in MLang is done in a recursive manner i.e. it involves evaluating expressions within an expression, starting right from a single argument.  
 
+
 “##We can talk about environment here. I was not sure how it happens”
+^ Here we have a design decision: do we want eager or lazy evaluation? (This is analogous to normal order vs. applicative order in lambda calculus). Common Lisp uses eager evaluation, (though it's possible to force it to use lazy evaluation instead - the question is what we want to provide as the default/standard behavior, since we have to pick one and be consistent).
 
 We can have Self-evaluating functions that evaluate to the object being evaluated, and Symbol forms that refer to a symbol table to return a variable’s value. Function and Module forms are evaluated by computing the value of the expressions/ nested expressions in the function.
 
 7 Compiling and Running an Mlang Program
 
-An Mlang program is technically a series of function calls. When you compile this program, an OCaml complier simply converts these functions into a representation that can be executed more efficiently. This file is then evaluated by an OCaml interpreter to a form that can be used to generate MIDI files. (Yes! You can listen to the music you just wrote!)
+An Mlang program is simply a series of function calls that are evaluated by performing \beta-reductions on the appropriate lambda functions, The result is a lambda expression in normal form, represented as an S-expression. (Note that no lambda expression may have two distinct normal forms, and two expressions that share the same normal form define the same musical composition). If the result is a complete composition (ie, the normal form uniquely defines a series of notes and requires no addtional parameters for function application), this can be translated into a MIDI stream. Otherwise, the result is a more compact lambda expression which can be exported as a module and provided to another program. 
 
-MLang is portable in the sense that it does not depend upon the machine’s hardware for its execution.
+If the result is a complete composition, the notes are converted to an intermediate format that is provided to Midge, a MIDI sequencer, which produces a playable MIDI file. (Yes! You can listen to the music you just wrote!)
+
+MLang is portable in the sense that it does not depend upon the machine’s hardware for its execution. ;;Is this the case? We're dependent on the platform-independence of Midge and OCaml - there are supposedly platform-independent versions of OCaml, but I don't know if we can guarantee that we're compatible with them.
 
 
 
