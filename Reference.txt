@@ -103,7 +103,8 @@ The following functions are defined in pure MLang and available for use in the s
 
 Evaluates to the duration (in milliseconds) of the musical passage represented by its parameter
 
-An example of a phrase can be given by -
+(duration yankee-doodle-dandy)
+10000
 
 
 4.2 Trill
