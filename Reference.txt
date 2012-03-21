@@ -114,7 +114,7 @@ Example:
 
 (trill C)
 
-An example of a trill can be seen below -
+(trill first-measure) ;;Will trill all notes specified by first-measure, where first-measure is a variable defined in this environment
 
 5 Lists
 Similar to Lisp, MLang processes all the objects as lists. The primitive data type MNote can be considered as a list of size 1. Functions are a series of MNotes. If the cdr of a list contains a value, then the list is evaluated as a function, and if the cdr is empty, then the list is considered to be a single note. 
