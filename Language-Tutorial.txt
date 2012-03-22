@@ -21,6 +21,10 @@ $>$ \%A \newline
 
 When a user enters a single note, the note is evaluated as a function and returns a midi file that contains the musical equivalent of the note.
 
+\section{Input and Output}
+The input would consist of one or more notes (Frequency and time), instruments (*are we decided on this*).
+The output would be a .midi file which you can play and listen to.
+
 \section{MLang Expressions}
 The common form of an MLang expression is a function application given by the syntax 
 (function arg1 arg2 ...) 
@@ -30,8 +34,13 @@ where the arguments can be MNotes or other functions
 Since MLang is a functional language, functions can be treated as data that can be passed around.
 In MLang, all functions are evaluated to notes. Thus every function eventually is evaluated to a string of notes that forms the midi.
 
+\section{Writing Your first MLang Program}
+A program in MLang is nothing but a sequence of functions. A simple program to play a trill would look like this-
+
 $>$(play (trill C))
 .midi ---$>$ alternating B \& C
+
+The file can be written in any editor and should be saved as something like trill.mlang. (*I wasnt sure on this*)
 
 \section{MLang Lists}
 
