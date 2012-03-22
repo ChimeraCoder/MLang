@@ -35,6 +35,7 @@ where the arguments can be MNotes or other functions
 
 \subsection{Functions as values}
 Since MLang is a functional language, functions can be treated as data that can be passed around.
+^ That's not because it's a functional language; it's because it's a homoiconic language. Most functional languages don't have this functionality - it's only if the internal representation (AST, or whatever, etc.) is an elementary data type in the language.
 In MLang, all functions are evaluated to notes. Thus every function eventually is evaluated to a string of notes that forms the midi.
 
 \section{Writing Your first MLang Program}
