@@ -17,12 +17,15 @@ This document is a tutorial introduction to programming in MLang. Familiarity wi
 The basic data type in MLang is an MNote. An MNote is a list of length 1 and can be thought of as a function with no arguments.\newline
 An MNote can be represented as \%A, where A refers to any musical note.\newline
 $>$ \%A \newline
+^We need to specify the duration, otherwise how long will the note be played? Something more like %(A 500), right?
 ~note.midi 
 
 When a user enters a single note, the note is evaluated as a function and returns a midi file that contains the musical equivalent of the note.
 
 \section{Input and Output}
-The input would consist of one or more notes (Frequency and time), instruments (*are we decided on this*).
+The input would consist of one or more notes (Frequency and time), instruments (*are we decided on this*)
+^ Instruments depend on what the local midi synthesizer can generate, so we can't make any guarantees on that - it's system-dependent.
+
 The output would be a .midi file which you can play and listen to.
 
 \section{MLang Expressions}
