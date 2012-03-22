@@ -11,7 +11,10 @@
 \newpage
 
 \section{Introduction}
-This document is a tutorial introduction to programming in MLang. Familiarity with functional programming languages and a basic knowledge of music is preferred but not required. 
+MLang is a language that helps its users compose music by writing and compiling programs. It is a homoiconic functional language that is simple, yet highly powerful, and modular. 
+Many of MLang's features are similar to a functional programming language like LISP. Thus, familiarity with functional programming languages and a basic knowledge of music is preferred but not required. 
+
+This document is a tutorial introduction to programming in MLang, which introduces you to the basic data types, and a sample program that will enables you to play a trill.
 
 \section{Data Types}
 The basic data type in MLang is an MNote. An MNote is a list of length 1 and can be thought of as a function with no arguments.\newline
