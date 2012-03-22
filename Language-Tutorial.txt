@@ -44,7 +44,10 @@ A program in MLang is nothing but a sequence of functions. A simple program to p
 $>$(play (trill C))
 .midi ---$>$ alternating B \& C
 
+^ Watch the LaTeX syntax here - it looks like '.midi' is being passed as an argument, which would be invalid syntax.
+
 The file can be written in any editor and should be saved as something like trill.mlang. (*I wasnt sure on this*)
+^ We can just have the toplevel function defined in foo.mlang and then the midi be output in foo.midi, or (as in C), one can override the default with a command-line flag.
 
 \section{MLang Lists}
 
