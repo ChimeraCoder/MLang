@@ -1,0 +1,40 @@
+\documentclass[12 pt]{article}
+
+\begin{document}
+\title{\bf{MLang Language Tutorial}}
+\author{Aditya Mukerjee(am2341),\endline
+ Nikhil Sarda(ns2847), \endline
+ Nishtha Agarwal(na2479), \endline
+ Sushmita Swaminathan(ss4100)}
+\date{March 21, 2012}
+\maketitle
+\newpage
+
+\section{Introduction}
+This document is a tutorial introduction to programming in MLang. Familiarity with functional programming languages and a basic knowledge of music is preferred but not required. 
+
+\section{Data Types}
+The basic data type in MLang is an MNote. An MNote is a list of length 1 and can be thought of as a function with no arguments.\newline
+An MNote can be represented as \%A, where A refers to any musical note.\newline
+$>$ \%A \newline
+~note.midi 
+
+When a user enters a single note, the note is evaluated as a function and returns a midi file that contains the musical equivalent of the note.
+
+\section{MLang Expressions}
+The common form of an MLang expression is a function application given by the syntax 
+(function arg1 arg2 ...) 
+where the arguments can be MNotes or other functions
+
+\subsection{Functions as values}
+Since MLang is a functional language, functions can be treated as data that can be passed around.
+In MLang, all functions are evaluated to notes. Thus every function eventually is evaluated to a string of notes that forms the midi.
+
+$>$(play (trill C))
+.midi ---$>$ alternating B \& C
+
+\section{MLang Lists}
+
+\section{MLang Loading and Compiling}
+
+\end{document}
