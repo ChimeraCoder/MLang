@@ -1,0 +1,89 @@
+\documentclass[12 pt]{article}
+
+\begin{document}
+\title{\bf{MLang Language Tutorial}}
+\author{Aditya Mukerjee(am2341),\endline
+ Nikhil Sarda(ns2847), \endline
+ Nishtha Agarwal(na2479), \endline
+ Sushmita Swaminathan(ss4100)}
+\date{March 21, 2012}
+\maketitle
+\newpage
+
+\section{Introduction}
+MLang is a language that helps its users compose music by writing and compiling programs. It is a homoiconic functional language that is simple, yet highly powerful, and modular. 
+Many of MLang's features are similar to a functional programming language like LISP. Thus, familiarity with functional programming languages and a basic knowledge of music is preferred but not required. 
+\subsection{Conventions}
+In this tutorial $>$ refers to the command line prompt and --$>$ refers to the output of the MLang command. 
+\section{Data Types}
+The basic data type in MLang is an MNote. An MNote is a list of length 1 and can be thought of as a function with no arguments.\newline
+An MNote can be represented as \%(A duration), where A refers to any musical note.\newline\newline
+\indent$>$ \texttt\%(A 500) \newline
+\indent--$>$note.midi\newline\newline
+Here `500' refers to the time duration for which the note will be played. \newline
+
+When a user enters a single note, the note is evaluated as a function and returns an expression that represents the reduced form of that note. This expression is itself a valid MLang expression with the same value.
+
+\section{Input and Output}
+The input for MLang would consists of expressions specified in the read-eval-print-loop (REPL), or as part of a file with the \emph{.mlang} extension. The code would be a series of nested loops that represent notes, duration, music feature and instrument. On compilations, the program would produce a file with the \emph{.midi} extension which can be played to hear the music.\newline
+
+\section{MLang Expressions}
+The common form of an MLang expression is a function application given by the syntax\newline 
+\indent\texttt(function arg1 arg2 ...)\newline
+\indent{where the arguments can be MNotes or other functions.}\newline\newline
+MLang expressions are case insensitive:
+\texttt\%(A 100) and \texttt\%(a 100) mean the same
+
+\subsection{Functions as values}
+Since MLang is a homoiconic language, functions can be treated as data that can be passed around, and vice versa. A function can be viewed as operating either on music or on other functions; as the two are equivalent.
+
+In MLang, all functions are evaluated to normal form (the most reduced value possible). This form represents a complete composition if and only if this function takes no input (or evaluates to the same result for any input). This complete composition can be translated directly into a MIDI.
+
+\section{Writing Your first MLang Program}
+A program in MLang is only a sequence of functions. A simple program to play a trill would look like this-\newline
+
+\indent$>$\texttt(play (trill C))\newline
+\indent--$>$\texttt.midi \newline
+\indent;\emph{this would play alternating B \& C}\newline
+
+The commands can be written in any text editor and save to a file with the extension `.mlang'.
+
+\section{MLang Lists}
+In MLang all the functions are treated as lists. A note can be considered as a list with a single element. Consequently all functions evaluate to a series of notes which form the input stream to the midi creator.
+
+\section{MLang Loading and Compiling}
+Most functions in MLang are going to be much longer than a single line. For complex programs, it would be desirable to edit the program with an editor and then compile the program to see the output.\newline
+
+Eg:
+
+;\emph{make-music.mlang}\newline
+\indent;\emph{by Student}\newline\newline
+\indent;\newline
+\indent;\emph{Comments at the start of the program help providing clarity of code}\newline
+\indent;
+
+\texttt\newline
+\indent(play (tempo 120)\newline
+ \indent(instrument cello \newline
+   \indent(treble (meter 6 8) \newline
+    \indent (c4 q tenuto) (d4 s) (ef4 e sf) \newline
+     \indent (c4 e) (d4 s) (en4 s) (fs4 e (fingering 3))) \newline
+   \indent (treble (meter 3 4) \newline
+    \indent (c5 e. marcato) (d5 s bartok-pizzicato) (ef5 e) \newline
+    \indent (c5 e staccato tenuto) (d5 s down-bow) (en5 s) (fs5 e)))\newline
+ \indent (instrument piano\newline
+ \indent  (bar bass (meter 6 16) \newline
+     \indent    (c4 e tenuto accent rfz) (d4 s mordent) (en4 s pp) (fs4 e fermata))))\newline
+
+\begin{flushleft}
+Save the above file as \emph{make-music.mlang}. Now load the definition into the MLang environment by typing: 
+\end{flushleft}
+
+\indent\texttt(load “make-music.mlang");\newline
+\indent; \emph{Loading ./make-music.mlang}\newline
+
+This code clearly defines what the typical programmer would want to achieve. This code would create a \emph{make-music.midi} file that would play the notes mentioned in the styles of the functions for the specified duration. In this program, the instrument of choice is the cello.
+
+\section{Conclusion}
+While the language of music is extremely complex, it can be expressed with an extremely simple model: the function. Because of this minimal design, the standard libraries of MLang may remain small, while in no way compromising MLang's power as a highly moduler, highly extendible, and highly expressive language. 
+\end{document}
