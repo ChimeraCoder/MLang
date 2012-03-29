@@ -11,11 +11,10 @@ let nil = cons Null Null
 
 let fn_car args _ = car (car args)
 
-let fn_cdr args _ = cdr (car args)
-
 let fn_quote args _ = car args
 
-<<<<<<< HEAD
+let fn_cdr args _ = cdr (car args)
+
 let fn_double_length args _ = car (car args)
 
 let fn_double_note args _ = 
