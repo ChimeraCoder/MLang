@@ -1,5 +1,4 @@
-
-;;NOTE: Currently, curring must be EXPLICIT. In other words ((TRUE 5) 6) is correct, wherease (TRUE 5 6) will yield a function that expects an additional argument (before evaluating to 5). Similarly, ((FALSE 5) 6) is correct, but (FALSE 5 6) will yield a function that takes a single argument and evaluates to that same argument!
+;;NOTE: Currently, currying must be EXPLICIT. In other words ((TRUE 5) 6) is correct, wherease (TRUE 5 6) will yield a function that expects an additional argument (before evaluating to 5). Similarly, ((FALSE 5) 6) is correct, but (FALSE 5 6) will yield a function that takes a single argument and evaluates to that same argument!
 
 ;;Here is a demonstration of how currying works in lisp. All of these are different ways of representing the value 15, and our language should determine that all of these are equal when passed to the #'equal function. 
 ;;These will also work in a Scheme interpreter (tested in guile)
