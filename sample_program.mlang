@@ -14,7 +14,7 @@
       (lambda (z)
         (join-phrases x y z z x y))))) ;;Join-phrases simply concatenates the musical phrases specified
 
-(define twinkle-twinkle-little-star (mozart-form -phrases first-phrase second-phrase third-phrase third-phrase first-phrase second-phrase))
+(define twinkle-twinkle-little-star (mozart-form first-phrase second-phrase third-phrase third-phrase first-phrase second-phrase))
 
 ;;Now, twinkle-twinkle-little-star is a function that requires no input, so it has a single, fixed value
 ;;We can compile such functions at the OS shell (not the Mlang REPL) as follows:
