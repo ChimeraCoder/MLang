@@ -1,0 +1,6 @@
+Grammar for MLang.
+
+exp = DEFINE var exp| LAMBDA (var) (exp)| module arg
+module = (LAMBDA (var) (exp))| module arg| var| NOTE
+arg = (LAMBDA (var) (exp))| var| module arg| NOTE
+var = STRING
