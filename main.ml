@@ -17,7 +17,6 @@ let init_env () =
                "COND", fn_cond;
 	       "HEAD", fn_mg_defhead;
 	       "CHANNEL", fn_mg_defchannel;
-           "LABEL", fn_label;
 	       "BODY", fn_mg_defbody]
                "NOTE", fn_note;
                "DOUBLELENGTH", fn_double_length;
