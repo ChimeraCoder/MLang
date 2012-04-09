@@ -76,20 +76,20 @@ let rec fn_lambda args env =
 and eval mexp env =
   match mexp with
       Null -> nil
-  | Cons (_) ->
+  | Cons (_) -> 
         (match (car mexp) with
              Atom ("LAMBDA") ->
                let largs = car (cdr mexp) in
                let lmexp = car (cdr (cdr mexp)) in
                  Lambda (largs, lmexp)
-        | _ ->
+        | _ -> 
                let acc = cons (eval (car mexp) env) Null in
                let rec loop s =
                  match s with
-                     Cons (_) ->
+                     Cons (_) -> 
                        append acc (eval (car s) env) ;
                        loop (cdr s)
-                 | _ -> ()
+                 | _ -> () 
                in
                  loop (cdr mexp) ;
                  eval_fn acc env)
@@ -103,7 +103,7 @@ and eval_fn mexp env =
   let symbol = car mexp in
   let args = cdr mexp in
     match symbol with
-        Lambda (_) ->
+        Lambda (_) -> 
           fn_lambda mexp env
     | Func (fn) ->
           (fn args env)
@@ -174,3 +174,32 @@ let rec mlang_pprint mexp =
         mlang_pprint lmexp
   | _ ->
         print_string "Error."
+
+let rec mlang_printf file oc mexp = 
+   match mexp with
+   Null -> output_string oc "";
+  | Cons (_) ->
+        begin
+          output_string oc "(" ;
+          mlang_printf file oc (car mexp) ;
+          let rec loop s =
+            match s with
+                Cons (_) ->
+                  output_string oc " " ;
+                  mlang_printf file oc (car s) ;
+                  loop (cdr s)
+            | _ -> ()
+          in
+            loop (cdr mexp) ;
+            output_string oc ")" ;
+        end
+  | Atom (n) ->
+        output_string oc n ;
+  | Lambda (largs, lmexp) ->
+        output_string oc "#" ;
+        mlang_printf file oc largs ;
+        mlang_printf file oc lmexp
+  | _ ->
+        output_string oc "Error."
+
+let mlang_play file = Sys.command "java PlayerPiano file.mlang"
