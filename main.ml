@@ -8,7 +8,7 @@ let mlang_read inp =
     
 let init_env () =
   let env = Symtab.create 32 in
-  let syms = [ "QUOTE", fn_quote;
+  let syms = [ "PLAY", fn_quote;
                "CAR", fn_car;
                "CDR", fn_cdr;
                "CONS", fn_cons;
@@ -24,19 +24,24 @@ let init_env () =
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
     env
-      
+
+
 let _ =
   let env = init_env () in
   let chin = stdin
-  in
+  in let r = if Sys.file_exists("file.mlang") then Sys.remove("file.mlang") in
     while true do
       try
         print_string "> " ;
         flush stdout ;
+        let file = "file.mlang" in
+        let oc = open_out_gen [Open_wronly; Open_append; Open_creat; Open_text] 0o666 file in
         let mexp_eval = eval (mlang_read chin) env in
+          mlang_printf file oc mexp_eval;
           mlang_pprint mexp_eval ;
           print_newline () ;
-      with
-          Parsing.Parse_error -> print_endline "Parse error"
-      | Lexer.Eof -> exit 0
+          close_out oc;
+        with
+          Parsing.Parse_error -> print_endline "Parse error";
+          | Lexer.Eof -> mlang_play "f"; exit 0 ;
     done
