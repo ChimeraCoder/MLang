@@ -5,12 +5,13 @@ INCLUDES=
 OCAMLFLAGS=$(INCLUDES) -g
 OCAMLOPTFLAGS=$(INCLUDES)
 
+
 MAIN_OBJS=mexp.cmo parser.cmo lexer.cmo symtab.cmo environment.cmo builtins.cmo main.cmo
 
 mlang: .depend $(MAIN_OBJS)
 	$(OCAMLC) -o mlang $(OCAMLFLAGS) $(MAIN_OBJS)
 
-.SUFFIXES: .ml .mli .cmo .cmi .cmx .mll .mly
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .mll .mly .java .class
 
 .mll.ml:
 	ocamllex $<
