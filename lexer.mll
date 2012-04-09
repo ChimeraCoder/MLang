@@ -8,7 +8,7 @@
 		"add", KW1;
                 "keyword", KW2;
                 "here", KW3
-	      ]*)
+	      ]*) 
 }
 
 let alpha = ['A'-'z' '0'-'9' '*']+
