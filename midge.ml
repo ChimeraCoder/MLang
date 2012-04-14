@@ -1,9 +1,10 @@
 open Printf
 
 module Midge = 
-  struct 
+  struct
     type header = (int * int * int)
-    type channel = (int * string list)
+    type note = (int * string * int)
+    type channel = (int * note list)
 	      and body = channel list
 
     let add_channel channel body =
@@ -20,7 +21,7 @@ module Midge =
         List.iter (fun (patch, notes) ->
 	  count := !count + 1;
 	  fprintf oc " @channel %d { \n $patch %d \n" !count patch;
-	  List.iter (fun note -> fprintf oc " /l4/%s3 " note) notes;
+	  List.iter (fun (length, note, octave) -> fprintf oc " /l%d/%s%d " length note octave) notes;
 	  fprintf oc " \n }") body;
         fprintf oc "\n }";
       close_out oc
