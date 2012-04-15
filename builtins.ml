@@ -1,5 +1,6 @@
 open Mexp
 open Environment
+open Midge
 
 let tee = (Atom "#T")
 
@@ -152,6 +153,7 @@ let rec mlang_pprint mexp =
   match mexp with
       Null -> ()
   | Cons (_) ->
+      print_string "Cons!";
         begin
           print_string "(" ;
           mlang_pprint (car mexp) ;
