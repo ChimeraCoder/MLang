@@ -1,6 +1,7 @@
 open Builtins
 open Environment
 open Mexp
+open Midge
 
 let mlang_read inp =
   let lexbuf = Lexing.from_channel inp in
@@ -34,7 +35,7 @@ let _ =
         print_string "> " ;
         flush stdout ;
         let mexp_eval = eval (mlang_read chin) env in
-          mlang_pprint mexp_eval ;
+          Midge.print_midge "test.mg" (120, 4, 4) (mlang_midge mexp_eval []);
           print_newline () ;
       with
           Parsing.Parse_error -> print_endline "Parse error"

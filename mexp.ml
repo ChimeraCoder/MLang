@@ -22,3 +22,8 @@ let name o =
   match o with
       Atom (s) -> s
   | _ -> invalid_arg "bad argument when constructing mexp from name"
+
+let string_of_mexp m =
+  match m with
+      Atom (s) -> s
+  | _ -> "Mexp"

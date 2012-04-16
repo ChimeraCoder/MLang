@@ -176,3 +176,17 @@ let rec mlang_pprint mexp =
         mlang_pprint lmexp
   | _ ->
         print_string "Error."
+
+let rec loop s channel =
+  match s with
+    Cons (_) ->
+      loop (cdr s) (Midge.add_note (4, car s, 3) channel)
+  | _ -> channel
+
+let rec mlang_midge mexp body =
+  match mexp with
+    Null -> body
+  | Cons (_) ->
+      Midge.add_channel (loop mexp (36, [])) body
+  | _ ->
+      body
