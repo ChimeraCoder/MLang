@@ -11,7 +11,7 @@
 	      ]*)
 }
 
-let alpha = ['A'-'z' '0'-'9' '*']+
+let alpha = ['A'-'z' '0'-'9' '*' '+' '-']+
 let ident = alpha+ (alpha | ['_' '$'])*
 
 rule token = parse
