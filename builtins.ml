@@ -190,3 +190,18 @@ let rec mlang_midge mexp body =
       Midge.add_channel (loop mexp (36, [])) body
   | _ ->
       body
+
+let file_read ch =  
+let lexbuf = Lexing.from_channel ch in
+       Parser.main Lexer.token lexbuf
+
+let fn_file args env = 
+ let f = car args in
+   match f with
+   Atom n -> 
+   let file = n in
+     let chn = open_in n in
+       let text = file_read chn in
+          close_in chn;         
+          eval text env
+   | _ -> invalid_arg "Invalid file argument" 
