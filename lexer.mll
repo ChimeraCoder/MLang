@@ -20,4 +20,5 @@ rule token = parse
     | ')'                            { RPAREN }
     | ';' [^ '\n']*                  { token lexbuf } (* comments *)
     | alpha                          { NAME(Lexing.lexeme lexbuf) }
+    | alpha '.' alpha 		     { NAME(Lexing.lexeme lexbuf) }
     | eof                            { raise Eof }
