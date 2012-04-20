@@ -1,6 +1,6 @@
+open Mexp
 open Builtins
 open Environment
-open Mexp
 open Midge
 
 let mlang_read inp =
@@ -20,7 +20,8 @@ let init_env () =
                "LABEL", fn_label;
 	       "HEAD", fn_mg_defhead;
 	       "CHANNEL", fn_mg_defchannel;
-	       "BODY", fn_mg_defbody]
+	       "BODY", fn_mg_defbody;
+               "FILE", fn_file]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
