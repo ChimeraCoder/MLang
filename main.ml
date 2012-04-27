@@ -36,6 +36,7 @@ let _ =
         print_string "> " ;
         flush stdout ;
         let mexp_eval = eval (mlang_read chin) env in
+	  mlang_pprint mexp_eval;
           Midge.print_midge "test.mg" (120, 4, 4) (mlang_midge mexp_eval []);
           print_newline () ;
       with

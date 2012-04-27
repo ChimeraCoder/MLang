@@ -98,8 +98,10 @@ and eval mexp env =
         let v = Symtab.lookup env (name mexp) in
           match v with
               Null -> mexp
+	  | Lambda (_) ->
+	      v
           | _ -> v
-                
+              
 and eval_fn mexp env =
   let symbol = car mexp in
   let args = cdr mexp in
@@ -153,7 +155,6 @@ let rec mlang_pprint mexp =
   match mexp with
       Null -> ()
   | Cons (_) ->
-      print_string "Cons!";
         begin
           print_string "(" ;
           mlang_pprint (car mexp) ;
@@ -171,9 +172,11 @@ let rec mlang_pprint mexp =
   | Atom (n) ->
         print_string n
   | Lambda (largs, lmexp) ->
-        print_string "#" ;
+        print_string "(LAMBDA " ;
         mlang_pprint largs ;
-        mlang_pprint lmexp
+        print_string " " ;
+        mlang_pprint lmexp ;
+        print_string ")" ;
   | _ ->
         print_string "Error."
 
