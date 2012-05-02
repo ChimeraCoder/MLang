@@ -208,3 +208,44 @@ let fn_file args env =
           close_in chn;         
           eval text env
    | _ -> invalid_arg "Invalid file argument" 
+
+
+let rec mlang_printf file oc mexp = 
+   match mexp with
+   Null -> output_string oc "";
+  | Cons (_) ->
+        begin
+          output_string oc "(" ;
+          mlang_printf file oc (car mexp) ;
+          let rec loop s =
+            match s with
+                Cons (_) ->
+                  output_string oc " " ;
+                  mlang_printf file oc (car s) ;
+                  loop (cdr s)
+            | _ -> ()
+          in
+            loop (cdr mexp) ;
+            output_string oc ")" ;
+        end
+  | Atom (n) ->
+        output_string oc n ;
+  | Lambda (largs, lmexp) ->
+        output_string oc "#" ;
+        mlang_printf file oc largs ;
+        mlang_printf file oc lmexp
+  | _ ->
+        output_string oc "Error."
+
+let fn_write args env = 
+   let f = car (car args) in
+     match f with 
+       Atom n -> 
+        let file = n in 
+          let chan = open_out n in 
+           let mexp = cdr (car args) in 
+            let mexp_eval = eval (car mexp) env in
+              mlang_printf file chan mexp_eval;
+              close_out chan;
+              mexp_eval; 
+       |_ -> invalid_arg "Invalid argument"
