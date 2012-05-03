@@ -11,7 +11,7 @@
 		     ((EQUAL (CAR (CDR X)) G+) ((CAR X) A (LAST X)))
 		     ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
 		     ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
-		     ((EQUAL (CAR (CDR X)) B) ((CAR X) C (LAST X)))
+		     ((EQUAL (CAR (CDR X)) B) ((CAR X) C (INC (LAST X))))
 		     )
 	       )
        )

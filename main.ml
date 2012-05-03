@@ -26,7 +26,8 @@ let init_env () =
 	       "LENGTH", fn_length;
 	       "NTH", fn_nth;
 	       "LAST", fn_last;
-	       "MAPCAR", fn_mapcar]
+	       "MAPCAR", fn_mapcar;
+	       "INC", fn_inc]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
