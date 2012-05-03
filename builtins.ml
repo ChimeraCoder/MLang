@@ -68,6 +68,9 @@ let fn_atom args _ =
 let fn_inc args _ =
   Atom (string_of_int (int_of_mexp (car args) + 1))
 
+let fn_dec args _ =
+  Atom (string_of_int (int_of_mexp (car args) - 1))
+
 let rec fn_lambda args env =
   let lambda = (car args) in
   let rest = (cdr args) in

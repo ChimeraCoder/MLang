@@ -1,4 +1,4 @@
-(LABEL TRANSPOSE
+(LABEL TRANSPOSEUP
        (LAMBDA (X)
 	       (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) C+ (LAST X)))
 		     ((EQUAL (CAR (CDR X)) C+) ((CAR X) D (LAST X)))
@@ -12,6 +12,24 @@
 		     ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
 		     ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
 		     ((EQUAL (CAR (CDR X)) B) ((CAR X) C (INC (LAST X))))
+		     )
+	       )
+       )
+
+(LABEL TRANSPOSEDOWN
+       (LAMBDA (X)
+	       (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) B (DEC (LAST X))))
+		     ((EQUAL (CAR (CDR X)) C+) ((CAR X) C (LAST X)))
+		     ((EQUAL (CAR (CDR X)) D) ((CAR X) C+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) D+) ((CAR X) D (LAST X)))
+		     ((EQUAL (CAR (CDR X)) E) ((CAR X) D+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) F) ((CAR X) E (LAST X)))
+		     ((EQUAL (CAR (CDR X)) F+) ((CAR X) F (LAST X)))
+		     ((EQUAL (CAR (CDR X)) G) ((CAR X) F+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) G+) ((CAR X) G (LAST X)))
+		     ((EQUAL (CAR (CDR X)) A) ((CAR X) G+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) A+) ((CAR X) A (LAST X)))
+		     ((EQUAL (CAR (CDR X)) B) ((CAR X) A+ (LAST X)))
 		     )
 	       )
        )
