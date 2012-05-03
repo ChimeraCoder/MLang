@@ -14,11 +14,6 @@ module Midge =
     let add_note note channel =
       (fst channel, List.append (snd channel) [note])
 
-    let string_of_mexp m =
-      match m with
-	Atom (s) -> s
-      | _ -> "Mexp"
-
     let print_midge file (temp, num, den) body =
       let count = ref 0 in
       let oc = open_out file in
