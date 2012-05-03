@@ -272,3 +272,25 @@ let fn_last args _ =
       Atom _ -> nil
     | Cons (c) -> if n = 0 then c.car else loop c.cdr (n-1)
   in loop mexp (n-1)
+
+let fn_mapcar args env =
+  let symbol = car args in
+  let mexp = car (cdr args) in
+  match symbol with
+    Lambda (_) ->
+      let rec apply symbol mexp =
+	match mexp with
+	  Atom a -> fn_lambda (cons symbol mexp) env
+	| Cons (c) -> cons (fn_lambda (cons symbol (cons c.car Null)) env)
+	      (apply symbol c.cdr)
+	| _ -> mexp
+      in apply symbol mexp
+  | Func (fn) ->
+      let rec apply_fn mexp =
+	match mexp with
+	  Atom a -> eval (cons symbol mexp) env
+	| Cons (c) -> cons (fn (cons c.car Null) env) (apply_fn c.cdr) 
+        | _ -> mexp
+      in apply_fn mexp
+  | _ -> args
+
