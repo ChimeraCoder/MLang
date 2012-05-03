@@ -252,8 +252,7 @@ let fn_write args env =
 
 let fn_length args _ =
   let length = length_of_mexp (car args)
-      in print_string (string_of_int length);
-  tee
+      in Atom (string_of_int length)
 
 let fn_nth args _ =
   let n = int_of_mexp (car args) in
