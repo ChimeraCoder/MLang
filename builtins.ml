@@ -249,3 +249,13 @@ let fn_write args env =
               close_out chan;
               mexp_eval; 
        |_ -> invalid_arg "Invalid argument"
+
+let fn_length args env =
+  let rec loop a =
+    match a with
+      Atom "nil" -> 0
+    | Cons (c) -> 1 + loop (c.cdr)
+    | _ -> 0
+  in let length = loop (car args)
+      in print_string (string_of_int length);
+  tee

@@ -22,7 +22,8 @@ let init_env () =
 	       "CHANNEL", fn_mg_defchannel;
 	       "BODY", fn_mg_defbody;
                "READ-FILE", fn_file;
-               "WRITE-FILE", fn_write]
+               "WRITE-FILE", fn_write;
+	       "LENGTH", fn_length]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
