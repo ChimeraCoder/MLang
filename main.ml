@@ -24,7 +24,8 @@ let init_env () =
                "READ-FILE", fn_file;
                "WRITE-FILE", fn_write;
 	       "LENGTH", fn_length;
-	       "NTH", fn_nth]
+	       "NTH", fn_nth;
+	       "LAST", fn_last]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;

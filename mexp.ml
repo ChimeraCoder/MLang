@@ -32,3 +32,9 @@ let int_of_mexp m =
   match m with
     Atom (s) -> int_of_string s
   | _ -> -1
+
+let rec length_of_mexp m =
+  match m with
+      Atom "nil" -> 0
+    | Cons (c) -> 1 + length_of_mexp (c.cdr)
+    | _ -> 0
