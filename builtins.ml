@@ -250,7 +250,7 @@ let fn_write args env =
               mexp_eval; 
        |_ -> invalid_arg "Invalid argument"
 
-let fn_length args env =
+let fn_length args _ =
   let rec loop a =
     match a with
       Atom "nil" -> 0
@@ -259,3 +259,12 @@ let fn_length args env =
   in let length = loop (car args)
       in print_string (string_of_int length);
   tee
+
+let fn_nth args _ =
+  let n = int_of_mexp (car args) in
+  let mexp = car (cdr args) in
+  let rec loop a n =
+    match a with
+      Atom _ -> nil
+    | Cons (c) -> if n = 0 then c.car else loop c.cdr (n-1)
+  in loop mexp n

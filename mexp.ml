@@ -27,3 +27,8 @@ let string_of_mexp m =
   match m with
       Atom (s) -> s
   | _ -> "Mexp"
+
+let int_of_mexp m =
+  match m with
+    Atom (s) -> int_of_string s
+  | _ -> -1

@@ -23,7 +23,8 @@ let init_env () =
 	       "BODY", fn_mg_defbody;
                "READ-FILE", fn_file;
                "WRITE-FILE", fn_write;
-	       "LENGTH", fn_length]
+	       "LENGTH", fn_length;
+	       "NTH", fn_nth]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
