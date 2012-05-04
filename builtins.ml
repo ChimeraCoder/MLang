@@ -326,6 +326,13 @@ let fn_reduce args env =
   let symbol = car args in
   let mexp = car (cdr args) in
   let initial = car (cdr (cdr args)) in
-  List.fold_left (fun acc e ->
-    fn_lambda (cons symbol (cons acc (cons e Null))) env)
-    initial (list_of_mexp mexp)
+  match symbol with
+    Lambda (_) ->
+      List.fold_left (fun acc e ->
+	fn_lambda (cons symbol (cons acc (cons e Null))) env)
+	initial (list_of_mexp mexp)
+  | Func (fn) ->
+      List.fold_left (fun acc e ->
+	fn (cons symbol (cons acc (cons e Null))) env)
+	initial (list_of_mexp mexp)
+  | _ -> mexp
