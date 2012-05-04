@@ -14,10 +14,20 @@ module Midge =
     let add_note note channel =
       (fst channel, List.append (snd channel) [note])
 
-    let string_of_mexp m =
+    let rec string_of_mexp m =
       match m with
-	Atom (s) -> s
-      | _ -> "Mexp"
+	Atom s -> s
+      | Cons (c) ->
+          begin
+            let prolog = "("^(string_of_mexp (c.car)) in
+            let rec loop s =
+              match s with
+                Cons (c1) ->
+                  " "^(string_of_mexp (c1.car))^(loop (c1.cdr))
+              | _ -> ""
+            in
+            prolog^(loop (cdr m))^")"
+          end
 
     let print_midge file (temp, num, den) body =
       let count = ref 0 in

@@ -43,6 +43,15 @@
 (LABEL REVERSECHANNEL
        (LAMBDA (X)
        	       ((CAR X) (NTH 1 X) (NTH 2 X) (REVERSE (NTH 3 X)))))
+(LABEL REVERSEBODY
+       (LAMBDA (X)
+       	       (MAPCAR REVERSECHANNEL X)))
+(LABEL NUMNOTES
+       (LAMBDA (X)
+       	       (LENGTH (NTH 3 X))))
+(LABEL NUMTRACKS
+       (LAMBDA (X)
+       	       (LENGTH (NTH 1 X))))
 )
 
 (LABEL A_4_1 (4 A 1))

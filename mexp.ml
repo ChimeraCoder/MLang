@@ -23,10 +23,20 @@ let name o =
       Atom (s) -> s
   | _ -> invalid_arg "bad argument when constructing mexp from name"
 
-let string_of_mexp m =
+let rec string_of_mexp m =
   match m with
       Atom (s) -> s
-  | _ -> "Mexp"
+  | Cons (_) ->
+        begin
+          let prolog = "("^(string_of_mexp (car m)) in
+          let rec loop s =
+            match s with
+                Cons (_) ->
+                  " "^(string_of_mexp (car s))^(loop (cdr s))
+            | _ -> ""
+          in
+            prolog^(loop (cdr m))^")"
+        end
 
 let int_of_mexp m =
   match m with
