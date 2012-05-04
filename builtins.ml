@@ -185,7 +185,7 @@ let fn_reverse args _ =
   mexp_of_list (List.rev (list_of_mexp mexp))
 
 let fn_midge_exp args env =
-  let mg = (car args) in
+  let mg = (car (eval args env)) in
   let head = car mg in
   let body = car (cdr mg) in
   Midge.print_midge "Test.mg"
@@ -197,7 +197,9 @@ let fn_midge_exp args env =
       let volume = int_of_mexp (car (cdr e)) in
       let repeat = int_of_mexp (car (cdr (cdr e))) in
       let notes = car (cdr (cdr (cdr e))) in
-      Midge.add_channel (patch, volume, repeat, notes_of_mexp notes) acc) [] (list_of_mexp body));
+      Midge.add_channel (patch, volume, repeat,
+			 notes_of_mexp notes) acc) []
+       (list_of_mexp body));
   tee
 
 let fn_combine args _ =

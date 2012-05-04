@@ -16,6 +16,7 @@
 		     )
 	       )
        )
+
 (LABEL TRANSPOSEDOWN
        (LAMBDA (X)
 	       (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) B (DEC (LAST X))))
@@ -33,19 +34,16 @@
 		     )
 	       )
        )
-)
-
 (LABEL TRANSPOSEUPCHANNEL
        (LAMBDA (X)
        	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR TRANSPOSEUP (NTH 3 X))))) 
-
 (LABEL TRANSPOSEDOWNCHANNEL
        (LAMBDA (X)
        	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR TRANSPOSEDOWN (NTH 3 X))))) 
-
 (LABEL REVERSECHANNEL
        (LAMBDA (X)
        	       ((CAR X) (NTH 1 X) (NTH 2 X) (REVERSE (NTH 3 X)))))
+)
 
 (LABEL A_4_1 (4 A 1))
 (LABEL B_4_1 (4 B 1))
