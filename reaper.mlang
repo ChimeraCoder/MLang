@@ -1,10 +1,6 @@
+(
 (label head (69 4 4))
-
-(label channel1 (35 127 12 ((3 b 16) (3 a 16))))
-
-
-(label channel2 (10 100 4 ((3 b 16) (3 a 16) (3 b 16)
-       		    	   (3 a 16) (3 b 16) (3 a 16))))
-
-
-(MIDGE-EXPORT (head (channel1 channel2)))
+(label phrase1 ((3 b 16) (4 f+ 16) (3 b 16) (3 a 8) (4 e 16) (4 a 16) (4 e 16) (3 g 16) (4 d 16) (3 a 8) (4 e 16) (3 a 8) (4 e 16)))
+(label channel1 (31 80 8 phrase1))
+(MIDGE-EXPORT (head (channel1)))
+)
