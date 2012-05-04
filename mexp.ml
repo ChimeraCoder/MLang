@@ -38,3 +38,14 @@ let rec length_of_mexp m =
       Atom "nil" -> 0
     | Cons (c) -> 1 + length_of_mexp (c.cdr)
     | _ -> 0
+
+let rec list_of_mexp m =
+  match m with
+    Null -> []
+  | Atom a -> [m]
+  | Cons (c) -> List.append [c.car] (list_of_mexp c.cdr)
+
+let rec mexp_of_list m =
+  match m with
+    [] -> Null
+  | head::tail -> cons head (mexp_of_list tail)

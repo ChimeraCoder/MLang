@@ -148,7 +148,6 @@ let fn_label args env =
     (car (cdr args)) ;
   tee
 
-      
 let rec mlang_pprint mexp =
   match mexp with
       Null -> ()
@@ -177,6 +176,17 @@ let rec mlang_pprint mexp =
         print_string ")" ;
   | _ ->
         print_string "Error."
+
+
+let fn_reverse args _ =
+  let mexp = car args in
+  (*let rec loop a =
+    match a with
+      Null -> nil
+    | Atom _ -> a
+    | _ -> cons (loop (cdr a)) (car a)
+  in loop mexp*)
+  mexp_of_list (List.rev (list_of_mexp mexp))
 
 let fn_midge_exp args env =
   let mg = (car args) in
