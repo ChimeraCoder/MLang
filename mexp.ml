@@ -49,3 +49,16 @@ let rec mexp_of_list m =
   match m with
     [] -> Null
   | head::tail -> cons head (mexp_of_list tail)
+
+let rec notes_of_mexp m =
+  List.map (fun e ->
+	   match e with
+	    Cons (c) ->
+	      let octave = int_of_mexp c.car in
+	      let note = car c.cdr in
+	      let rest = int_of_mexp (car (cdr (c.cdr))) in
+	      (octave, note, rest)
+	   | Atom _ -> (3, m, 4)
+	   | _ -> (0, Null, 0)) (list_of_mexp m)
+
+  

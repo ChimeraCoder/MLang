@@ -5,7 +5,7 @@ module Midge =
   struct
     type header = (int * int * int)
     type note = (int * Mexp.t * int)
-    type channel = (int * note list)
+    type channel = (int * int * int * note list)
 	      and body = channel list
 
     let add_channel channel body =
@@ -24,11 +24,11 @@ module Midge =
       let oc = open_out file in
         fprintf oc "@head { \n $time_sig %d/%d \n $tempo %d \n }" num den temp;
         fprintf oc "\n @body { \n";
-        List.iter (fun (patch, notes) ->
+        List.iter (fun (patch, volume, repeat, notes) ->
 	  count := !count + 1;
-	  fprintf oc " @channel %d { \n $patch %d \n" !count patch;
-	  List.iter (fun (length, note, octave) -> fprintf oc " /l%d/%s%d " length (string_of_mexp note) octave) notes;
-	  fprintf oc " \n }") body;
+	  fprintf oc " @channel %d { \n $patch %d $volume %d \n %%repeat %d { " !count patch volume repeat;
+	  List.iter (fun (octave, note, length) -> fprintf oc " /l%d/%s%d " length (string_of_mexp note) octave) notes;
+	  fprintf oc " \n } \n }") body;
         fprintf oc "\n }";
       close_out oc
   end;;

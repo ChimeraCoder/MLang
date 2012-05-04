@@ -188,7 +188,16 @@ let fn_midge_exp args env =
   let mg = (car args) in
   let head = car mg in
   let body = car (cdr mg) in
-  mlang_pprint body;
+  Midge.print_midge "Test.mg"
+    (int_of_mexp (car head),
+     int_of_mexp (car (cdr head)),
+     int_of_mexp (car (cdr (cdr head))))
+    (List.fold_left (fun acc e ->
+      let patch = int_of_mexp (car e) in
+      let volume = int_of_mexp (car (cdr e)) in
+      let repeat = int_of_mexp (car (cdr (cdr e))) in
+      let notes = car (cdr (cdr (cdr e))) in
+      Midge.add_channel (patch, volume, repeat, notes_of_mexp notes) acc) [] (list_of_mexp body));
   tee
 
 let fn_combine args _ =

@@ -1,0 +1,10 @@
+(label head (69 4 4))
+
+(label channel1 (35 127 12 ((3 b 16) (3 a 16))))
+
+
+(label channel2 (10 100 4 ((3 b 16) (3 a 16) (3 b 16)
+       		    	   (3 a 16) (3 b 16) (3 a 16))))
+
+
+(MIDGE-EXPORT (head (channel1 channel2)))

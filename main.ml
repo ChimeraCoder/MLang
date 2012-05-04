@@ -35,7 +35,7 @@ let init_env () =
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
     env
-      
+
 let _ =
   let env = init_env () in
   let chin = stdin
@@ -46,7 +46,6 @@ let _ =
         flush stdout ;
         let mexp_eval = eval (mlang_read chin) env in
 	  mlang_pprint mexp_eval;
-          Midge.print_midge "test.mg" (120, 4, 4) (mlang_midge mexp_eval []);
           print_newline () ;
       with
           Parsing.Parse_error -> print_endline "Parse error"
