@@ -12,6 +12,8 @@ let init_env () =
   let syms = [ "QUOTE", fn_quote;
                "CAR", fn_car;
                "CDR", fn_cdr;
+	       "SETCAR", fn_setcar;
+	       "SETCDR", fn_setcdr;
                "CONS", fn_cons;
                "EQUAL", fn_equal;
                "ATOM", fn_atom;
