@@ -43,22 +43,6 @@ let fn_setcdr args _ =
           c.cdr <- second
     | _ -> invalid_arg "First argument to setcdr must be a Cons") ;
     tee
-
-let fn_equal args env =
-  let first = car args in
-  let second = car (cdr args) in
-    if (name first) = (name second) then
-      tee
-    else
-        nil
-        (** We may need to add something along the lines of the following
-         * Remember that all values should be immutable, and therefore values can be
-         * memoized in a way that imperative languages do not allow 
-         * (and they should be, or else equality is violated)
-      if Symtab.lookup env first = Symtab.lookup env second then
-        tee
-      else
-        nil**)
    
 let fn_atom args _ =
   match (car args) with
@@ -118,7 +102,14 @@ and eval_fn mexp env =
           (fn args env)
     | _ -> mexp
 
-          
+let fn_equal args env =
+  let first = car args in
+  let second = car (cdr args) in
+    if (name (eval first env)) = (name (eval second env)) then
+      tee
+    else
+        nil
+
 let fn_cond args env =
   let rec loop a =
     match a with
@@ -326,3 +317,8 @@ let fn_mapcar args env =
       in apply_fn mexp
   | _ -> args
 
+let fn_reduce args env =
+  let symbol = car args in
+  let mexp = car (cdr args) in
+  let initial = car (cdr (cdr args)) in
+  tee

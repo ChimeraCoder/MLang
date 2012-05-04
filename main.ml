@@ -25,6 +25,7 @@ let init_env () =
 	       "NTH", fn_nth;
 	       "LAST", fn_last;
 	       "MAPCAR", fn_mapcar;
+	       "REDUCE", fn_reduce;
 	       "INC", fn_inc;
 	       "DEC", fn_dec;
 	       "COMBINE", fn_combine;
