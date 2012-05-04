@@ -140,22 +140,14 @@ let fn_cond args env =
   in
     loop args
 
+let fn_ifelse args env =
+  tee
+
 let fn_label args env =
   Symtab.add env (name (car args))
     (car (cdr args)) ;
   tee
 
-let fn_mg_defhead args env =
-  print_string "Not implemented";
-  nil
-
-let fn_mg_defchannel args env =
-  print_string "Not implemented";
-  nil
-
-let fn_mg_defbody channels env =
-  print_string "Not implemented";
-  nil
       
 let rec mlang_pprint mexp =
   match mexp with
@@ -185,6 +177,31 @@ let rec mlang_pprint mexp =
         print_string ")" ;
   | _ ->
         print_string "Error."
+
+let fn_midge_exp args env =
+  let mg = (car args) in
+  let head = car mg in
+  let body = car (cdr mg) in
+  mlang_pprint body;
+  tee
+
+let fn_combine args _ =
+  let list1 = car (car args) in
+  let list2 = car (cdr (car args)) in
+  let rec loop list1 list2 =
+    match list1 with
+      Atom _ -> nil
+    | Cons (c1) ->
+	begin
+          match list2 with
+            Atom _ -> nil
+          | Cons (c2) ->
+              let rest = loop c1.cdr c2.cdr in
+              cons (cons c1.car (cons c2.car Null)) rest
+	  | _ -> nil
+	end
+    | _ -> nil
+  in loop list1 list2
 
 let rec loop s channel =
   match s with

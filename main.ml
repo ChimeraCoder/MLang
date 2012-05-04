@@ -16,11 +16,9 @@ let init_env () =
                "EQUAL", fn_equal;
                "ATOM", fn_atom;
                "COND", fn_cond;
+	       "IFELSE", fn_ifelse;
                "LAMBDA", fn_lambda;
                "LABEL", fn_label;
-	       "HEAD", fn_mg_defhead;
-	       "CHANNEL", fn_mg_defchannel;
-	       "BODY", fn_mg_defbody;
                "READ-FILE", fn_file;
                "WRITE-FILE", fn_write;
 	       "LENGTH", fn_length;
@@ -28,7 +26,9 @@ let init_env () =
 	       "LAST", fn_last;
 	       "MAPCAR", fn_mapcar;
 	       "INC", fn_inc;
-	       "DEC", fn_dec]
+	       "DEC", fn_dec;
+	       "COMBINE", fn_combine;
+	       "MIDGE-EXPORT", fn_midge_exp]
   in
     List.iter (fun (name, sym) ->
                  Symtab.add env name (Func sym)) syms;
