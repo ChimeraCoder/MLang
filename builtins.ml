@@ -131,9 +131,6 @@ let fn_cond args env =
   in
     loop args
 
-let fn_ifelse args env =
-  tee
-
 let fn_label args env =
   Symtab.add env (name (car args))
     (car (cdr args)) ;
@@ -168,6 +165,14 @@ let rec mlang_pprint mexp =
   | _ ->
         print_string "Error."
 
+let fn_ifelse args env =
+  let pred = car args in
+  let fst = car (cdr args) in
+  let snd = car (cdr (cdr args)) in
+  if (eval pred env) != tee then
+    eval snd env
+  else
+    eval fst env
 
 let fn_reverse args _ =
   let mexp = car args in
