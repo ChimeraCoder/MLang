@@ -15,5 +15,5 @@
 
 (label channel3 (drum_steel 127 48 drumphrase))
 
-(MIDGE-EXPORT (head (channel1 channel2)))
+(MIDGE-EXPORT reaper.mg (head (channel1 channel2)))
 )

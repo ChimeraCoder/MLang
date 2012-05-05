@@ -185,10 +185,11 @@ let fn_reverse args _ =
   mexp_of_list (List.rev (list_of_mexp mexp))
 
 let fn_midge_exp args env =
-  let mg = (car (eval args env)) in
+  let filename = string_of_mexp (car args) in
+  let mg = eval (car (cdr args)) env in
   let head = car mg in
   let body = car (cdr mg) in
-  Midge.print_midge "Test.mg"
+  Midge.print_midge filename
     (int_of_mexp (car head),
      int_of_mexp (car (cdr head)),
      int_of_mexp (car (cdr (cdr head))))
