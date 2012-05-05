@@ -12,7 +12,7 @@ repl_test()
         mlang_input=$(echo $p | cut -d '|' -f1)
         mlang_output=$(echo $mlang_input | ./mlang  | cut -b 1-2 --complement | head -n 1| sed 's/^ *//g' | sed 's/ *$//g')
         desired_ouput=$(echo $p | cut -d '|' -f2 | sed 's/^ *//g' | sed 's/ *$//g')
-        if [[ "$mlang_output" == "$desired_ouput" ]];
+        if [ "$mlang_output" = "$desired_ouput" ]
         then
             echo ".............passed $p"
         else
