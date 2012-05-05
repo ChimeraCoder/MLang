@@ -1,0 +1,6 @@
+(
+(label head (42 4 4))
+(label phrase1 ((3 g 4) (3 g 4) (3 a 4) (3 g 8)))
+(label channel1 (31 96 12 phrase1))
+(MIDGE-EXPORT (head (channel1)))
+)
