@@ -302,5 +302,7 @@
 (label first (lambda (x))
 	(IFELSE (((Null x) nil) (car x) (first (car x)))))
 	
- 
- 
+(label concatenate
+ (lambda (x y)
+  IFELSE (x (cons (car x) (concatenate (cdr x) y)))))
+
