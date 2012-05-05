@@ -1,6 +1,0 @@
-(label last (lambda (x))
-	(IFELSE (((Null x) nil) (car x) (last (cdr x)))))
-	
-(label first (lambda (x))
-	(IFELSE (((Null x) nil) (car x) (first (car x)))))
-	

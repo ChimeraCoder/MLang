@@ -292,3 +292,15 @@
 (LABEL Fs_8_4 (8 Fs 4))
 (LABEL Gs_8_4 (8 Gs 4))
 )
+
+;;(Aditya) I have no idea why these functions are necessary, given that they simply implement CAR and CDR.
+;;However, they were defined in a separate file, so at the very least they need to be moved into here.
+
+(label last (lambda (x))
+	(IFELSE (((Null x) nil) (car x) (last (cdr x)))))
+	
+(label first (lambda (x))
+	(IFELSE (((Null x) nil) (car x) (first (car x)))))
+	
+ 
+ 
