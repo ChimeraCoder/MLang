@@ -52,7 +52,7 @@
 (LABEL NUMTRACKS
        (LAMBDA (X)
        	       (LENGTH (NTH 1 X))))
-
+(LABEL REPEAT4 (LAMBDA (X) (X X X X)))
 (LABEL piano_grand_ac 1)
 (LABEL piano_grand_br 2)
 (LABEL piano_grand_el 3)

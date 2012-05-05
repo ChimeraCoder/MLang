@@ -32,6 +32,7 @@ let init_env () =
 	       "DEC", fn_dec;
 	       "COMBINE", fn_combine;
 	       "REVERSE", fn_reverse;
+	       "CONCAT", fn_concat;
 	       "MIDGE-EXPORT", fn_midge_exp]
   in
     List.iter (fun (name, sym) ->

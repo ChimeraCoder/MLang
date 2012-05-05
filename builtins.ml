@@ -220,6 +220,12 @@ let fn_combine args _ =
     | _ -> nil
   in loop list1 list2
 
+let fn_concat args _ =
+  mexp_of_list (List.fold_left
+		  (fun acc e ->
+		    List.append acc (list_of_mexp e))
+		  [] (list_of_mexp args))
+
 let rec loop s channel =
   match s with
     Cons (_) ->
