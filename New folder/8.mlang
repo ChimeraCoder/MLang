@@ -1,0 +1,2 @@
+(LABEL FIRST ((LAMBDA (X) (CAR (X)))))
+(FIRST A D F)
