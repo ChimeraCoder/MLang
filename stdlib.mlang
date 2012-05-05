@@ -306,3 +306,10 @@
  (lambda (x y)
   IFELSE (x (cons (car x) (concatenate (cdr x) y)))))
 
+
+;;Fixed point combinator example
+;;Without a test suite working, we can't actually write much more than this yet, though
+(LABEL YC
+  (LAMBDA (f)
+    ((LAMBDA (x) (f (LAMBDA (v) ((x x) v))))
+     (LAMBDA (x) (f (LAMBDA (v) ((x x) v)))))))
