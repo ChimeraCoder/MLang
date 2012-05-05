@@ -1,0 +1,12 @@
+||Format is <mlang-input> <PIPE> <correct-output>. If there is a second pipe after correct-output, all following text will be ignored (as in this line).
+(car (5 6)) | 5 | Tests (car ...) function
+((LAMBDA (X Y) (CONS (CAR X) Y)) (QUOTE (A B)) (CDR (QUOTE (C D)))) | (A D) | Tests creation of lambda and lambda application
+((LABEL FF (LAMBDA (X Y) (CONS (CAR X) Y))) (FF (QUOTE (A B)) (CDR (QUOTE (C D))))) | (#T (A D)) | Tests the LABEL statement
+(cdr (5 6 7)) | (6 7) | Tests (cdr ..) function
+(car (cdr (5 6 7))) | 6 | Tests (car (cdr ..)) composition
+(EQUAL (CAR (QUOTE (A B))) (QUOTE A)) | #T | Tests EQUAL
+(EQUAL (CAR (CDR (QUOTE (A B)))) (QUOTE A)) | () | Tests EQUAL
+(ATOM (QUOTE A)) | #T | Tests Atom
+(COND ((ATOM (QUOTE A)) (QUOTE B)) ((QUOTE T) (QUOTE C))) | B | Tests COND
+((LABEL XX (QUOTE (A B))) (CAR XX)) | (#T A) | Tests function application
+((LABEL FOO (CONS 1 2)) (SETCAR FOO 3) (SETCDR FOO 4) (CAR FOO)) | (#T #T #T 3) | Tests SETCAR
