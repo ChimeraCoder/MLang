@@ -1,7 +1,0 @@
-1) SUPPORT FOR CHORDS
-2) MORE HIGHER ORDER FUNCTIONS (find, filter, for_all, rev_map, exists)
-3) PORT .mg programs to .mlang (2 more songs)
-4) If time, add support for attack, delay, pitch bend and some more midge features.
-
-Compilation =>
-./mlang < reaper.mlang && midge reaper.mg && banshee reaper.mid
