@@ -1,0 +1,124 @@
+6.
+
+7.
+
+Environment
+===========
+
+We used OCaml for all our development purposes. The compiler used was The Objective Caml toplevel, version 3.12.1 along with the Batteries Included
+standard library. We used GNU Make for our build process after evaluating and rejecting OCamlBuild. Shell scripts were used as glue.
+For most editing tasks, we used vim and emacs. Keeping in line with our preferences for extensible and fast editors instead of full
+blown IDEs, we developed an emacs-mode for MLang as well. For version control, we used Git. This allowed us to work with multiple branches in a
+completely distributed manner and allowed for easy merging when we needed to integrate the various components that different people were working on.
+We used Github for source code hosting as well as for issue tracking. Email was used extensively for technical discussions.
+
+Makefile
+=========
+
+a) Makefile
+
+OCAMLC=ocamlc
+OCAMLOPT=ocamlopt
+OCAMLDEP=ocamldep
+INCLUDES=
+OCAMLFLAGS=$(INCLUDES) -g
+OCAMLOPTFLAGS=$(INCLUDES)
+
+MAIN_OBJS=mexp.cmo midge.cmo parser.cmo lexer.cmo symtab.cmo environment.cmo builtins.cmo main.cmo
+
+mlang: .depend $(MAIN_OBJS)
+	$(OCAMLC) -o mlang $(OCAMLFLAGS) $(MAIN_OBJS)
+
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .mll .mly
+
+.mll.ml:
+	ocamllex $<
+.mly.ml:
+	ocamlyacc $<
+.ml.cmo:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.mli.cmi:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.ml.cmx:
+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
+
+test: $(MLANG)
+	./run_test.sh test_repl_input.txt
+
+clean:
+	rm -f mlang
+	rm -f *~
+	rm -f *.cm[iox]
+	rm -f parser.ml parser.mli
+	rm -f lexer.ml
+
+parser.cmo : parser.cmi
+parser.mli : parser.mly
+parser.ml : parser.mly
+
+
+.depend:
+	$(OCAMLDEP) $(INCLUDES) *.mli *.ml *.mly *.mll > .depend
+
+include .depend
+
+b) .depend
+
+builtins.cmo: symtab.cmo mexp.cmo environment.cmo midge.cmo
+builtins.cmx: symtab.cmx mexp.cmx environment.cmx midge.cmx
+environment.cmo: mexp.cmo
+environment.cmx: mexp.cmx
+main.cmo: symtab.cmo mexp.cmo environment.cmo builtins.cmo midge.cmo
+main.cmx: symtab.cmx mexp.cmx environment.cmx builtins.cmx midge.cmx
+midge.cmo: mexp.cmo
+midge.cmx: mexp.cmx
+mexp.cmo:
+mexp.cmx:
+symtab.cmo: mexp.cmo
+symtab.cmx: mexp.cmx
+
+c) run_test.sh
+
+#! /bin/sh
+
+#A very basic, very hacky unit testing framework
+
+filename=$1
+
+repl_test()
+{
+    failed=0
+    echo "Begin tests"
+    while read p; do
+        mlang_input=$(echo $p | cut -d '|' -f1)
+        mlang_output=$(echo $mlang_input | ./mlang  | cut -b 1-2 --complement | head -n 1| sed 's/^ *//g' | sed 's/ *$//g')
+        desired_ouput=$(echo $p | cut -d '|' -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        if [ "$mlang_output" = "$desired_ouput" ]
+        then
+            echo ".............passed $p"
+        else
+            echo "!FAILED: $mlang_input produced $mlang_output instead of $desired_ouput"
+            failed=`expr $failed + 1`
+        fi
+    done < $filename
+    exit $failed
+    
+}
+
+repl_test $filename
+
+Run-time Environment
+====================
+
+Instead of creating a separate compiler, we leveraged the REPL to act as a compiler. This was accomplished by adding a keyword MIDGE-EXPORT, which
+creates the respective .mg file. We then post-process it using midge and run it with our music player of choice. For instance, if you wished to
+compile a .mlang program, you would write
+
+# ./mlang < my-program.mlang && midge my-program.mg && banshee my-program.mid
+
+To simplify this, we created a small shell script called mlangc which does all of this automatically.
+
+Please note that in order to run an mlang program, the user must install Midge as well as a MIDI synthesizer. Midge has a further dependency on
+Perl.

@@ -1,19 +1,23 @@
 (
-(READ-FILE stdlib.mlang)
+	(READ-FILE stdlib.mlang)
+	(LABEL HEAD (69 4 4))
+	(LABEL PHRASE1
+		((3 B 16) (4 F+ 16) (3 B 16) (3 A 8) (4 E 16) (4 A 16) (4 E 16) (3 G 16) (4 D 16) (3 A 8) (4 E 16) (3 A 8) (4 E 16)))
+	
+	(LABEL BASSPHRASE
+		(CONCAT (REPEAT4 (3 B 16)) (REPEAT4 (3 A 16)) (REPEAT4 (3 G 16)) (REPEAT4 (3 A 16))))
 
-(label head (69 4 4))
+	(LABEL DRUMPHRASE
+		((3 C 16) (3 C 16) (3 D 16) (3 C 16)))
 
-(label phrase1 ((3 b 16) (4 f+ 16) (3 b 16) (3 a 8) (4 e 16) (4 a 16) (4 e 16) (3 g 16) (4 d 16) (3 a 8) (4 e 16) (3 a 8) (4 e 16)))
-
-(label bassphrase (CONCAT (REPEAT4 (3 b 16)) (REPEAT4 (3 a 16)) (REPEAT4 (3 g 16)) (REPEAT4 (3 a 16))))
-
-(label drumphrase ((3 c 16) (3 c 16) (3 d 16) (3 c 16)))
-
-(label channel1 (guitar_dist 90 12 phrase1))
-
-(label channel2 (bass_ac 127 12 bassphrase))
-
-(label channel3 (drum_steel 127 48 drumphrase))
-
-(MIDGE-EXPORT reaper.mg (head (channel1 channel2)))
+	(LABEL CHANNEL1
+		(GUITAR_DIST 90 12 PHRASE1))
+	
+	(LABEL CHANNEL2
+		(BASS_AC 127 12 BASSPHRASE))
+	
+	(LABEL CHANNEL3
+		(DRUM_STEEL 127 48 DRUMPHRASE))
+	
+	(MIDGE-EXPORT REAPER.MG (HEAD (CHANNEL1 CHANNEL2)))
 )
