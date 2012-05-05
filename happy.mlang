@@ -1,6 +1,10 @@
 (
+(READ-FILE stdlib.mlang)
 (label head (42 4 4))
-(label phrase1 ((3 g 4) (3 g 4) (3 a 4) (3 g 8)))
-(label channel1 (31 96 12 phrase1))
-(MIDGE-EXPORT (head (channel1)))
+(label phrase1 ((3 d 16) (3 d 16) (3 e 8) (3 d 8) (3 g 8) (3 f+ 4)
+(3 d 16) (3 d 16) (3 e 8) (3 d 8) (3 a 8) (3 g 4)
+(3 d 16) (3 d 16) (3 d 8) (3 b 8) (3 g 8) (3 f+ 8) (3 e 4)
+(3 c 16) (3 c 16) (3 b 8) (3 g 8) (3 a 8) (3 g 4)))
+(label channel1 (1 96 1 phrase1))
+(MIDGE-EXPORT happy.mg (head (channel1)))
 )
