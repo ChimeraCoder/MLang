@@ -308,6 +308,7 @@ let fn_nth args _ =
     match a with
       Atom _ -> nil
     | Cons (c) -> if n = 0 then c.car else loop c.cdr (n-1)
+    | _ -> invalid_arg "Error: Invalid argument"
   in loop mexp n
 
 let fn_last args _ =
@@ -317,6 +318,7 @@ let fn_last args _ =
     match a with
       Atom _ -> nil
     | Cons (c) -> if n = 0 then c.car else loop c.cdr (n-1)
+    | _ -> invalid_arg "Error: Invalid argument"
   in loop mexp (n-1)
 
 let fn_mapcar args env =
