@@ -53,18 +53,6 @@
        (LAMBDA (X)
        	       (LENGTH (NTH 1 X))))
 (LABEL REPEAT4 (LAMBDA (X) (X X X X)))
-(LABEL OCTAVEINCNOTE
-       (LAMBDA (X)
-       	       ((CAR X) (NTH 1 X) (INC (NTH 2 X)))))
-(LABEL OCTAVEDECNOTE
-       (LAMBDA (X)
-       	       ((CAR X) (NTH 1 X) (DEC (NTH 2 X)))))
-(LABEL OCTAVEUPCHANNEL
-       (LAMBDA (X)
-       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR OCTAVEINCNOTE (NTH 3 X)))))
-(LABEL OCTAVEDOWNCHANNEL
-       (LAMBDA (X)
-       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR OCTAVEDECNOTE (NTH 3 X)))))
 (LABEL piano_grand_ac 1)
 (LABEL piano_grand_br 2)
 (LABEL piano_grand_el 3)
@@ -193,11 +181,19 @@
 (LABEL fx_copter 126)
 (LABEL x_applause 127)
 (LABEL fx_gun 128)
-
-(LABEL mozart-form (LAMBDA (X) (LAMBDA (Y) (LAMBDA (Z) (CONCAT X Y Z Z Y X))))
-
-)
-
+(LABEL mozart-form (LAMBDA (X) (LAMBDA (Y) (LAMBDA (Z) (CONCAT X Y Z Z Y X)))))
+(LABEL OCTAVEINCNOTE
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (INC (NTH 2 X)))))
+(LABEL OCTAVEDECNOTE
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (DEC (NTH 2 X)))))
+(LABEL OCTAVEUPCHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR OCTAVEINCNOTE (NTH 3 X)))))
+(LABEL OCTAVEDOWNCHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR OCTAVEDECNOTE (NTH 3 X)))))
 (LABEL A_4_1 (4 A 1))
 (LABEL B_4_1 (4 B 1))
 (LABEL C_4_1 (4 C 1))
@@ -210,7 +206,6 @@
 (LABEL Ds_4_1 (4 Ds 1))
 (LABEL Fs_4_1 (4 Fs 1))
 (LABEL Gs_4_1 (4 Gs 1))
-
 (LABEL A_4_2 (4 A 2))
 (LABEL B_4_2 (4 B 2))
 (LABEL C_4_2 (4 C 2))
@@ -223,7 +218,6 @@
 (LABEL Ds_4_2 (4 Ds 2))
 (LABEL Fs_4_2 (4 Fs 2))
 (LABEL Gs_4_2 (4 Gs 2))
-
 (LABEL A_4_3 (4 A 3))
 (LABEL B_4_3 (4 B 3))
 (LABEL C_4_3 (4 C 3))
@@ -236,7 +230,6 @@
 (LABEL Ds_4_3 (4 Ds 3))
 (LABEL Fs_4_3 (4 Fs 3))
 (LABEL Gs_4_3 (4 Gs 3))
-
 (LABEL A_4_4 (4 A 4))
 (LABEL B_4_4 (4 B 4))
 (LABEL C_4_4 (4 C 4))
@@ -249,7 +242,6 @@
 (LABEL Ds_4_4 (4 Ds 4))
 (LABEL Fs_4_4 (4 Fs 4))
 (LABEL Gs_4_4 (4 Gs 4))
-
 (LABEL A_8_1 (8 A 1))
 (LABEL B_8_1 (8 B 1))
 (LABEL C_8_1 (8 C 1))
@@ -262,7 +254,6 @@
 (LABEL Ds_8_1 (8 Ds 1))
 (LABEL Fs_8_1 (8 Fs 1))
 (LABEL Gs_8_1 (8 Gs 1))
-
 (LABEL A_8_2 (8 A 2))
 (LABEL B_8_2 (8 B 2))
 (LABEL C_8_2 (8 C 2))
@@ -275,7 +266,6 @@
 (LABEL Ds_8_2 (8 Ds 2))
 (LABEL Fs_8_2 (8 Fs 2))
 (LABEL Gs_8_2 (8 Gs 2))
-
 (LABEL A_8_3 (8 A 3))
 (LABEL B_8_3 (8 B 3))
 (LABEL C_8_3 (8 C 3))
@@ -288,7 +278,6 @@
 (LABEL Ds_8_3 (8 Ds 3))
 (LABEL Fs_8_3 (8 Fs 3))
 (LABEL Gs_8_3 (8 Gs 3))
-
 (LABEL A_8_4 (8 A 4))
 (LABEL B_8_4 (8 B 4))
 (LABEL C_8_4 (8 C 4))
@@ -301,3 +290,4 @@
 (LABEL Ds_8_4 (8 Ds 4))
 (LABEL Fs_8_4 (8 Fs 4))
 (LABEL Gs_8_4 (8 Gs 4))
+)
