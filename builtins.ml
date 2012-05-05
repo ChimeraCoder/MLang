@@ -249,7 +249,6 @@ let fn_file args env =
  let f = car args in
    match f with
    Atom n -> 
-   let file = n in
      let chn = open_in n in
        let text = file_read chn in
           close_in chn;         
