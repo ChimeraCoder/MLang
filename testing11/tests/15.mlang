@@ -1,0 +1,1 @@
+(cons a (cons (cdr (a s a)) nil))

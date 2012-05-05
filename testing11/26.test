@@ -1,0 +1,3 @@
+(((LABEL L1 (CONS 1 2)) (SETCAR L1 3) (SETCDR L1 4))
+(CAR L1)
+(CDR L1))

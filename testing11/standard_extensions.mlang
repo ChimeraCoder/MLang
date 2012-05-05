@@ -1,0 +1,23 @@
+;;NOTE: Currently, currying must be EXPLICIT. In other words ((TRUE 5) 6) is correct, wherease (TRUE 5 6) will yield a function that expects an additional argument (before evaluating to 5). Similarly, ((FALSE 5) 6) is correct, but (FALSE 5 6) will yield a function that takes a single argument and evaluates to that same argument!
+
+;;Here is a demonstration of how currying works in lisp. All of these are different ways of representing the value 15, and our language should determine that all of these are equal when passed to the #'equal function. 
+;;These will also work in a Scheme interpreter (tested in guile)
+;;((LAMBDA (P) (+ 5 P)) 10)                
+;;((LAMBDA (P) (+ 5 P)) ((LAMBDA () 10)) )        
+;;((LAMBDA (P) (P 5)) (LAMBDA (X) (+ X 10)) )
+;;((LAMBDA (X) (X 5)) (LAMBDA (Y) (+ Y 10))) ;;If you test this in a Lisp-2, such as Common Lisp (eg, CLISP or SBCL), you'll need to use the following instead: ((lambda (x) (funcall x 5)) (lambda (y) (+ y 10)))
+;; This means the same thing; in Lisp-2, functions are kept in their own namespace, so you have to call x explicitly.
+
+(LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))        ;;SELECTS THE FIRST OF TWO ARGUMENTS
+
+(LABEL FALSE (LAMBDA (X) (LAMBDA (Y) Y)))       ;;SELECTS THE SECOND OF TWO ARGUMENTS
+
+(LABEL IFELSE (LAMBDA (X) ((X TRUE) FALSE)))   ;;IF FIRST IS TRUE, SELECTS SECOND.  FIRST IS FALSE, SELECTS THIRD 
+
+;;Remember, MLang has only one datatype - the function - what are these 'number literals' of which you all speak?
+;;This is how numbers should be defined, eventually:
+;;We need to be careful with the way they are stored as notes, though, to ensure that (equal 1 1) always returns true - since the two arguments are actually separate lambdas, we need to make sure that they end up referencing the same point in memory
+
+(define 0 (lambda (f) (lambda (x) x)))
+(define 1 (lambda (f) (lambda (x) (f x))))
+(define add1 (lambda (n) (lambda (f) (lambda (x) (f n f x))))) ;;This is the successor function - using it, we can recursively define all of the positive numbers

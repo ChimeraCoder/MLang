@@ -1,0 +1,12 @@
+builtins.cmo: symtab.cmo mexp.cmo environment.cmo midge.cmo
+builtins.cmx: symtab.cmx mexp.cmx environment.cmx midge.cmx
+environment.cmo: mexp.cmo
+environment.cmx: mexp.cmx
+main.cmo: symtab.cmo mexp.cmo environment.cmo builtins.cmo midge.cmo
+main.cmx: symtab.cmx mexp.cmx environment.cmx builtins.cmx midge.cmx
+midge.cmo: mexp.cmo
+midge.cmx: mexp.cmx
+mexp.cmo:
+mexp.cmx:
+symtab.cmo: mexp.cmo
+symtab.cmx: mexp.cmx
