@@ -321,15 +321,37 @@ seq:       | expr seq
 
 \subsection{Higher-order functions}
 
-%# Sushmita/Aditya please fill up with a description. Ping me if you
-are not sure.
-
-1) CONS
-
-2) CDR
-....
-
-n) MIDGE-EXPORT: See the next section
+\begin{tabular}{|c||c|}
+    \hline
+    Function & Description\\
+    \hline
+CONS		 & Given note A and a list of notes L, prepend A to L \\
+CDR 	  	 & Given a list L, return the second element of the first cons cell \\
+CAR 	  	 & Returns the first element in the list\\
+QUOTE  	 & Creates a list of elements formed of the arguments\\
+    SETCAR	 & Set CAR, evil, added for completeness (do not use)\\
+SETCDR	 & Set CDR, ditto\\
+EQUAL  	 & Checks for symbolic equality of two mexpressions\\
+ATOM	  	 & Represents a single note\\
+COND		 & Evaluates a series of conditions\\
+ IFELSE	 & Conditional\\
+ LAMBDA	 & Anonymous function definition\\
+ LABEL      	 & Used to define new functions \\
+ READ-FILE  	 & Reads commands from an input file\\
+ WRITE-FILE 	 & Writes the output to a file\\
+ LENGTH     	 & Used to find the length of the list\\
+ NTH	       	 & Finds the nth element in a list\\
+ LAST       	 & Finds the last element in a list\\
+ MAPCAR     	 & Applies the function to every element in the list	\\
+ REDUCE     	 & Fold left\\
+ INC	       	 & Increments integer atom\\
+ DEC	       	 & Decrements integer atom\\
+ COMBINE    	 & Zips up two mexpressions\\
+ REVERSE    	 & Reverses a given list\\
+ CONCAT     	 & Concatenates mexpressions\\
+ MIDGE-EXPORT & See the next section\\
+    \hline
+\end{tabular}
 
 
 \subsection{Midge backend}
