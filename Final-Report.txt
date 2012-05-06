@@ -224,13 +224,13 @@ seq:       | expr seq
 2. CDR 	  	 : Returns the list that remains when the first element of the list is removed
 3. CAR 	  	 : Returns the first element in the list
 4. QUOTE  	 : Creates a list of elements formed of the arguments
-5. SETCAR	 :
-6. SETCDR	 :
-7. EQUAL  	 :
+5. SETCAR	 : Set CAR, evil, added for completeness do not use
+6. SETCDR	 : Set CDR, ditto
+7. EQUAL  	 : Checks for symbolic equality of two mexpressions
 8. ATOM	  	 : Represents a single note
-9. COND		 :
-10. IFELSE	 :
-11. LAMBDA	 :
+9. COND		 : Evaluates a series of conditions
+10. IFELSE	 : Conditional
+11. LAMBDA	 : Anonymous function definition
 12. LABEL      	 : Used to define new functions 
 13. READ-FILE  	 : Reads commands from an input file
 14. WRITE-FILE 	 : Writes the output to a file
@@ -238,12 +238,12 @@ seq:       | expr seq
 16. NTH	       	 : Finds the nth element in a list
 17. LAST       	 : Finds the last element in a list
 18. MAPCAR     	 : Applies the function to every element in the list	
-19. REDUCE     	 :
-20. INC	       	 :
-21. DEC	       	 :
-22. COMBINE    	 :
+19. REDUCE     	 : Fold left
+20. INC	       	 : Increments integer atom
+21. DEC	       	 : Decrements integer atom
+22. COMBINE    	 : Zips up two mexpressions
 23. REVERSE    	 : Reverses a given list
-24. CONCAT     	 :
+24. CONCAT     	 : Concatenates mexpressions
 25. MIDGE-EXPORT : See the next section
 
 
@@ -1758,7 +1758,7 @@ MLang aims at producing music. The test cases involved writing simple songs like
 		(MIDGE-EXPORT happy.mg (head (channel1)))
 		)
 
-More complex songs involving a number of instruments were also added by Nikhil. Given below is an MLang program for 'The Reaper'
+More complex songs involving a number of instruments were also added by Nikhil. Given below is an MLang program for 'Don't fear the Reaper'
 
 	(
 	(READ-FILE stdlib.mlang)
@@ -1792,8 +1792,13 @@ And yes, the best judge of the correctness of these songs were ofcourse, our ear
 
 #Lessons learned as a team
 1. Having a clear project plan charted out is essential to the successful completion of a project
+2. Practice beats theory, but without theory you don't know where the starting line is.
+3. Its important that everyone is on the same page as far as infrastructure is concerned. We did not make the best use of the development environment
+that was available to us and that caused some delays.
+4. Communication within the team is very important. It is essential to keep everyone in the loop of what you are doing.
 
 #Lessons Learnt - Sushmita Swaminathan, Project Manager
+
 1. Identify the team's strength's and weaknesses early. Work on improving the strengths and reducing the weaknesses.
 2. Make an early start on the learning for the project. Later always means harder.
 3. Keep track of all the modifications in the project and ensure that these are communicated to the entire team
@@ -1806,10 +1811,30 @@ And yes, the best judge of the correctness of these songs were ofcourse, our ear
 3. Regular team meetings are a great way to learn and contribute to the project.
 4. Starting with the simple. Rather than having too much in your hand and trying to do all-at-once, step-by-step is a good way to improvise. 
 
+#Lessons Learnt - Nikhil Sarda, Integrator and Architect
+
+The most important lesson I learned is the fact that your "perfect" design will not work in real life as it probably depends on "imperfect"
+components that you treat as black boxes. It is not possible to have a complete design right at the beginning because it is not humanly possible to be correct about every assumption you make. Your design needs to account for all the bugs, imperfections and limitations of the system it is built on
+top of. Thus it is extremely important to be flexible and willing to explore other directions when something does not work.
+
+Another lesson learned is that communication is important. However, I believe that communication via email is more productive than face to face meetings, since when communicating over email, one is forced to think very carefully about what is being written and what is being said. When meeting face to face, there is a human tendency to avoid portraying yourself as the only guy who did not get what was being said. This is not the case when
+communicating online. There is also the added advantage of having access to references as and when you type out your reply.
+
+A solid knowledge of the infrastructure being used to develop the project is also required as well. It is important
+to start early and to commit code often. There is a dichotomy in this observation however as many open source projects will not accept broken code.
+However for smaller sized projects it is essential to commit code (broken or not) early. This way we can get feedback immediately.
+However when we are in a tight situation it is also important not to break the build.
+
+
 
 #Advice for future teams
 
 #Suggestions on topics
+
+1) Garbage collection and JIT compilers
+2) Please also cover some modern static analysis techniques.
+3) Topics in language virtual machine technologies, such as reflection, code contracts, etc.
+4) Perhaps 15-20 minutes on decompilation and reverse engineering.
 
 #Appendix
 
