@@ -1,0 +1,6 @@
+To add mlang-mode to emacs - add the following to the your .emcas file
+
+(autoload 'mlang-mode "<path where the file is stored>Mlang-mode.el" "Major mode for Mlang" t)
+(setq auto-mode-alist (cons '(".mlang" . mlang-mode) auto-mode-alist))
+
+
