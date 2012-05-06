@@ -1,5 +1,39 @@
 6.
 
+Architecture
+============
+
+#Put ArchitectureDiagram.jpeg here
+
+The above is a high-level overview of the architecture of the MLang compilation process. The mlang program goes through the lexer and parser that
+generate an ML representation of a m-expression. This representation is then evaluated and processed into an m-expression that can be understood
+by the Midge backend. If at this point definitions present in the standard library are needed, they are loaded as well.
+We have defined some in built functions as well as several functions written in MLang itself. Functions written in OCaml were done so in order to
+take advantage of tail-call optimization and other performance reasons. However, keeping in line with the design goal of MLang as a homoiconic
+music language, NO music specific function was written in OCaml. M-expression evaluation is quite straightforward. As we walk the AST, we pattern-
+match specific m-expression forms. For instance, if we encounter an atom, we check it against a hash-table that represents all the environment
+variables and their respective mexpression bindings. If a binding exists, it is replaced in place of that atom and evaluated with the rest of the
+m-expression treated as arguments. If not, we move on to the next m-expression. Forms such as lambdas and function calls are evaluated similarly.
+The backend then generates intermediate .mg files which is then converted to MIDI. If a MIDI synthesizer is present on the system, it can be played 
+with any conventional player.
+
+Interesting technical notes
+===========================
+
+MLang has no side-effects. The only IO it can do is through the READ-FILE, WRITE-FILE and EXPORT-MIDGE keywords. This functionality piggy-backs on
+OCaml.
+
+Evaluation in MLang is eager.
+
+Garbage collection in MLang piggy-backs on the OCaml run-time.
+
+Module Contributions
+====================
+
+Nikhil Sarda: Lexer, parser, most of the interpreter/evaluator, midge backend, most of the standard library.
+Sushmita Swaminathan: READ-FILE, WRITE-FILE function
+Aditya Mukherjee: Fixed-point combinator, fixes to the interpreter, some standard library functions
+
 7.
 
 Environment
@@ -44,7 +78,7 @@ mlang: .depend $(MAIN_OBJS)
 .ml.cmx:
 	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
 
-test: $(MLANG)
+testmlang: $(MLANG)
 	./run_test.sh test_repl_input.txt
 
 clean:
