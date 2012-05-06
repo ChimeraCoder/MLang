@@ -52,13 +52,13 @@ MLang allows the user to incorporate other pieces of MLang code - which are play
 
 
 \subsection{Homoiconicity}
-A language is said to be homoiconic if a representation of programs written in it are also a data structure in a primitive type of the language itself. In MLang, the only primitive is a series (list, these lists may be of length one) of musical tones (a note), or a function. However, because functions are themselves stored internally as series of certain musical tones, everything in MLang, including the code itself, is a representation of a series (list) of notes. Modules, the higher-level data structures, are themselves recursively composed of other modules or of primitives (notes). So the code itself has a recursive representation as a primitive datatype. For MLang, the elementary datatype is an m-expression. We define an M-expression inductively as 
+A language is said to be homoiconic if a representation of programs written in it are also a data structure in a primitive type of the language itself. In MLang, the only primitive is a list of musical notes, or a function. However, because functions are themselves defined by a list, everything in MLang, including the code itself, is a representation of a series (list) of notes. Modules, the higher-level data structures, are themselves recursively composed of other modules or of primitives (notes). So the code itself has a recursive representation as a primitive datatype. For MLang, the elementary datatype is an m-expression. We define an M-expression recursively as 
 1. a musical note, or
 2. an expression of the form (x . y) where x and y are m-expressions.
 Note the analogous relationship between an m-expression and an s-expression.
 
 \subsection{Functional}
-MLang is stateless and free of side effects. It treats computation (generation of music) as simple evaluation of m-expressions and avoids state and mutable data. MLang is heavily influenced by the syntax and semantics of Lisp and its variants, though the interpreter itself is written in OCaml. MLang is strongly typed and dynamic.
+MLang treats computation (generation of music) as simple evaluation of m-expressions and avoids state and mutable data for many transactions. MLang is heavily influenced by the syntax and semantics of Lisp and its variants, though the interpreter itself is written in OCaml. MLang is strongly typed and dynamic.
 
 
 \section{Language Tutorial}
@@ -401,6 +401,170 @@ represented as
 (4 A 3)
 \end{lstlisting}
 
+\section{Project plan (Sushmita Swaminathan, Project manager)}
+
+The goal of the project was to create a programming language for music, one that is Turing complete as well as homoiconic and functional.
+
+
+\subsection{Testing Model}
+We divided the project into a number of sub-tasks that would be performed repeatedly until the final product was obtained. These stages were
+Goal Forming/Reassessing, Compiler Design, Design implementation/Development and Testing.
+
+\subsection{Goal Forming/Reassessing}
+As the first step of the project, the main goals and objectives were defined and communicated to all members of the team. Subsequently, at regular intervals these goals were reassessed to ensure that their relevance was still maintained. Also, new goals were formulated, while some ideas that were not pertinent were discarded. While the main goal was to develop a language that would play music, some of the smaller goals that were set for the team included getting familiar with Ocaml and Lambda Calculus.
+
+ \subsection{Compiler Design}
+This phase was very critical, since it defined the structure of the entire project. We decided on Ocaml as our compiler language. The reason was
+that since we were developing a functional language, it made more sense to use a functional language to implement it too. Another reason was that
+most DSLs implemented in the industry are built on top of functional languages such as Haskell and ML so an exercise in writing a significant
+project in OCaml would prove beneficial in the long run as well.
+Since one of our design goals was homoiconicity, we had to be very careful while designing the language semantics. Thus, we decided to base our
+language on Scheme/Lisp as it is the most tried and tested homoiconic language. 
+For the backend, we decided to use Midge for creating the .midi files that would eventually play the music. This was chosen in order to keep our
+implementation sandbox pure as Midge was the least intrusive of all the options.
+
+ \subsection{Development}
+In this phase, the designs were translated into executable code. The first implementations were of the lexer and parser, followed by the creation of an MLang environment and associated built-ins. New ideas that emerged during this time were reassessed.
+
+ \subsection{Testing}
+Closely following the development, we also tested the created applications.  The process of development and testing followed cyclically till there were no further issues to be resolved. This ensured that any bugs in the program could be immediately detected and fixed.
+
+
+
+\section{Roles and Responsibilities}
+
+\subsection{Project Manager (Sushmita Swaminathan)}
+Keep end objective always in sight
+Project design and implementation issue tracking and management
+Ensuring constant communication among team members
+Maintain regular checks to assess progress and pace of the project
+Managing team issues
+Contributing to the design and development in a technical role
+
+\subsection{Language Guru (Aditya Mukerjee)}
+Principal contributor to the design of the language
+Provide domain expertise that helps clarify doubts and issues that arise implementation
+Offer suggestions to improve on existing design and implementation
+Suggest new features or offer alternatives to be incorporated in the existing language design
+Technical contributor the design and development of the language
+
+\subsection{System Architect/Integrator (Nikhil Sarda)}
+Suggest and decide on the compiler language for MLang
+Principal architect of the MLang environment
+Identify the critical modules to be implemented and issues with language design that need rethinking
+Ensure code flow through all the modules without break
+Main deciding factor in accepting or rejecting design decisions based on development limitations
+
+\subsection{System Tester (Nishtha Agarwal)}
+Worked in tandem with the Architect to ensure code flow without breaks
+Identify pain-points in the code that could lead to potential errors
+Develop test cases for all the implemented modules
+Exhaustive testing of all modules to ensure their functioning
+Communicate all errors to the team and receive clarifications on implementations and bugs
+Develop a test suite that tests for errors when the Make is run
+
+\section{Implementation stylesheet}
+
+These are some of the implementation rules that the team followed while developing the project
+
+\subsection{Parentheses}
+Balanced parenthesis are the most important syntactic feature of MLang. All parenthesis in MLang should be of the form “(“ or “)”, with every opening parenthesis having a matching closing parenthesis.  
+
+All remaining closing parentheses should occur on the same line as the last command. For ex:
+
+\begin{lstlisting}
+(LABEL FF
+(QUOTE A))  
+is correct
+(LABEL FF 
+	(QUOTE A)
+)
+\end{lstlisting}
+should be avoided
+
+\subsection{Line separation}
+Every block of function implementation should be separated from the next by a line separation. This facilitates readability of the code.
+Indentation
+
+Proper indentation must be maintained. When starting a new line, move the indentation to the position of the last non-matched parenthesis in the previousline.
+ 
+\subsection{Keywords}
+All the MLang functions should be written in uppercase. MLang is case-sensitive and will not recognize lowercase functions. Auto-indentation and auto-capitalization features are offered by the MLang-mode in emacs, which can be used.
+
+\subsection{Comments}
+“;” should be used for comments. Wherever required appropriate comments should be detailing the method implemented.
+
+\subsection{File extensions}
+All MLang files, including the standard package, should have a .mlang extension. 
+
+\subsection{Function Names}
+Function names should not be arbitrary, but should be indicative of the operations being performed.
+
+\subsection{Timeline}
+
+\subsubsection{January}
+
+\begin{itemize}
+\item Discussions and Brainstorming on language ideas
+\item Finalized language to be implemented as MLang and the type of language to be functional
+\item Preliminary Goal Setting – Evaluating implementation choices (OCaml, Java, C),
+\item Understading Lambda Calculus and functional programming features
+    \end{itemize}
+
+\subsubsection{February}
+
+\begin{itemize}
+\item Finalize compiler language to be Ocaml	
+\item Develop design implementation strategies for MLang
+\item Finalize language features such as syntax – to maintain Lisp like syntax, M-expressions to parse MLang code
+\item Language Whitepaper
+\item Implementation of lexer and parser modules
+
+    \end{itemize}
+\subsubsection{March}
+
+\begin{itemize}
+\item Develop built-ins for MLang
+\item Create MLang environment, execute basic function and simple tests for errors
+\item Consider Midge as a possible back-end for creating the music
+\item MLang Reference Manual
+\item Language Tutorial
+\item Working Midge back-end written
+
+    \end{itemize}
+
+\subsubsection{April}
+
+\begin{itemize}
+\item Java (JFugue) offered as alternative for music creations
+\item Team decides to stick with Midge for creating the .midi files
+\item Midge back-end completed
+\item Hello World works! Demo given to Aho in class.
+\item More built-in functions (SETCAR, SETCDR, IFELSE, CONCAT) added
+\item Sample MLang programs written
+\item Exhaustive testing of functions begins
+
+    \end{itemize}
+
+\subsubsection{May}
+
+\begin{itemize}
+\item Midge function, MIDGE-EXPORT added
+\item Built-ins such as REVERSE, NTH, LENGTH,COMBINE, READ-FILE,WRITE-FILE added
+\item MLang stdlib defined with functions such as TRANSPOSEUP, TRANSPOSEDOWN, NUMNOTES, REVERSEBODY
+\item Songs paranoid.mlang, reaper.mlang, happy.mlang created
+\item Mlang-mode defined for emacs
+\item Testing and bug-fixing continue
+\item Project Report
+\item Project Presentation
+
+    \end{itemize}
+
+
+\subsection{git Log}
+Note: This is the log for the testing branch; the full log is available on Github.
+\lstinputlisting{gitlog.log}
+
 \section{Translator Architecture (Nikhil Sarda, System Architect)}
 \subsection{Architecture}
 
@@ -566,6 +730,193 @@ To simplify this, we created a small shell script called mlangc which does all o
 
 Please note that in order to run an mlang program, the user must install Midge as well as a MIDI synthesizer. Midge has a further dependency on
 Perl.
+
+\section{Test Plan(System Tester, Nishtha Agarwal)}
+
+
+\subsection{Testing MLang Constructs: UNIT AND REGRESSION TESTS}
+
+Since MLang depends heavily upon lambda expressions (S-exp that is), the basic test consisted of creating a list:
+
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	(LABEL FOO (CONS A B))
+
+\end{lstlisting}
+Once a list is successfully created, tests on these lists were carried out. While most of the functions like CAR and CDR work in a similar fashion as that of LISP, many other were defined using LABEL.
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	(LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))
+
+\end{lstlisting}
+The built-in functions are defined in OCaml, the language of the compiler. OCaml being a functional language, the task of testing the functions thus defined was to check if the given expressions evaluate to a correct S-exp.
+
+A Simple Example:
+\lstset{language=Lisp}
+\begin{lstlisting}
+
+	(quote(a d d f))
+ evaluates to (a d d f)
+
+\end{lstlisting}
+
+Moving on, the power of MLang lies in the nesting of functions i.e. an entire program can be written as just a single function!
+To test this, a not-so-basic example involving the concept of functions-of-function:
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	(quote (a b c (cdr (a b c))))
+ evaluates to (a b c (b c))
+
+\end{lstlisting}
+
+Testing the conditional constructs:
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	((LABEL TRANSPOSE
+      (LAMBDA (X)
+              (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) C+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) C+) ((CAR X) D (LAST X)))
+                    ((EQUAL (CAR (CDR X)) D) ((CAR X) D+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) D+) ((CAR X) E (LAST X)))
+                    ((EQUAL (CAR (CDR X)) E) ((CAR X) F (LAST X)))
+                    ((EQUAL (CAR (CDR X)) F) ((CAR X) F+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) F+) ((CAR X) G (LAST X)))
+                    ((EQUAL (CAR (CDR X)) G) ((CAR X) G+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) G+) ((CAR X) A (LAST X)))
+                    ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
+                    ((EQUAL (CAR (CDR X)) B) ((CAR X) C (LAST X)))
+                    )
+              )
+      )
+
+\end{lstlisting}
+A very important and useful functionality was added in terms of reading frm a file and writing to a file. This was required as we want to execute a program directly from a file.
+
+The simple program statements:
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	 (READ-FILE abc.mlang) 
+	 (WRITE-FILE xyz.mlang (quote (a b c))) 
+
+\end{lstlisting}
+were tested and work wonders!
+
+Since MLang deals with music notes in terms of lists, the note manipulation (and hence, the list manipulation) functions were introduced and tested. 
+A few examples:
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	(CONCAT (A S D) (A D))
+
+	(NTH 2 (A D F))
+	(REVERSE (CDR (A S D F)))
+
+\end{lstlisting}
+
+The special function MIDGE-EXPORT enables the user to save the midge specification of the evaluated expression to a file.
+
+MLang consists of several builtin functionalities:
+
+A total of 34 test cases in MLang were written and tested using a bash script, testfile.bash. Each test case has an expected output against which the result produced is tested. The test cases are simple and independent to ensure correctness. 
+
+\subsection{Playing Music}
+
+MLang aims at producing music. The test cases involved writing simple songs like 'Happy Birthday.mlang' which is played on a Piano
+		
+\lstset{language=Lisp}
+\begin{lstlisting}
+		(
+		(READ-FILE stdlib.mlang)
+		(label head (42 4 4))
+		(label phrase1 ((3 d 16) (3 d 16) (3 e 8) (3 d 8) (3 g 8) (3 f+ 4)
+		(3 d 16) (3 d 16) (3 e 8) (3 d 8) (3 a 8) (3 g 4)
+		(3 d 16) (3 d 16) (3 d 8) (3 b 8) (3 g 8) (3 f+ 8) (3 e 4)		
+		(3 c 16) (3 c 16) (3 b 8) (3 g 8) (3 a 8) (3 g 4)))
+		(label channel1 (1 96 1 phrase1))
+		(MIDGE-EXPORT happy.mg (head (channel1)))
+		)
+
+\end{lstlisting}
+More complex songs involving a number of instruments were also added by Nikhil. Given below is an MLang program for 'Don't fear the Reaper'
+
+\lstset{language=Lisp}
+\begin{lstlisting}
+	(
+	(READ-FILE stdlib.mlang)
+	(LABEL HEAD (69 4 4))
+	(LABEL PHRASE1
+		((3 B 16) (4 F+ 16) (3 B 16) (3 A 8) (4 E 16) (4 A 16) (4 E 16) (3 G 16) (4 D 16) (3 A 8) (4 E 16) (3 A 8) (4 E 16)))
+
+	(LABEL BASSPHRASE
+		(CONCAT (REPEAT4 (3 B 16)) (REPEAT4 (3 A 16)) (REPEAT4 (3 G 16)) (REPEAT4 (3 A 16))))
+
+	(LABEL DRUMPHRASE
+		((3 C 16) (3 C 16) (3 D 16) (3 C 16)))
+
+	(LABEL CHANNEL1
+		(GUITAR_DIST 90 12 PHRASE1))
+
+	(LABEL CHANNEL2
+		(BASS_AC 127 12 BASSPHRASE))
+
+	(LABEL CHANNEL3
+		(DRUM_STEEL 127 48 DRUMPHRASE))
+
+	(MIDGE-EXPORT REAPER.MG (HEAD (CHANNEL1 CHANNEL2)))
+)
+\end{lstlisting}
+
+And yes, the best judge of the correctness of these songs were ofcourse, our ears!
+
+
+\section{Aditya Mukerjee}
+
+
+
+
+
+\section{Conclusions}
+
+\subsection{Lessons learned as a team}
+1. Having a clear project plan charted out is essential to the successful completion of a project
+2. Practice beats theory, but without theory you don't know where the starting line is.
+3. Its important that everyone is on the same page as far as infrastructure is concerned. We did not make the best use of the development environment
+that was available to us and that caused some delays.
+4. Communication within the team is very important. It is essential to keep everyone in the loop of what you are doing.
+
+\subsection{Lessons Learnt - Sushmita Swaminathan, Project Manager}
+
+1. Identify the team's strength's and weaknesses early. Work on improving the strengths and reducing the weaknesses.
+2. Make an early start on the learning for the project. Later always means harder.
+3. Keep track of all the modifications in the project and ensure that these are communicated to the entire team
+4. Have fun learning. Learn from mistakes and grow through the project.
+
+\subsection{Lessons Learnt - Nishtha Agarwal, System Tester}
+
+1. Simple tests lead way to writing more complicated test cases. 
+2. It is always better to have prior experience in the language being used for implementation.
+3. Regular team meetings are a great way to learn and contribute to the project.
+4. Starting with the simple. Rather than having too much in your hand and trying to do all-at-once, step-by-step is a good way to improvise. 
+
+\subsection{Lessons Learnt - Nikhil Sarda, Integrator and Architect}
+
+The most important lesson I learned is the fact that your "perfect" design will not work in real life as it probably depends on "imperfect"
+components that you treat as black boxes. It is not possible to have a complete design right at the beginning because it is not humanly possible to be correct about every assumption you make. Your design needs to account for all the bugs, imperfections and limitations of the system it is built on
+top of. Thus it is extremely important to be flexible and willing to explore other directions when something does not work.
+
+Another lesson learned is that communication is important. However, I believe that communication via email is more productive than face to face meetings, since when communicating over email, one is forced to think very carefully about what is being written and what is being said. When meeting face to face, there is a human tendency to avoid portraying yourself as the only guy who did not get what was being said. This is not the case when
+communicating online. There is also the added advantage of having access to references as and when you type out your reply.
+
+A solid knowledge of the infrastructure being used to develop the project is also required as well. It is important
+to start early and to commit code often. There is a dichotomy in this observation however as many open source projects will not accept broken code.
+However for smaller sized projects it is essential to commit code (broken or not) early. This way we can get feedback immediately.
+However when we are in a tight situation it is also important not to break the build.
 
 
 
