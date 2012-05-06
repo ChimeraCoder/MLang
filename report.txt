@@ -144,6 +144,30 @@ In order to play this song from the commandline type
 
 MLang is portable in the sense that it does not depend upon the machine’s hardware for its execution.
 
+2.7 Working with higher-order functions
+=======================================
+
+Here we show how one can use higher-order functions in order to write compact mlang programs.
+
+> (LABEL REVERSECHANNEL
+       (LAMBDA (X)
+                      ((CAR X) (NTH 1 X) (NTH 2 X) (REVERSE (NTH 3 X)))))
+
+This is a function that reverses the fourth mexpression in a given mexpression. For instance
+
+> (REVERSECHANNEL (1 2 3 (A B C)))
+(1 2 3 (C B A))
+
+Let us make use of REDUCE, our version of a left fold.
+
+> (LABEL GG (LAMBDA (X Y) (CONCAT X Y)))
+> (REDUCE GG ((A B) (C D)) nil)
+(nil A B C D)
+
+REDUCE takes three parameters, a function that takes two arguments (accumulator and element) followed by an mexpression and the initial value.
+It then proceeds to left fold the mexpression using the given function.
+
+		      
 3. Language Reference Manual
 =============================
 
