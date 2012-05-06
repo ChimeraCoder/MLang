@@ -1,3 +1,5 @@
+(* Author: Nikhil Sarda *)
+
 {
   open Parser
   exception Eof

@@ -1,3 +1,5 @@
+(* Author: Nikhil Sarda *)
+
 open Mexp
 
 let append lst o =

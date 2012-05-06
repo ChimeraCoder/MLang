@@ -1,3 +1,5 @@
+(* Author: Nikhil Sarda, fixes by Sushmita Swaminathan and Aditya Mukherjee *)
+
 open Mexp
 open Environment
 open Midge

@@ -1,3 +1,5 @@
+(* Author: Nikhil Sarda *)
+
 %token <string> NAME
 %token LPAREN RPAREN EOF EOL
 %start main
