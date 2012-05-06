@@ -1,0 +1,3391 @@
+
+
+
+MLang
+=====
+
+Aditya Mukherjee
+Nikhil Sarda
+Nishtha Agarwal
+Sushmita Swaminathan
+
+
+1 Introduction
+===============
+
+Aesthetics are by nature subjective and non-deterministic; as such, a programming language cannot fix this problem. But aesthetics are often determined by adherence to well-defined artistic conventions. Just as a simple Venician sonnet must have a fixed meter and rhyming scheme, musical compositions such as fugues, canons, and concertos must obey a well-defined structure specific to that musical form. When composing classical music, a deep understanding of music theory and strong grasp of music notation and grammar are required simply to create a piece compliant with the accepted contemporary musical structure - and that is all before beginning any part of the creative, artistic process. 
+
+However, while the underlying theory is vast, these conventions are extremely well-defined. As a result, most of this process can be facilitated by use of a piece of software specific enough to be tailored to the individual piece of music at hand, yet powerful enough to allow the composer to break free of conventions when necessary, or even to redefine or extend the set of rules. Traditionally, this software is implemented as a graphical frontend to standard music notation. The creators of MLang believe that undermines the power of music. Music is itself a language, and a composition is simply an application of the language, just as a program is an application of a programming language.
+
+The language we have described is simply the language of music - simple and minimal, yet powerful. The same is true of homoiconic functional programming languages, which made the selection of a programming paradigm MLang rather clear. Homoiconic functional languages are simple, yet highly powerful, and they derive this power through their modularity.
+
+MLang is a language that helps its users compose music by writing and compiling programs. It is a homoiconic functional language that is simple,
+yet highly powerful, and modular. Many of MLang's features are similar to a functional programming language like LISP. 
+Thus, familiarity with functional programming languages and a basic knowledge of music is preferred but not required.
+
+1.1 Modularity
+==============
+Music itself is highly modular. Not only is it common for sections of music to be repeated exactly within a given piece of music, but it is often expected that variations on these sections be repeated within the same composition. Subsequently, these sections may included in later compositions by other authors. All music is thus, in some sense, derivative - it is the nature of the art form.  
+
+MLang exposes this modularity, intrinsic in music, and turns it from a barrier to entry into a tool for the beginning composer (and instructors of music composition). Like standard music composition software, MLang allows composers to create music from scratch, by defining notes individually.  Thus, a user familiar with traditional music notation would have little trouble adjusting to MLang. Most music composition software provides this feature and little else. MLang, however, takes this a step further, by allowing the composer to extract arbitrary elements from that music and bundle these elements together into a module.
+
+
+1.2 Metaprogramming
+===================
+MLang allows the user to incorporate other pieces of MLang code - which are playable music files - into their own code as modules. A module is not limited to being just a complete musical phrase, such as a measure, a note, or an entire movement. It may be an attribute of the music, such as the key, time signature, or timbre - these attributes are not necessarily observed (ie, heard) in just a single section of the composition, but rather, they are woven into the composition as a whole. 
+
+
+1.3 Homoiconicity
+=================
+A language is said to be homoiconic if a representation of programs written in it are also a data structure in a primitive type of the language itself. In MLang, the only primitive is a series (list, these lists may be of length one) of musical tones (a note), or a function. However, because functions are themselves stored internally as series of certain musical tones, everything in MLang, including the code itself, is a representation of a series (list) of notes. Modules, the higher-level data structures, are themselves recursively composed of other modules or of primitives (notes). So the code itself has a recursive representation as a primitive datatype. For MLang, the elementary datatype is an m-expression. We define an M-expression inductively as 
+1. a musical note, or
+2. an expression of the form (x . y) where x and y are m-expressions.
+Note the analogous relationship between an m-expression and an s-expression.
+
+1.4 Functional
+==============
+MLang is stateless and free of side effects. It treats computation (generation of music) as simple evaluation of m-expressions and avoids state and mutable data. MLang is heavily influenced by the syntax and semantics of Lisp and its variants, though the interpreter itself is written in OCaml. MLang is strongly typed and dynamic.
+
+
+2. Language Tutorial
+=======================================
+
+2.1 Conventions
+================
+In this tutorial > refers to the command line prompt and {> refers to the
+output of the MLang command.
+
+2.2 Data Types
+===============
+The basic data type in MLang is an MNote. An MNote is a list of length 1
+and can be thought of as a function with no arguments.
+An MNote can be represented as (%rest %A %octave), where A refers to any mu-
+sical note.
+> (label A (8 A 3))
+
+In order to play the above, we can write
+
+> (read-file stdlib.mlang)
+> (midge-export test.mg ((100 4 4) ((piano_grand_ac 80 1 (A)))))
+
+The midge-export function takes two arguments, the filename and the song m-expression. A song is represented as a head and a body. The head contains
+information such as tempo and time signature. The body consists of several channels. A channel has information such as the instrument, volume, repetitions and the notes themselves.
+
+In the above example, the head is (100 4 4) which represents a tempo of 100 bpm and a time signature of 4/4.
+There is a single channel and a single note. The instrument of choice is grand piano, volume is 80 and the A note on the 3rd octave is played once
+with a 1/8 rest.
+
+Go back to the terminal and you will see a test.mg file has been created. In order to play it type
+
+# midge test.mg
+# banshee test.mid
+
+
+2.3 Input and Output
+=====================
+The input for MLang would consists of codes written at the command line or as part of a fille with the .mlang extension.
+The code is a series of mexpressions that represent notes, functions and other metadata.
+On compilations, the program would produce a file with the .mg extension which can be postprocessed with Midge in order to produce a .mid file.
+
+2.4 MLang Expressions
+======================
+The common form of an MLang expression is a function application given by the syntax
+
+(function arg1 arg2 ...)
+
+where the arguments can be MNotes or other functions.
+
+MLang expressions are case insensitive: (A 100) and (a 100) mean the same
+
+2.5 Functions as values
+=======================
+Since MLang is a homoiconic language, functions can be treated as data that can be passed around.
+In MLang, all functions are evaluated to notes. Thus every function eventually is evaluated to a string of notes that forms the midi.
+
+> (MAPCAR TRANSPOSE ((4 A 3) (4 B 3) (4 C 3)))
+
+For instance, TRANSPOSE is a function that is passed as an argument to another function, in this case MAPCAR. MAPCAR applies TRANSPOSE to each
+of the MNotes in the third m-expression
+
+Another example
+> (read-file stdlib.mlang)
+> (LABEL BASSPHRASE
+  	 (CONCAT (REPEAT4 (3 B 16)) (REPEAT4 (3 A 16)) (REPEAT4 (3 G 16)) (REPEAT4 (3 A 16))))
+
+Here REPEAT4 is a lambda function defined in stdlib.mlang. It takes a parameter and returns an mexpression containing it 4 times. CONCAT takes
+all of these m-expressions and concatenates them.
+
+
+2.6 Writing Your First MLang Program
+====================================
+Here is an example .mlang program that plays the first few notes of Happy Birthday
+
+(
+	(read-file stdlib.mlang)
+	(label head
+	       (42 4 4))
+	(label phrase1
+	       ((3 g 4) (3 g 4) (3 a 4) (3 g 8)))
+	(label channel1
+	       (bass_ac 96 1 phrase1))
+	(MIDGE-EXPORT
+		happy.mg (head (channel1)))
+)
+
+The first statement is used to load the standard library.
+
+The label keyword is used to bind a string with an m-expression. Here we have bound head with the mexpression (42 4 4).
+We have then defined the first phrase which consists of 4 notes. The label channel1 is made up of phrase1. An m-expression is then created
+which is fed into midge-export.
+
+In order to play this song from the commandline type
+
+# ./mlang < happy.mlang && midge happy.mg && banshee happy.mid
+
+MLang is portable in the sense that it does not depend upon the machine’s hardware for its execution.
+
+3. Language Reference Manual
+=============================
+
+3.1 Lexical Conventions
+=======================
+# Aditya: Please fill up
+
+
+3.2 Character Set
+=================
+
+Mlang programs are written in ASCII character set.
+
+
+3.3 Identifiers
+===============
+In MLang, an identifier is a string that starts with a letter or an underscore, and consists
+of a sequece of letters, digits, and underscores. Identifiers are case insensitive.
+
+
+3.4 Keywords
+=============
+
+The following keywords are reserved (#put in table)
+"QUOTE", "CAR", "CDR",  "SETCAR", "SETCDR", "CONS", 
+"EQUAL", "ATOM", "COND",  "IFELSE",  "LAMBDA", 
+"LABEL", "READ-FILE", "WRITE-FILE",  "LENGTH",
+"NTH",  "LAST",  "MAPCAR",  "REDUCE",  "INC" "DEC"
+"COMBINE", "REVERSE", "CONCAT", "MIDGE-EXPORT"
+
+These are simply functions whose behavior has been defined in OCaml.
+
+3.3 Types
+=========
+
+The basic type in MLang is the Mexp which is a cell. The Mexp is defined as
+
+type ('a, 'b) cell = { mutable car: 'a; mutable cdr: 'b }
+
+type t = Atom of string
+  | Cons of (t, t) cell
+  | Func of (t -> (string, t) Hashtbl.t -> t)
+  | Lambda of t * t
+  | Null
+
+Thus our language only provides symbol atoms (no integers, strings, etc)
+and cons cells. It is dynamically scoped.
+
+
+3.4 M-expressions
+=================
+
+The following are valid m-expression
+
+> (1 2 3 4)
+
+> (A B C)
+
+> (LENGTH (1 2 3))
+
+> (LABEL A (a l p h a))
+
+3.5 Grammar
+===========
+
+The grammar of Mlang is incredibly simple.
+It has expressions, which are symbolic identifiers, and lists.
+A list is a left parenthesis followed by some number of expressions (separated by spaces) followed by a right parenthesis.
+
+expr:   ID | list
+list:   ( seq )  
+seq:       | expr seq
+
+3.6 Higher-order functions
+===========================
+
+1. CONS		 : Given a note A and a list of notes L, cons constructs a new list with A followed by L
+2. CDR 	  	 : Returns the list that remains when the first element of the list is removed
+3. CAR 	  	 : Returns the first element in the list
+4. QUOTE  	 : Creates a list of elements formed of the arguments
+5. SETCAR	 :
+6. SETCDR	 :
+7. EQUAL  	 :
+8. ATOM	  	 : Represents a single note
+9. COND		 :
+10. IFELSE	 :
+11. LAMBDA	 :
+12. LABEL      	 : Used to define new functions 
+13. READ-FILE  	 : Reads commands from an input file
+14. WRITE-FILE 	 : Writes the output to a file
+15. LENGTH     	 : Used to find the length of the list
+16. NTH	       	 : Finds the nth element in a list
+17. LAST       	 : Finds the last element in a list
+18. MAPCAR     	 : Applies the function to every element in the list	
+19. REDUCE     	 :
+20. INC	       	 :
+21. DEC	       	 :
+22. COMBINE    	 :
+23. REVERSE    	 : Reverses a given list
+24. CONCAT     	 :
+25. MIDGE-EXPORT : See the next section
+
+
+3.7 Midge backend
+==================
+
+MIDGE-EXPORT takes 2 arguments, the name of the output file and an m-expression representing the song of the midi file. 
+
+(MIDGE-EXPORT name.mg SONG)
+
+The song is an m-expression represented as:
+
+(HEAD BODY)
+
+HEAD -> (TEMPO SIGNATURE_NUMERATOR SIGNATURE_DENOMINATOR)
+
+Head consists of the song of the tempo, numerator and denominator of the time signature.
+
+BODY -> (CHANNEL1 CHANNEL2 CHANNEL3....)
+
+A body is a sequence of channels.
+
+CHANNEL1 -> (INSTRUMENT VOLUME REPETITION (NOTE1 NOTE2 NOTE3...))
+
+A channel is represented by its instrument, volume in the mix, the number of times it must be repeated and finally, the sequence of notes.
+
+NOTE1 -> (rest note-literal octave)
+
+For instance the A note on 3rd octave played as a quarter note can be
+represented as
+
+(4 A 3)
+
+
+
+4. Project plan (Sushmita Swaminathan, Project manager)
+========================================================
+
+The goal of the project was to create a programming language for music, one that is Turing complete as well as homoiconic and functional.
+
+Understanding that the design required several rounds of development and testing, we decided to adopt an Test Driven Development Model as
+opposed to a more traditional Waterfall model.
+
+##Test Driven Development Model
+We divided the project into a number of sub-tasks that would be performed repeatedly until the final product was obtained. These stages were
+Goal Forming/Reassessing, Compiler Design, Design implementation/Development and Testing.
+
+##Goal Forming/Reassessing
+As the first step of the project, the main goals and objectives were defined and communicated to all members of the team. Subsequently, at regular intervals these goals were reassessed to ensure that their relevance was still maintained. Also, new goals were formulated, while some ideas that were not pertinent were discarded. While the main goal was to develop a language that would play music, some of the smaller goals that were set for the team included getting familiar with Ocaml and Lambda Calculus.
+
+##Compiler Design
+This phase was very critical, since it defined the structure of the entire project. We decided on Ocaml as our compiler language. The reason was
+that since we were developing a functional language, it made more sense to use a functional language to implement it too. Another reason was that
+most DSLs implemented in the industry are built on top of functional languages such as Haskell and ML so an exercise in writing a significant
+project in OCaml would prove beneficial in the long run as well.
+Since one of our design goals was homoiconicity, we had to be very careful while designing the language semantics. Thus, we decided to base our
+language on Scheme/Lisp as it is the most tried and tested homoiconic language. 
+For the backend, we decided to use Midge for creating the .midi files that would eventually play the music. This was chosen in order to keep our
+implementation sandbox pure as Midge was the least intrusive of all the options.
+
+##Development
+In this phase, the designs were translated into executable code. The first implementations were of the lexer and parser, followed by the creation of an MLang environment and associated built-ins. New ideas that emerged during this time were reassessed.
+
+##Testing
+Closely following the development, we also tested the created applications.  The process of development and testing followed cyclically till there were no further issues to be resolved. This ensured that any bugs in the program could be immediately detected and fixed.
+
+#Roles and Responsibilities
+
+##Project Manager (Sushmita Swaminathan)
+Keep end objective always in sight
+Project design and implementation issue tracking and management
+Ensuring constant communication among team members
+Maintain regular checks to assess progress and pace of the project
+Managing team issues
+Contributing to the design and development in a technical role
+
+##Language Guru (Aditya Mukherjee)
+Principal contributor to the design of the language
+Provide domain expertise that helps clarify doubts and issues that arise implementation
+Offer suggestions to improve on existing design and implementation
+Suggest new features or offer alternatives to be incorporated in the existing language design
+Technical contributor the design and development of the language
+
+##System Architect/Integrator (Nikhil Sarda)
+Suggest and decide on the compiler language for MLang
+Principal architect of the MLang environment
+Identify the critical modules to be implemented and issues with language design that need rethinking
+Ensure code flow through all the modules without break
+Main deciding factor in accepting or rejecting design decisions based on development limitations
+
+##System Tester (Nishtha Agarwal)
+Worked in tandem with the Architect to ensure code flow without breaks
+Identify pain-points in the code that could lead to potential errors
+Develop test cases for all the implemented modules
+Exhaustive testing of all modules to ensure their functioning
+Communicate all errors to the team and receive clarifications on implementations and bugs
+Develop a test suite that tests for errors when the Make is run
+
+#Implementation stylesheet
+
+These are some of the implementation rules that the team followed while developing the project
+
+##Parenthesis
+Balanced parenthesis are the most important syntactic feature of MLang. All parenthesis in MLang should be of the form “(“ or “)”, with every opening parenthesis having a matching closing parenthesis.  
+
+All remaining closing parenthesis should occur on the same line as the last command. For ex:
+
+(LABEL FF
+(QUOTE A))  
+is correct
+(LABEL FF 
+	(QUOTE A)
+)
+should be avoided
+
+##Line separation
+Every block of function implementation should be separated from the next by a line separation. This facilitates readability of the code.
+Indentation
+
+Proper indentation must be maintained. When starting a new line, move the indentation to the position of the last non-matched parenthesis in the previousline.
+ 
+##Keywords
+All the MLang functions should be written in uppercase. MLang is case-sensitive and will not recognize lowercase functions. Auto-indentation and auto-capitalization features are offered by the MLang-mode in emacs, which can be used.
+
+##Comments
+“;” should be used for comments. Wherever required appropriate comments should be detailing the method implemented.
+
+##File extensions
+All MLang files that form part of the standard package should have a .mlang extension. 
+
+##Function Names
+Function names should not be arbitrary, but should be indicative of the operations being performed.
+
+
+
+January
+=======	   
+
+*Discussions and Brainstorming on language ideas
+*Finalized language to be implemented as MLang and the type of language to be functional
+*Preliminary Goal Setting – Evaluating implementation choices (OCaml, Java, C),
+*Understading Lambda Calculus and functional programming features
+
+
+February
+========
+
+*Finalize compiler language to be Ocaml	
+*Develop design implementation strategies for MLang
+*Finalize language features such as syntax – to maintain Lisp like syntax, M-expressions to parse MLang code
+*Language Whitepaper
+*Begin implementation of lexer and parser modules
+
+
+March
+=====
+
+*Complete implementation of lexer and parser
+*Develop built-ins for MLang
+*Create MLang environment, execute basic function and simple tests for errors
+*Consider Midge as a possible back-end for creating the music
+*MLang Reference Manual
+*Language Tutorial
+
+
+April
+=====
+
+*Midge and Java (JFugue) offered as two possible back-ends for music creations
+*Team decides to go ahead with Midge for creating the .midi files
+*Midge back-end completed
+*Hello World works! Demo given to Aho in class.
+*More built-in functions (SETCAR, SETCDR, IFELSE, CONCAT) added
+*Sample MLang programs written
+*Exhaustive testing of functions begins
+
+
+May
+===	
+
+*Midge function, MIDGE-EXPORT added
+*Built-ins such as REVERSE, NTH, LENGTH,COMBINE, READ-FILE,WRITE-FILE added
+*MLang stdlib defined with functions such as TRANSPOSEUP, TRANSPOSEDOWN, NUMNOTES, REVERSEBODY
+*Songs paranoid.mlang, reaper.mlang, happy.mlang created
+*Mlang-mode defined for emacs
+*Testing and bug-fixing continue
+*Project Report
+*Project Presentation
+
+
+Timeline
+=========
+
+Module					Completed on	Issues				Issued closed on
+lexer & parser				March 5,2012	Build Errors			March 5,2012
+M-expression				March 5,2012		
+Added basic test			March 5,2012		
+Added symbol table			March 10,2012		
+Added builtins & environment		March 10,2012		
+Updated Makefile with testing   	March 18,2012
+function			
+Added car, cdr regression test		March 18,2012		
+Added LABEL statement to main		March 20,2012		
+Added Lambda/note definition		March 21,2012		
+Pushed Grammar for Mlang		April 01,2012		
+Helper functions added			April 10,2012		
+Midge included in makefile		April 15,2012		
+Hello World Works!			April 15,2012		
+Can now Read from file			April 20,2012		
+New function - concatenate added	April 22,2012		
+Mlang functions defined	   		April 27,2012		
+Can Write to file now			May 01,2012		
+Length, Last,nth, mapcar added		May 03,2012		
+Stdlib for Mlang created		May 03,2012	Function errors			May 04,2012
+New test added	 			May 03,2012		
+Update Makefile				May 03,2012	Make sure tests are added	May 06,2012
+Function equal				May 06,2012   	Breaks	  	    		May 03,2012
+Fix check.bash issues			May 03,2012					May 04,2012
+Implemented Ifelse, reduce		May 03,2012		
+Midge-Export added			May 04,2012		
+Added instruments to stdlib		May 04,2012
+More tests added with expected results	May 04,2012		
+reaper.mlang, paranoid.mlang pieces added	
+Mlang-mode for emacs added	    	May 05,2012		
+Warnings during compilation		May 01,2012					May 05,2012
+
+
+Git Project Log
+===============
+commit 60ac3effc7b8a1c5cf8a782339f961f0ca673fb3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun May 6 12:34:47 2012 -0400
+
+    Finished first draft of report.
+
+commit a22f91535ea9fbb6f579d9a47f41a2e2edb1770e
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun May 6 12:02:05 2012 -0400
+
+    Added architecure diagram.
+
+commit 7b58254c6f0e8bbe512078445e8000a591418def
+Merge: 6708e96 1005a44
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun May 6 11:29:27 2012 -0400
+
+    Merge branch 'report-br' into testing
+
+commit 1005a44536f917ee558d4fb0dbceefcd8704430f
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Sun May 6 04:55:01 2012 -0400
+
+    Final report draft
+
+commit 6708e96ee169b40c36bdf72e59f751ef797c0905
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 23:42:16 2012 -0400
+
+    Added stubs for some higher order functions.
+
+commit 061175bc692d300ce6e613b98d4b00d2328cfd44
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 22:27:50 2012 -0400
+
+    Fixed makefile. There is a directory named test that messes with
+    Make.
+
+commit 1f1b18880c31322872cf83fa4654416c97096c65
+Merge: 6368288 e6a60d7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 22:12:20 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit e6a60d71a28bff6925f3103a224a5ab4638c9008
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:07:55 2012 -0400
+
+    Removed the duplicate files in New\ folder/ from testingbranch
+
+commit 34f2669f73b6613166dc1cae0b84e23207413897
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:07:05 2012 -0400
+
+    Overwrote testing11/tests/ with files from New\ Folder/
+
+commit e1360de66125cf736b9451f0d3d9abea04aaace5
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:04:22 2012 -0400
+
+    Deleted duplicate test files from na-na's testingbranch
+
+commit b01bd8dc1dbbfab38535d2b27cad5440accf5ad3
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:03:20 2012 -0400
+
+    Added na-na's testing11/ files from testingbranch
+
+commit 8e49689cd16834854ac4448c350839dcb98cad24
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:02:17 2012 -0400
+
+    Added *.result files to .gitignore
+
+commit e3672d0cb1de9dfbd1be0a5b8e7674b69e4c62a1
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:00:31 2012 -0400
+
+    Added midi and midge files to .gitignore.
+
+commit f4fb9a2024dc5c983e0912ab21b62b084cc77eca
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:53:51 2012 -0400
+
+    Added more of na-na's testing files
+
+commit bdd1a702cac0e7edf76b810ab38ced27cc57a605
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:51:25 2012 -0400
+
+    Added na-na's testing11/10.test
+
+commit 997adf947b315e98d79b456edb8cae26611e1556
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:50:48 2012 -0400
+
+    Added .depend file from na-na's testingbranch
+
+commit 912090f96c7f7f4b223e5ea55e497f4caa4bb033
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:49:33 2012 -0400
+
+    Added happy.mlang from na-na's testbranchfixing
+
+commit 6368288e544ca2cb355f96e3f98939774d4328c7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 16:15:25 2012 -0400
+
+    Added initial version of my report in a text file.
+
+commit 4aad3fd6c4bf8bee60f13e025667769d57dbc0d6
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 17:53:02 2012 -0300
+
+    Hppy Birthday
+
+commit 69aa8ed7a968b7da342ed20ee6818b10c83896c4
+Merge: 842dc4c b5ab900
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 16:41:34 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit 842dc4c3a9efde1d916abb97b1036d35f7c72658
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 16:15:25 2012 -0400
+
+    Added initial version of my report in a text file.
+
+commit b5ab9001bad66d1ff63e4b0e29597a7dc862a173
+Author: tinkcode <sush.swami@gmail.com>
+Date:   Sat May 5 16:32:47 2012 -0300
+
+    Update mlang-mode-doc.txt
+
+commit 5c98d5e1ba1bb03eed462742204438f9c6b2b343
+Merge: 0bee0d7 b0f770b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 14:59:07 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit b0f770b56a51c367bc8dcae64c855c6d02f2a74d
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Sat May 5 13:40:42 2012 -0400
+
+    commands to add mlang-mode to emacs
+
+commit 048f27cda1666dcbff43871da22ca805e01882f3
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Sat May 5 13:31:28 2012 -0400
+
+    Mlang-mode for emacs
+
+commit 0bee0d76c999a4bb457b194055be299775ff3e2f
+Merge: 6f984e9 676aa43
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 12:10:42 2012 -0400
+
+    Merge branch 'testbranch' into testing
+
+commit 6f984e972825ee56a6b48484a942ab86995bca3b
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:23:12 2012 -0400
+
+    Added outline of fixed-point combinator; cannot be tested until make test is working
+
+commit 0a4b9c2f5138e717c2cc46d308b09289c57c56be
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:05:05 2012 -0400
+
+    Moved CONCATENATE definition to stdlib, where it belongs
+
+commit 5801978c0ed56ac40cd04d2c93ff23d00647d86e
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:02:29 2012 -0400
+
+    Removed unused variable warning
+
+commit f3705db73364512cf2d307458ca025b4d9e06238
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:01:55 2012 -0400
+
+    Removed non-exhaustive pattern matching error
+
+commit 0e231fa0d13c811469f12e02f1e566eabe4c5efd
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:51:37 2012 -0400
+
+    Moved definitions of FIRST and LAST into stdlib, where they belong
+
+commit 317dbfa9e018cc872e51e7bd381bc3871a13dbe8
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:37:36 2012 -0400
+
+    Removed test file that was only added to demonstrate git usage
+
+commit d1f3e0066cd202df6714efe24c58357bb2786bec
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:12:14 2012 -0400
+
+    Removed superfluous TODO file (git is not meant for issue tracking)
+
+commit 080bd893c0805bfe5510c023428c2399b4faab38
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:03:39 2012 -0400
+
+    Merged Reference.txt from reference_manual_draft branch
+
+commit bca5825a621517bdc01084f06a84d1a7e54e8ad8
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 01:48:42 2012 -0400
+
+    Rocking to some Black Sabbath...
+
+commit 676aa430209c13598e41b18827640b85275f911e
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 01:14:03 2012 -0400
+
+    Was working on Happy birthday.mlang
+    Isn't complete yet
+
+commit 4eb3d9a08427138f46ad3aa1c7d900296e25011f
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 01:08:43 2012 -0400
+
+    test files along with ther expected outputs
+
+commit 0edb95fd9457bc70c345a4bddd69adc6b0fde728
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 00:58:15 2012 -0400
+
+    testing myfile
+
+commit d9616efebc1b2718eaf2dde010ae113552365f57
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 00:00:21 2012 -0400
+
+    Added an ascend-descend function
+
+commit 9317b17383b890d236da64c4eaea9117fdc01a68
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:55:32 2012 -0400
+
+    Added some more tests.
+
+commit 2297a9fd9a1cd34d82927161aa50942c468abea0
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:30:58 2012 -0400
+
+    Fixed tests.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 144346c2b8599509bba03caff7494d2038ba499b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:14:40 2012 -0400
+
+    Added a TODO file
+
+commit ca6eb4822a13f65c90fb2724ba5616e8eab470d6
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:08:28 2012 -0400
+
+    Fixed stdlib.
+
+commit a35c4941ec989b4a7bac2c35fa4a2eb21445d185
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 21:27:50 2012 -0400
+
+    Added some more stdlib functions.
+
+commit ab15bd36deb077b6c42a64c4c08dc3a464b283c7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 22:56:17 2012 -0400
+
+    Added filename arg to MIDGE-EXPORT
+
+commit 9e30a5625ee9b0c723e70bb0f528a31ed4be24db
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 21:06:38 2012 -0400
+
+    Finished reaper.mlang
+    
+    Its really interesting that midge does not have a proper patch for
+    drums. The whole thing is one giant hack.
+
+commit 41a47146e37f2922186dcc7959ec79d7799d3fa6
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 19:57:50 2012 -0400
+
+    Added instruments in stdlib.
+
+commit 728e971b34da6bd7aa0e959c8b2478b16b75f1a7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 18:59:33 2012 -0400
+
+    First step at adding midge support for chords. The midge printer
+    will need to be restructured a bit it seems...
+
+commit 8b445cead7ade7065991002f07b6c414ec5fe53f
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 18:02:18 2012 -0400
+
+    MIDGE-EXPORT will croak if unevaluated expressions are passed to
+    it. So we explicitly evaluate it before doing anything.
+    
+    See reaper.mlang for a mlang stdlib function in action.
+
+commit 2663f7b7ebc7b8a8fa02b7fb196d85b97f3bccdd
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 17:02:12 2012 -0400
+
+    Added reaper.mlang
+    
+    Load up mlang repl and type
+    > (READ-FILE reaper.mlang)
+    
+    Go back to the terminal and type
+    
+    Enjoy!
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 24c15edbc8eb08af82b5378d86ae17d3e89458da
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 16:28:55 2012 -0400
+
+    Added SETCAR and SETCDR
+
+commit 07035b8fef44ebe4be316e72c2f568b2b05e3057
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 16:27:00 2012 -0400
+
+    Added some more mlang functions.
+
+commit 8ac1c8dbd31d607bfb8f085b7c77f6c43d9d48c3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 14:45:11 2012 -0400
+
+    Created complete end-to-end prototype. Keyword is MIDGE-EXPORT.
+    
+    See reaper.mlang for an example.
+
+commit 2dd1947088a2c892edd31149d0c5cf4759692458
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 23:23:52 2012 -0400
+
+    Made pattern matching of REDUCE more comprehensive.
+
+commit f0df46e092284147e828936c3440f245613e4eee
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 23:08:37 2012 -0400
+
+    Implemented REDUCE.
+    
+    > (LABEL GG (LAMBDA (X Y) (X Y X)))
+    > (REDUCE GG (A B C) D)
+    (((D A D) B (D A D)) C ((D A D) B (D A D)))
+    > (REDUCE GG (A) B)
+    (B A B)
+    > (REDUCE GG (A B) C)
+    ((C A C) B (C A C))
+    
+    I am not sure if this is canonical or not, but it has semantics
+    similar to fold_left
+
+commit 1003a78d9961825c28ddda13b5a83ace0362bf51
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 22:18:44 2012 -0400
+
+    Implemented IFELSE
+
+commit 76ed49820307c724ff3d3bd804224d1163365fcb
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 22:08:16 2012 -0400
+
+    Added notes for 4 octaves and rest of 4 and 8 in the stdlib
+
+commit 84b2e173d43a01e312d3ff071fbd5e9c02d642c3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 21:46:42 2012 -0400
+
+    Fixed EQUAL so that it addresses Aditya's concerns.
+
+commit 0d92c5dc70cbe69a4d07d287f682084cea9c5f4a
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 21:27:42 2012 -0400
+
+    Added REVERSE. I strongly hold that certain functions should be
+    built in for performance reasons. We are implementing a homoiconic
+    language for music, not a general purpose homoiconic language.
+    
+    No functions to manipulate music will be written in Ocaml.
+
+commit 916d74c47eeecc777187a35a1d48b2bc8375a7ac
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 20:36:56 2012 -0400
+
+    Added a COMBINE function. Could be useful when sorting out variable
+    bindings.
+
+commit 5668d700d905b74de1ced564d6000a3eb255a10b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 16:09:11 2012 -0400
+
+    Readfile is broken. Only reads one mexp at a time. Also we have
+    implemented TRANSPOSEDOWN.
+
+commit bf898f08655b6817ed9397f418524fb2cc7e2dd6
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 16:04:34 2012 -0400
+
+    We no longer wrap around the octave on transpose
+
+commit 0ab307c9ec216f1ea0e50555d09c71e944e709ee
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 15:53:29 2012 -0400
+
+    Added a stdlib for mlang programs. The first mlang function we did
+    is the transpose function.
+    
+    > (LABEL TRANSPOSE
+           (LAMBDA (X)
+                   (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) C+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) C+) ((CAR X) D (LAST X)))
+                         ((EQUAL (CAR (CDR X)) D) ((CAR X) D+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) D+) ((CAR X) E (LAST X)))
+                         ((EQUAL (CAR (CDR X)) E) ((CAR X) F (LAST X)))
+                         ((EQUAL (CAR (CDR X)) F) ((CAR X) F+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) F+) ((CAR X) G (LAST X)))
+                         ((EQUAL (CAR (CDR X)) G) ((CAR X) G+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) G+) ((CAR X) A (LAST X)))
+                         ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
+                         ((EQUAL (CAR (CDR X)) B) ((CAR X) C (LAST X)))
+                         )
+                   )
+           )
+    > (TRANSPOSE (4 D 3))
+    (4 D+ 3)
+    > (MAPCAR TRANSPOSE ((4 A 3) (4 B 3) (4 C 3)))
+    ((4 A+ 3) (4 C 3) (4 C+ 3))
+
+commit 0b1e190d8dd9c7645978bbc4b5a0294ed5ce6767
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 14:20:43 2012 -0400
+
+    Length now returns an mexp.
+
+commit a5da8b7786c8f56f8910f2861be17f013d0bc9cd
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 14:14:03 2012 -0400
+
+    Added MAPCAR.
+
+commit 45b4520919d2a876cc3ee3ed1c2eccce25e99a8c
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 12:59:14 2012 -0400
+
+    Added "LAST" function.
+
+commit ca1ca367540509fc839212eeb4662cab5a198bef
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 12:48:56 2012 -0400
+
+    Added the NTH function. This allows us to get the "NTH" atom.
+
+commit 2026f82977d94341a9b219dea7bf34b967a52063
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 00:48:11 2012 -0400
+
+    Added LENGTH keyword. Returns the length of an mexp.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 77f2d8814965275f821ca03e630023183ab6fe5d
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Wed May 2 02:59:34 2012 -0400
+
+    Read & Write to file
+
+commit 0b991001981c74f606c8859b977ad423c9422832
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Wed May 2 02:58:50 2012 -0400
+
+    Read & Write to file
+
+commit 4bab7897c8a44d93dae3eb7e2c5ad5206fdddfbd
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri Apr 27 14:43:19 2012 -0400
+
+    Fixed concatenate.mlang
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 211d952210c862314a086e541849e2d2332a8b33
+Merge: 9ce1ce3 e643597
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri Apr 27 14:41:22 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit 9ce1ce33f9aaba7f92dbfb08a93913b67003a967
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri Apr 27 14:40:27 2012 -0400
+
+    Fixed pretty print so that we actually generate well formed mexps.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit e64359793d930c0c559b1e38ca76338d45c27d4f
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Fri Apr 27 06:35:51 2012 -0400
+
+    check this version for testing labe, and thereafters
+
+commit f1b3256a5434150eca5abe03c696ef7733a16577
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Wed Apr 25 22:19:37 2012 -0400
+
+    defined some mlang functions
+
+commit ce748ca0aec60fc3cf9f91ff5b41c3652acf0356
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Wed Apr 25 19:28:47 2012 -0300
+
+    include test for null
+
+commit ead81c384b7745a9de8bb1595d31dc403abad1e5
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Wed Apr 25 18:23:09 2012 -0400
+
+    Concatenate function in MLang. Havent tested yet.
+
+commit 040681eec6e603dc7263b3a1bcbd247018a3ec60
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Apr 22 13:04:04 2012 -0400
+
+    Merge branch 'testing', remote-tracking branch 'github/testing' into testing
+
+commit cc551896e7dbf5c1e6c46b4feed950f0a244be94
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Fri Apr 20 19:48:38 2012 -0400
+
+    text file
+
+commit d0dab9b94b5f7be9ce747cf1abe0e77e50af52f2
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Fri Apr 20 19:45:00 2012 -0400
+
+    made changes to what aditya had written.
+
+commit 476e0c13756065de2e12a6e13fed69bc948a7dc9
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Fri Apr 20 14:18:03 2012 -0400
+
+    Read from file: Function def
+
+commit c104277beba6d878fe9bf4fc866bf17fab0dae4d
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Fri Apr 20 14:15:18 2012 -0400
+
+    Read from file: FILE label
+
+commit 45d3aa40e1aa84af219420d4a18986a6b6b0fe09
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Fri Apr 20 14:12:30 2012 -0400
+
+    Read from file: Accept extns
+
+commit 7dd583d63709b521929636fd72724c1b3ca6cf9d
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Apr 15 20:55:15 2012 -0400
+
+    We can now parse sharps and flats
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 3e24410fa8f1c81c275410b743d9a022dfefc0b4
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Apr 15 20:44:07 2012 -0400
+
+    Hello world works!
+    
+    On repl, do this
+    
+    (c d e f g a b)
+    
+    This will play on electric bass, at a tempo of 120, quarter notes
+    of the C major scale.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 9eda081403138dc0a2e76666b242da3d3139dd19
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Apr 15 17:16:41 2012 -0400
+
+    Added changes to makefile to include Midge
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 14560777f1dc3878df6d35c339a19ca128484811
+Merge: eb69b05 ea9f56a
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat Apr 14 21:17:04 2012 -0400
+
+    Merge branch 'mlang-backend' into testing
+
+commit ea9f56a2f2c63d622fa8e35ee8fb636e16abc65b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat Apr 14 19:52:20 2012 -0400
+
+    Made note a bit more descriptive.
+    
+    (4,"e",3);(4,"f",3);(4,"g",3);(4,"a",3);(4,"b",3);(4,"c",3)])];;
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit fff4caa5b244928724e95095bb00f5523e4dbdf3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat Apr 14 19:31:03 2012 -0400
+
+    Midge output complete. Given a data structure we can output it
+    to a file.
+    
+    Example:
+    
+    "a";"b"])];;
+    - : unit = ()
+    
+    This produces a soundtrack that plays the scale of C major, 3rd
+    octave using a bass guitar.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 561ef1e761509cd20d87f11beb2137de6c971cb5
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Tue Apr 10 22:12:30 2012 -0400
+
+    Added some helper functions.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+
+
+commit bcf54abe677cfaac8a88f86f20146490f7221ca3
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Mon Apr 9 17:18:30 2012 -0400
+
+    Compiled Java Program
+
+commit 6603ac84223f5d8b4d3c1a19985b1600aa36ce02
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Mon Apr 9 17:08:54 2012 -0400
+
+    Main with print to file
+
+commit b711e828418b10826e4a18005901c82988b58698
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Mon Apr 9 17:08:16 2012 -0400
+
+    Lexer with Play label
+
+commit 3044fae6547533b5c45fb9e523805e398f5c57ba
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Mon Apr 9 17:07:32 2012 -0400
+
+    New write to file func
+
+commit 83b0baee1d0f6d3115a7e5bb65039053d2f286e2
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Mon Apr 9 17:05:47 2012 -0400
+
+    Modified Makefile
+
+commit d329e9287e8117c14c7b5d13b7c363a183cecbd0
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Mon Apr 9 17:01:47 2012 -0400
+
+    Java Code for Piano music
+
+commit 361746bb7f49b300f62bf539dbc1457c3fdaf2bf
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Mon Apr 9 15:37:44 2012 -0400
+
+    A simple data structure to represent what a midge file would
+    look like.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+
+commit eb69b05db494cfbde43419abc4a0204e853583ff
+Author: Nikhil Sarda <diff.operator@gmail.com>
+Date:   Mon Apr 2 20:49:13 2012 -0300
+
+    Fixed spelling
+
+commit ba02559db2f012c45c731b3854c473a370e3172b
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Mon Apr 2 02:00:52 2012 -0400
+
+    Grammar for MLang. v1
+
+commit 91f089fc1b00d51b78180282f1fdbf6a465b08a3
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Mon Apr 2 01:28:20 2012 -0400
+
+    test123
+
+commit 14237d36a5ae1fe02356013c1b7534657647f9e3
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Apr 2 00:19:47 2012 -0400
+
+    Fixed typographical error in mozart-form function call
+    
+    * There was an erroneous -phrases statement
+
+commit f7aad7f9d0cfd4760e1bff6cb42c0be740703f80
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Apr 1 21:21:38 2012 -0400
+
+    Added sample program that demonstrates MLang's homoiconicity.
+
+commit b0ea4467bb3163f848924e32b4a2c6cfd877bb0a
+Merge: 08d1372 c2f0888
+Author: aditya <dev@chimeracoder.net>
+Date:   Fri Mar 23 01:25:54 2012 -0400
+
+    Merge branch 'master' into testing
+
+commit c2f088874d6d939c91e0cdff292c445b7b1a0ab5
+Author: aditya <dev@chimeracoder.net>
+Date:   Fri Mar 23 01:25:42 2012 -0400
+
+    Updated git_practices.markdown
+
+commit 08d13723f639e1749858dbd716294997f26ad8d1
+Author: aditya <dev@chimeracoder.net>
+Date:   Fri Mar 23 01:23:26 2012 -0400
+
+    Merged Language-Tutorial into testing
+
+commit 40178fd14522ff85776f3e57c4935359d0322bd6
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Thu Mar 22 15:36:10 2012 -0400
+
+    Updated : Language Tutorial
+
+commit 6435895a139feb3ff1ff361bc86f52f6c36a9530
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Thu Mar 22 04:08:58 2012 -0400
+
+    Updated: Language Tutorial - Rough
+
+commit b2844d38df02a16dc763f942405edd0ee9e52255
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Wed Mar 21 13:59:12 2012 -0400
+
+    Updated: Reference Manual
+
+commit 538c93be9cfcf6d3ddb1d8a205451598afa4ad42
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 03:02:09 2012 -0400
+
+    Added lambda/note definitions of 0, 1, and the successor function
+
+commit 50fef0c702f50cb29ef0507c0926316494b5252e
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:38:54 2012 -0400
+
+    Added explanation of why fn_equal is partly broken
+
+commit 4748785543ea141cb5c124ee36728aa2f7a37cfb
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:36:10 2012 -0400
+
+    Defined standard extensions for TRUE/FALSE/IFELSE
+    
+    * Also provided explanation of currying in Lisp, with examples
+
+commit 7bfb9aac2f9bbe15573ed3f5d001cdf10c85c043
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:35:41 2012 -0400
+
+    Added more informative error messages to mexp definitions
+
+commit 88b689cd547ea5893ebba111e366602b536074a4
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:35:21 2012 -0400
+
+    Added LABEL statement to main.ml
+
+commit 57b4efd6676813e41fc14a118413e3d37198565a
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:33:55 2012 -0400
+
+    Created separate file for standard functions defined in pure MLang
+
+commit 6fe4da674d676713c83783fb72c614816a56d078
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 01:24:36 2012 -0400
+
+    Fixed LABEL test
+
+commit 650333b24d2a7431ba11f199fa70255350c829f5
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:29:25 2012 -0400
+
+    Added cdr and (car (cdr .)) regression tests
+
+commit ec45acdcb34c4617ab6270707a064336b247917c
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:11:58 2012 -0400
+
+    Added whitepaper to repository
+
+commit a57aba9ff04148834181393aef56ec9f50ecb81f
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:17:20 2012 -0400
+
+    Added TeX auxiliary files (and Vim swapfiles) to .gitignore
+
+commit 161e51a221eb585ff83c6ac6c9050b24da8853c0
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:17:20 2012 -0400
+
+    Added TeX auxiliary files (and Vim swapfiles) to .gitignore
+
+commit 8d31eef73266c3010adde094e13420a537f5e297
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:11:58 2012 -0400
+
+    Added whitepaper to repository
+
+commit 29d023e928f249ae6bcdef0c87b997ccb8833d85
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:06:25 2012 -0400
+
+    Added comments to test_repl_input
+
+commit fc3376a81f9954efcb2babdb2d509a7ec12cd3f4
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Mar 18 23:52:44 2012 -0400
+
+    Added the test_repl_input file to the repository
+
+commit 59281194747be90ba3c7bfad86ae958fb5c574ee
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Mar 18 23:43:33 2012 -0400
+
+    Added testing function to Makefile ('make test')
+
+commit b6be135a6c2f02d76011ffe4cefc3f1532177e58
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Mar 18 23:31:31 2012 -0400
+
+    Created a simple REPL input-output bash script
+
+commit 05f0f70f90f34870792d5123b8bd7286eb13048b
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Wed Mar 14 21:08:50 2012 -0400
+
+    Added some midge specific keywords. Will need to fill up later.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit cabf26aac7422f4413650e2ca81cb8ab947ca309
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Tue Mar 13 19:56:07 2012 -0400
+
+    Fixed some build errors. Added Makefile
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit b1a9926020a37c1853c7cb5b4f774302302178e7
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:43:16 2012 -0500
+
+    Added repl
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit ca04e4f7a6c34236995badba645e5399e5210575
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:38:25 2012 -0500
+
+    Added some native language features.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 3570163aaa3113bbf2b22b64f2c851e5b6a0bb7c
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:32:06 2012 -0500
+
+    Added symbol table
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 3da76b1372ad943657a26d5025ca5bb696dfff84
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:31:47 2012 -0500
+
+    Added Mexp definition
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit e04ee75c018e8d467db57934a6f8b5703537d0c3
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 5 14:08:40 2012 +0800
+
+    Added lexer and parser for a very basic Lisp-ish like syntax.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 5c98a95f16ce77f1193427b7fd1e9128561f9c10
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 5 13:25:36 2012 +0800
+
+    First commit.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 2c594056a7fdac8aa5fb640937b3277e5c42d6c0
+Author: Aditya Mukerjee <chimeracoder@gmail.com>
+Date:   Thu Mar 8 01:43:57 2012 -0500
+
+    Specified CLISP as LISP interpreter in parsing example.
+
+commit 02dfb1021af3690af5d16236747fe0001e94b4b2
+Author: aditya <dev@chimeracoder.net>
+Date:   Thu Mar 8 01:42:30 2012 -0500
+
+    Added parsing process description
+
+commit dc28c5dfe6aef63188b8ef596c1f8a9435604828
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:50:33 2012 -0500
+
+    Added the MIDI backend (courtsey Neil Burroughs)
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit fbb53ea24a3d43a7ff0706399ce5d94f1eb5b7bf
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Feb 12 22:01:38 2012 -0500
+
+    Fixed definition for a trill
+
+commit a85d830aa4b28ab39455d788df154793c2b0aba4
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Feb 12 21:57:36 2012 -0500
+
+    Created Markdown file describing datatypes to be implemented
+
+commit 964dcbea04a230f7378a1cbe57c3f6f2597a1c5b
+Author: Aditya Mukerjee <chimeracoder@gmail.com>
+Date:   Mon Feb 6 18:59:06 2012 -0500
+
+    Updated guide with explanation of git paradigm (including branching)
+
+commit afd4be0e9932f406f29795cf429225b4024a2c56
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 5 13:25:36 2012 +0800
+
+    First commit.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit cf39915cd41f24a7f1ba8b85847ccf984c6b35b8
+Author: aditya <dev@chimeracoder.net>
+Date:   Tue Jan 31 12:49:56 2012 -0500
+
+    Fixed formatting/intro.
+
+commit ec2000f8e91e96b2bc4f046c6a2fd1400ff920a7
+Author: aditya <dev@chimeracoder.net>
+Date:   Tue Jan 31 12:48:06 2012 -0500
+
+    Fixed formatting of intro
+
+commit 52b1f1a8966b353ec6faf0ecc1be42cd50dcc4a1
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 22:42:01 2012 -0500
+
+    Created a test file to push to testing.
+
+commit 05055043c55426d37ab52f195dcd6ed99ca37cfa
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 21:46:38 2012 -0500
+
+    Made some changes to the markdown formatting
+
+commit 09943b631a687fb0486b2ac2b45200a8fc5dcbee
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 21:39:13 2012 -0500
+
+    Added git best-practices style guide
+
+commit d7a44bf3535257f9e4005b8d1e1b1b3e72a134a2
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 20:50:32 2012 -0500
+
+    First commit
+
+
+
+6. Translator Architecture (Nikhil Sarda, System Architect)
+============================================================
+
+Architecture
+============
+
+#Put ArchitectureDiagram.jpeg here
+
+The above is a high-level overview of the architecture of the MLang compilation process. The mlang program goes through the lexer and parser that
+generate an ML representation of a m-expression. This representation is then evaluated and processed into an m-expression that can be understood
+by the Midge backend. If at this point definitions present in the standard library are needed, they are loaded as well.
+We have defined some in built functions as well as several functions written in MLang itself. Functions written in OCaml were done so in order to
+take advantage of tail-call optimization and other performance reasons. However, keeping in line with the design goal of MLang as a homoiconic
+music language, NO music specific function was written in OCaml. M-expression evaluation is quite straightforward. As we walk the AST, we pattern-
+match specific m-expression forms. For instance, if we encounter an atom, we check it against a hash-table that represents all the environment
+variables and their respective mexpression bindings. If a binding exists, it is replaced in place of that atom and evaluated with the rest of the
+m-expression treated as arguments. If not, we move on to the next m-expression. Forms such as lambdas and function calls are evaluated similarly.
+The backend then generates intermediate .mg files which is then converted to MIDI. If a MIDI synthesizer is present on the system, it can be played 
+with any conventional player.
+
+Interesting technical notes
+===========================
+
+MLang has no side-effects. The only IO it can do is through the READ-FILE, WRITE-FILE and EXPORT-MIDGE keywords. This functionality piggy-backs on
+OCaml.
+
+Evaluation in MLang is eager.
+
+Garbage collection in MLang piggy-backs on the OCaml run-time.
+
+Module Contributions
+====================
+
+Nikhil Sarda: Lexer, parser, most of the interpreter/evaluator, midge backend, most of the standard library.
+Sushmita Swaminathan: READ-FILE, WRITE-FILE function
+Aditya Mukherjee: Fixed-point combinator, fixes to the interpreter, some standard library functions
+
+
+
+7. Development and run-time environment (Nikhil Sarda)
+======================================================
+
+Environment
+===========
+
+We used OCaml for all our development purposes. The compiler used was The Objective Caml toplevel, version 3.12.1 along with the Batteries Included
+standard library. We used GNU Make for our build process after evaluating and rejecting OCamlBuild. Shell scripts were used as glue.
+For most editing tasks, we used vim and emacs. Keeping in line with our preferences for extensible and fast editors instead of full
+blown IDEs, we developed an emacs-mode for MLang as well. For version control, we used Git. This allowed us to work with multiple branches in a
+completely distributed manner and allowed for easy merging when we needed to integrate the various components that different people were working on.
+We used Github for source code hosting as well as for issue tracking. Email was used extensively for technical discussions.
+
+Makefile
+=========
+
+a) Makefile
+
+OCAMLC=ocamlc
+OCAMLOPT=ocamlopt
+OCAMLDEP=ocamldep
+INCLUDES=
+OCAMLFLAGS=$(INCLUDES) -g
+OCAMLOPTFLAGS=$(INCLUDES)
+
+MAIN_OBJS=mexp.cmo midge.cmo parser.cmo lexer.cmo symtab.cmo environment.cmo builtins.cmo main.cmo
+
+mlang: .depend $(MAIN_OBJS)
+	$(OCAMLC) -o mlang $(OCAMLFLAGS) $(MAIN_OBJS)
+
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .mll .mly
+
+.mll.ml:
+	ocamllex $<
+.mly.ml:
+	ocamlyacc $<
+.ml.cmo:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.mli.cmi:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.ml.cmx:
+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
+
+testmlang: $(MLANG)
+	./run_test.sh test_repl_input.txt
+
+clean:
+	rm -f mlang
+	rm -f *~
+	rm -f *.cm[iox]
+	rm -f parser.ml parser.mli
+	rm -f lexer.ml
+
+parser.cmo : parser.cmi
+parser.mli : parser.mly
+parser.ml : parser.mly
+
+
+.depend:
+	$(OCAMLDEP) $(INCLUDES) *.mli *.ml *.mly *.mll > .depend
+
+include .depend
+
+b) .depend
+
+builtins.cmo: symtab.cmo mexp.cmo environment.cmo midge.cmo
+builtins.cmx: symtab.cmx mexp.cmx environment.cmx midge.cmx
+environment.cmo: mexp.cmo
+environment.cmx: mexp.cmx
+main.cmo: symtab.cmo mexp.cmo environment.cmo builtins.cmo midge.cmo
+main.cmx: symtab.cmx mexp.cmx environment.cmx builtins.cmx midge.cmx
+midge.cmo: mexp.cmo
+midge.cmx: mexp.cmx
+mexp.cmo:
+mexp.cmx:
+symtab.cmo: mexp.cmo
+symtab.cmx: mexp.cmx
+
+c) run_test.sh
+
+#! /bin/sh
+
+#A very basic, very hacky unit testing framework
+
+filename=$1
+
+repl_test()
+{
+    failed=0
+    echo "Begin tests"
+    while read p; do
+        mlang_input=$(echo $p | cut -d '|' -f1)
+        mlang_output=$(echo $mlang_input | ./mlang  | cut -b 1-2 --complement | head -n 1| sed 's/^ *//g' | sed 's/ *$//g')
+        desired_ouput=$(echo $p | cut -d '|' -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        if [ "$mlang_output" = "$desired_ouput" ]
+        then
+            echo ".............passed $p"
+        else
+            echo "!FAILED: $mlang_input produced $mlang_output instead of $desired_ouput"
+            failed=`expr $failed + 1`
+        fi
+    done < $filename
+    exit $failed
+    
+}
+
+repl_test $filename
+
+Run-time Environment
+====================
+
+Instead of creating a separate compiler, we leveraged the REPL to act as a compiler. This was accomplished by adding a keyword MIDGE-EXPORT, which
+creates the respective .mg file. We then post-process it using midge and run it with our music player of choice. For instance, if you wished to
+compile a .mlang program, you would write
+
+# ./mlang < my-program.mlang && midge my-program.mg && banshee my-program.mid
+
+To simplify this, we created a small shell script called mlangc which does all of this automatically.
+
+Please note that in order to run an mlang program, the user must install Midge as well as a MIDI synthesizer. Midge has a further dependency on
+Perl.
+
+
+#Test Plan(System Tester, Nishtha Agarwal)
+
+
+#Testing MLang Constructs: UNIT AND REGRESSION TESTS
+
+Since MLang depends heavily upon lambda expressions (S-exp that is), the basic test consisted of creating a list:
+
+	(LABEL FOO (CONS A B))
+
+Once a list is successfully created, tests on these lists were carried out. While most of the functions like CAR and CDR work in a similar fashion as that of LISP, many other were defined using LABEL.
+
+	(LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))
+
+The built-in functions are defined in OCaml, the language of the compiler. OCaml being a functional language, the task of testing the functions thus defined was to check if the given expressions evaluate to a correct S-exp.
+
+1. A Simple Example:
+
+	(quote(a d d f))
+ evaluates to (a d d f)
+
+
+2. Moving on, the power of MLang lies in the nesting of functions i.e. an entire program can be written as just a single function!
+To test this, a not-so-basic example involving the concept of functions-of-function:
+
+	(quote (a b c (cdr (a b c))))
+ evaluates to (a b c (b c))
+
+
+3. Testing the conditional constructs:
+
+	((LABEL TRANSPOSE
+      (LAMBDA (X)
+              (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) C+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) C+) ((CAR X) D (LAST X)))
+                    ((EQUAL (CAR (CDR X)) D) ((CAR X) D+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) D+) ((CAR X) E (LAST X)))
+                    ((EQUAL (CAR (CDR X)) E) ((CAR X) F (LAST X)))
+                    ((EQUAL (CAR (CDR X)) F) ((CAR X) F+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) F+) ((CAR X) G (LAST X)))
+                    ((EQUAL (CAR (CDR X)) G) ((CAR X) G+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) G+) ((CAR X) A (LAST X)))
+                    ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
+                    ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
+                    ((EQUAL (CAR (CDR X)) B) ((CAR X) C (LAST X)))
+                    )
+              )
+      )
+
+4. A very important and useful functionality was added in terms of reading frm a file and writing to a file. This was required as we want to execute a program directly from a file.
+
+The simple program statements:
+
+	 (READ-FILE abc.mlang) 
+	 (WRITE-FILE xyz.mlang (quote (a b c))) 
+
+were tested and work wonders!
+
+5. Since MLang deals with music notes in terms of lists, the note manipulation (and hence, the list manipulation) functions were introduced and tested. 
+A few examples:
+
+	(CONCAT (A S D) (A D))
+
+	(NTH 2 (A D F))
+	(REVERSE (CDR (A S D F)))
+
+
+6. The special function MIDGE-EXPORT enables the user to save the midge specification of the evaluated expression to a file.
+
+MLang consists of the following builtin functionalities:
+
+1. QUOTE
+2. CAR
+3. CDR
+4, SETCAR
+5. SETCDR
+6. CONS
+7. EQUAL
+8. ATOM
+9. COND
+10. IFELSE
+11. LAMBDA
+12. LABEL
+13. READ-FILE
+14. WRITE-FILE
+15. LENGTH
+16. NTH
+17. LAST
+18. MAPCAR
+19. REDUCE
+20. INC
+21. DEC
+22. COMBINE
+23. REVERSE
+24. CONCAT
+25. MIDGE-EXPORT
+
+A total of 34 test cases in MLang were written and tested using a bash script, testfile.bash. Each test case has an expected output against which the result produced is tested. The test cases are simple and independent to ensure correctness. 
+
+#PLAYING MUSIC
+
+MLang aims at producing music. The test cases involved writing simple songs like 'Happy Birthday.mlang' which is played on a Piano
+		
+		(
+		(READ-FILE stdlib.mlang)
+		(label head (42 4 4))
+		(label phrase1 ((3 d 16) (3 d 16) (3 e 8) (3 d 8) (3 g 8) (3 f+ 4)
+		(3 d 16) (3 d 16) (3 e 8) (3 d 8) (3 a 8) (3 g 4)
+		(3 d 16) (3 d 16) (3 d 8) (3 b 8) (3 g 8) (3 f+ 8) (3 e 4)		
+		(3 c 16) (3 c 16) (3 b 8) (3 g 8) (3 a 8) (3 g 4)))
+		(label channel1 (1 96 1 phrase1))
+		(MIDGE-EXPORT happy.mg (head (channel1)))
+		)
+
+More complex songs involving a number of instruments were also added by Nikhil. Given below is an MLang program for 'The Reaper'
+
+	(
+	(READ-FILE stdlib.mlang)
+	(LABEL HEAD (69 4 4))
+	(LABEL PHRASE1
+		((3 B 16) (4 F+ 16) (3 B 16) (3 A 8) (4 E 16) (4 A 16) (4 E 16) (3 G 16) (4 D 16) (3 A 8) (4 E 16) (3 A 8) (4 E 16)))
+
+	(LABEL BASSPHRASE
+		(CONCAT (REPEAT4 (3 B 16)) (REPEAT4 (3 A 16)) (REPEAT4 (3 G 16)) (REPEAT4 (3 A 16))))
+
+	(LABEL DRUMPHRASE
+		((3 C 16) (3 C 16) (3 D 16) (3 C 16)))
+
+	(LABEL CHANNEL1
+		(GUITAR_DIST 90 12 PHRASE1))
+
+	(LABEL CHANNEL2
+		(BASS_AC 127 12 BASSPHRASE))
+
+	(LABEL CHANNEL3
+		(DRUM_STEEL 127 48 DRUMPHRASE))
+
+	(MIDGE-EXPORT REAPER.MG (HEAD (CHANNEL1 CHANNEL2)))
+)
+
+
+And yes, the best judge of the correctness of these songs were ofcourse, our ears!
+
+
+#Conclusions
+
+#Lessons learned as a team
+1. Having a clear project plan charted out is essential to the successful completion of a project
+
+#Lessons Learnt - Sushmita Swaminathan, Project Manager
+1. Identify the team's strength's and weaknesses early. Work on improving the strengths and reducing the weaknesses.
+2. Make an early start on the learning for the project. Later always means harder.
+3. Keep track of all the modifications in the project and ensure that these are communicated to the entire team
+4. Have fun learning. Learn from mistakes and grow through the project.
+
+#Lessons Learnt - Nishtha Agarwal, System Tester
+
+1. Simple tests lead way to writing more complicated test cases. 
+2. It is always better to have prior experience in the language being used for implementation.
+3. Regular team meetings are a great way to learn and contribute to the project.
+4. Starting with the simple. Rather than having too much in your hand and trying to do all-at-once, step-by-step is a good way to improvise. 
+
+
+#Advice for future teams
+
+#Suggestions on topics
+
+#Appendix
+
+##Lexer.mll - Code by Nikhil Sarda, Modifications by Sushmita Swaminathan
+<code>
+{
+  open Parser
+  exception Eof
+
+  (*let keyword_table = Hashtbl.create 53
+  let _ = List.iter (fun (k, v) -> Hashtbl.add keyword_table k v)
+              [
+		"add", KW1;
+                "keyword", KW2;
+                "here", KW3
+	      ]*)
+}
+
+let alpha = ['A'-'z' '0'-'9' '*' '+' '-']+
+let ident = alpha+ (alpha | ['_' '$'])*
+
+rule token = parse
+    [' ' '\t' '\n']                  { token lexbuf }
+    | '('                            { LPAREN }
+    | ')'                            { RPAREN }
+    | ';' [^ '\n']*                  { token lexbuf } (* comments *)
+    | alpha                          { NAME(Lexing.lexeme lexbuf) }
+    | alpha '.' alpha 		     { NAME(Lexing.lexeme lexbuf) }
+    | eof                            { raise Eof }
+
+##parser.mly - Code by Nikhil Sarda
+
+%token <string> NAME
+%token LPAREN RPAREN EOF EOL
+%start main
+%type <Mexp.t> main
+
+%%
+
+main:
+  mexp                               { $1 }
+  ;
+
+mexp:
+  list                               { $1 }
+| atom                               { $1 }
+;
+
+list:
+  LPAREN RPAREN                      { Mexp.Null }
+| LPAREN list_contents RPAREN        { $2 }
+
+list_contents:
+  | mexp                             { Mexp.cons $1 Mexp.Null }
+  | mexp list_contents               { Mexp.cons $1 $2 }
+;
+
+atom:
+  NAME                               { Mexp.Atom $1 }
+;
+
+</code>
+
+
+##builtins.ml Aditya Mukerjee, Nikhil Sarda, Sushmita Swaminathan
+<code>
+open Mexp
+open Environment
+open Midge
+
+let tee = (Atom "#T")
+
+let nil = cons Null Null
+
+let fn_car args _ = car (car args)
+
+let fn_cdr args _ = cdr (car args)
+
+let fn_quote args _ = car args
+
+let fn_cons args _ =
+  let lst = cons (car args) Null in
+
+  let rec loop a =
+    match a with
+        Cons (_) ->
+          begin
+            append lst (car a) ;
+            loop (cdr a)
+          end
+    | _ -> lst
+  in
+    loop (car (cdr args))
+
+let fn_setcar args _ =
+  let first = car args in
+  let second = car (cdr args) in
+    (match first with
+         Cons (c) ->
+           c.car <- second
+    | _ -> invalid_arg "First argument to setcar must be a Cons") ;
+    tee
+
+let fn_setcdr args _ =
+  let first = car args in
+  let second = car (cdr args) in
+    (match first with
+        Cons (c) ->
+          c.cdr <- second
+    | _ -> invalid_arg "First argument to setcdr must be a Cons") ;
+    tee
+   
+let fn_atom args _ =
+  match (car args) with
+      Atom (_) -> tee
+  | _ -> nil
+
+let fn_inc args _ =
+  Atom (string_of_int (int_of_mexp (car args) + 1))
+
+let fn_dec args _ =
+  Atom (string_of_int (int_of_mexp (car args) - 1))
+
+let rec fn_lambda args env =
+  let lambda = (car args) in
+  let rest = (cdr args) in
+    match lambda with
+        Lambda (largs, lmexp) ->
+          let lst = interleave largs rest in
+          let mexp = replace_atom lmexp lst in
+            eval mexp env
+    | _ -> invalid_arg "Argument to lambda must be a Lambda"
+and eval mexp env =
+  match mexp with
+      Null -> nil
+  | Cons (_) ->
+        (match (car mexp) with
+             Atom ("LAMBDA") ->
+               let largs = car (cdr mexp) in
+               let lmexp = car (cdr (cdr mexp)) in
+                 Lambda (largs, lmexp)
+        | _ ->
+               let acc = cons (eval (car mexp) env) Null in
+               let rec loop s =
+                 match s with
+                     Cons (_) ->
+                       append acc (eval (car s) env) ;
+                       loop (cdr s)
+                 | _ -> ()
+               in
+                 loop (cdr mexp) ;
+                 eval_fn acc env)
+  | _ ->
+        let v = Symtab.lookup env (name mexp) in
+          match v with
+              Null -> mexp
+	  | Lambda (_) ->
+	      v
+          | _ -> v
+              
+and eval_fn mexp env =
+  let symbol = car mexp in
+  let args = cdr mexp in
+    match symbol with
+        Lambda (_) ->
+          fn_lambda mexp env
+    | Func (fn) ->
+          (fn args env)
+    | _ -> mexp
+
+let fn_equal args env =
+  let first = car args in
+  let second = car (cdr args) in
+    if (name (eval first env)) = (name (eval second env)) then
+      tee
+    else
+        nil
+
+let fn_cond args env =
+  let rec loop a =
+    match a with
+        Cons (_) ->
+          begin
+            let lst = car a in
+            let pred = (if (car lst) != nil then
+                          eval (car lst) env
+                        else
+                          nil)
+            in
+            let ret = car (cdr lst) in
+              if pred != nil then
+                eval ret env
+              else
+                loop (cdr a)
+          end
+    | _ -> nil
+  in
+    loop args
+
+let fn_label args env =
+  Symtab.add env (name (car args))
+    (car (cdr args)) ;
+  tee
+
+let rec mlang_pprint mexp =
+  match mexp with
+      Null -> ()
+  | Cons (_) ->
+        begin
+          print_string "(" ;
+          mlang_pprint (car mexp) ;
+          let rec loop s =
+            match s with
+                Cons (_) ->
+                  print_string " " ;
+                  mlang_pprint (car s) ;
+                  loop (cdr s)
+            | _ -> ()
+          in
+            loop (cdr mexp) ;
+            print_string ")" ;
+        end
+  | Atom (n) ->
+        print_string n
+  | Lambda (largs, lmexp) ->
+        print_string "(LAMBDA " ;
+        mlang_pprint largs ;
+        print_string " " ;
+        mlang_pprint lmexp ;
+        print_string ")" ;
+  | _ ->
+        print_string "Error."
+
+let fn_ifelse args env =
+  let pred = car args in
+  let fst = car (cdr args) in
+  let snd = car (cdr (cdr args)) in
+  if (eval pred env) != tee then
+    eval snd env
+  else
+    eval fst env
+
+let fn_reverse args _ =
+  let mexp = car args in
+  (*let rec loop a =
+    match a with
+      Null -> nil
+    | Atom _ -> a
+    | _ -> cons (loop (cdr a)) (car a)
+  in loop mexp*)
+  mexp_of_list (List.rev (list_of_mexp mexp))
+
+let fn_midge_exp args env =
+  let filename = string_of_mexp (car args) in
+  let mg = eval (car (cdr args)) env in
+  let head = car mg in
+  let body = car (cdr mg) in
+  Midge.print_midge filename
+    (int_of_mexp (car head),
+     int_of_mexp (car (cdr head)),
+     int_of_mexp (car (cdr (cdr head))))
+    (List.fold_left (fun acc e ->
+      let patch = int_of_mexp (car e) in
+      let volume = int_of_mexp (car (cdr e)) in
+      let repeat = int_of_mexp (car (cdr (cdr e))) in
+      let notes = car (cdr (cdr (cdr e))) in
+      Midge.add_channel (patch, volume, repeat,
+			 notes_of_mexp notes) acc) []
+       (list_of_mexp body));
+  tee
+
+let fn_combine args _ =
+  let list1 = car (car args) in
+  let list2 = car (cdr (car args)) in
+  let rec loop list1 list2 =
+    match list1 with
+      Atom _ -> nil
+    | Cons (c1) ->
+	begin
+          match list2 with
+            Atom _ -> nil
+          | Cons (c2) ->
+              let rest = loop c1.cdr c2.cdr in
+              cons (cons c1.car (cons c2.car Null)) rest
+	  | _ -> nil
+	end
+    | _ -> nil
+  in loop list1 list2
+
+let fn_concat args _ =
+  mexp_of_list (List.fold_left
+		  (fun acc e ->
+		    List.append acc (list_of_mexp e))
+		  [] (list_of_mexp args))
+
+let rec loop s channel =
+  match s with
+    Cons (_) ->
+      loop (cdr s) (Midge.add_note (4, car s, 3) channel)
+  | _ -> channel
+
+let rec mlang_midge mexp body =
+  match mexp with
+    Null -> body
+  | Cons (_) ->
+      Midge.add_channel (loop mexp (36, [])) body
+  | _ ->
+      body
+
+let file_read ch =  
+let lexbuf = Lexing.from_channel ch in
+       Parser.main Lexer.token lexbuf
+
+let fn_file args env = 
+ let f = car args in
+   match f with
+   Atom n -> 
+     let chn = open_in n in
+       let text = file_read chn in
+          close_in chn;         
+          eval text env
+   | _ -> invalid_arg "Invalid file argument" 
+
+
+let rec mlang_printf file oc mexp = 
+   match mexp with
+   Null -> output_string oc "";
+  | Cons (_) ->
+        begin
+          output_string oc "(" ;
+          mlang_printf file oc (car mexp) ;
+          let rec loop s =
+            match s with
+                Cons (_) ->
+                  output_string oc " " ;
+                  mlang_printf file oc (car s) ;
+                  loop (cdr s)
+            | _ -> ()
+          in
+            loop (cdr mexp) ;
+            output_string oc ")" ;
+        end
+  | Atom (n) ->
+        output_string oc n ;
+  | Lambda (largs, lmexp) ->
+        output_string oc "#" ;
+        mlang_printf file oc largs ;
+        mlang_printf file oc lmexp
+  | _ ->
+        output_string oc "Error."
+
+let fn_write args env = 
+   let f = car (car args) in
+     match f with 
+       Atom n -> 
+        let file = n in 
+          let chan = open_out n in 
+           let mexp = cdr (car args) in 
+            let mexp_eval = eval (car mexp) env in
+              mlang_printf file chan mexp_eval;
+              close_out chan;
+              mexp_eval; 
+       |_ -> invalid_arg "Invalid argument"
+
+let fn_length args _ =
+  let length = length_of_mexp (car args)
+      in Atom (string_of_int length)
+
+let fn_nth args _ =
+  let n = int_of_mexp (car args) in
+  let mexp = car (cdr args) in
+  let rec loop a n =
+    match a with
+      Atom _ -> nil
+    | Cons (c) -> if n = 0 then c.car else loop c.cdr (n-1)
+    | _ -> invalid_arg "Error: Invalid argument"
+  in loop mexp n
+
+let fn_last args _ =
+  let mexp = car args in
+  let n = length_of_mexp mexp in
+  let rec loop a n =
+    match a with
+      Atom _ -> nil
+    | Cons (c) -> if n = 0 then c.car else loop c.cdr (n-1)
+    | _ -> invalid_arg "Error: Invalid argument"
+  in loop mexp (n-1)
+
+let fn_mapcar args env =
+  let symbol = car args in
+  let mexp = car (cdr args) in
+  match symbol with
+    Lambda (_) ->
+      let rec apply symbol mexp =
+	match mexp with
+	  Atom a -> fn_lambda (cons symbol mexp) env
+	| Cons (c) -> cons (fn_lambda (cons symbol (cons c.car Null)) env)
+	      (apply symbol c.cdr)
+	| _ -> mexp
+      in apply symbol mexp
+  | Func (fn) ->
+      let rec apply_fn mexp =
+	match mexp with
+	  Atom a -> eval (cons symbol mexp) env
+	| Cons (c) -> cons (fn (cons c.car Null) env) (apply_fn c.cdr) 
+        | _ -> mexp
+      in apply_fn mexp
+  | _ -> args
+
+let fn_reduce args env =
+  let symbol = car args in
+  let mexp = car (cdr args) in
+  let initial = car (cdr (cdr args)) in
+  match symbol with
+    Lambda (_) ->
+      List.fold_left (fun acc e ->
+	fn_lambda (cons symbol (cons acc (cons e Null))) env)
+	initial (list_of_mexp mexp)
+  | Func (fn) ->
+      List.fold_left (fun acc e ->
+	fn (cons symbol (cons acc (cons e Null))) env)
+	initial (list_of_mexp mexp)
+  | _ -> mexp
+
+</code>
+
+##main.ml Nikhil Sarda, Sushmita Swaminathan
+<code>
+open Mexp
+open Builtins
+open Environment
+open Midge
+
+let mlang_read inp =
+  let lexbuf = Lexing.from_channel inp in
+    Parser.main Lexer.token lexbuf
+    
+let init_env () =
+  let env = Symtab.create 32 in
+  let syms = [ "QUOTE", fn_quote;
+               "CAR", fn_car;
+               "CDR", fn_cdr;
+	       "SETCAR", fn_setcar;
+	       "SETCDR", fn_setcdr;
+               "CONS", fn_cons;
+               "EQUAL", fn_equal;
+               "ATOM", fn_atom;
+               "COND", fn_cond;
+	       "IFELSE", fn_ifelse;
+               "LAMBDA", fn_lambda;
+               "LABEL", fn_label;
+               "READ-FILE", fn_file;
+               "WRITE-FILE", fn_write;
+	       "LENGTH", fn_length;
+	       "NTH", fn_nth;
+	       "LAST", fn_last;
+	       "MAPCAR", fn_mapcar;
+	       "REDUCE", fn_reduce;
+	       "INC", fn_inc;
+	       "DEC", fn_dec;
+	       "COMBINE", fn_combine;
+	       "REVERSE", fn_reverse;
+	       "CONCAT", fn_concat;
+	       "MIDGE-EXPORT", fn_midge_exp]
+  in
+    List.iter (fun (name, sym) ->
+                 Symtab.add env name (Func sym)) syms;
+    env
+
+let _ =
+  let env = init_env () in
+  let chin = stdin
+  in
+    while true do
+      try
+        print_string "> " ;
+        flush stdout ;
+        let mexp_eval = eval (mlang_read chin) env in
+	  mlang_pprint mexp_eval;
+          print_newline () ;
+      with
+          Parsing.Parse_error -> print_endline "Parse error"
+      | Lexer.Eof -> exit 0
+    done
+</code>
+
+##environment.ml Nikhil Sarda
+<code>
+open Mexp
+
+let append lst o =
+  let rec loop ptr =
+    match (cdr ptr) with
+        Cons (_) -> loop (cdr ptr)
+    | _ ->
+          match ptr with
+              Cons (c) ->
+                c.cdr <- cons o Null
+          | _ -> invalid_arg "Append needs a cdr"
+  in
+    loop lst
+      
+let rec replace_atom mexp rep =
+  match mexp with
+      Cons (_) ->
+        begin
+          let lst = (cons (replace_atom (car mexp) rep) Null) in
+          let rec loop s =
+            match s with
+                Cons(_) ->
+                  begin
+                    append lst (replace_atom (car s) rep) ;
+                    loop (cdr s)
+                  end
+            | _ -> ()
+          in
+            loop (cdr mexp);
+            lst
+        end
+  | _ ->
+        let rec loop tmp =
+          match tmp with
+              Cons (_) ->
+                begin
+                  let item = (car tmp) in
+                  let atom = (car item) in
+                  let replacement = (car (cdr item)) in
+                    if (name atom) = (name mexp) then
+                      replacement
+                    else
+                      loop (cdr tmp)
+                end
+          | _ -> mexp
+        in
+          loop rep
+      
+let interleave c1 c2 =
+  let lst = cons (cons (car c1) (cons (car c2) Null)) Null in
+  let c1' = cdr c1 in
+  let c2' = cdr c2 in
+
+  let rec loop a b =
+    match a with
+        Cons (_) ->
+          begin
+            append lst (cons (car a) (cons (car b) Null));
+            loop (cdr a) (cdr b)
+          end
+    | _ -> ()
+
+  in
+    loop c1' c2';
+    lst 
+</code>
+
+##symtab.ml Nikhil Sarda
+<code>
+type t = (string, Mexp.t) Hashtbl.t
+    
+let create n = Hashtbl.create n
+
+let add tab name sym =
+  Hashtbl.add tab (String.uppercase name) sym
+    
+let lookup tab name =
+  try
+    Hashtbl.find tab (String.uppercase name)
+  with
+      Not_found -> Mexp.Null
+
+##Mexp.ml Nikhil Sarda
+
+type ('a, 'b) cell = { mutable car: 'a; mutable cdr: 'b }
+
+type t = Atom of string
+  | Cons of (t, t) cell
+  | Func of (t -> (string, t) Hashtbl.t -> t)
+  | Lambda of t * t
+  | Null
+             
+let car o =
+  match o with
+      Cons (c) -> c.car
+  | _ -> invalid_arg "bad argument when constructing mexp from car"
+
+let cdr o =
+  match o with
+      Cons (c) -> c.cdr
+  | _ -> invalid_arg "bad argument when constructing mexp from cdr"
+
+let cons first second = Cons { car = first ; cdr = second }
+  
+let name o =
+  match o with
+      Atom (s) -> s
+  | _ -> invalid_arg "bad argument when constructing mexp from name"
+
+let rec string_of_mexp m =
+  match m with
+      Atom (s) -> s
+  | Cons (_) ->
+        begin
+          let prolog = "("^(string_of_mexp (car m)) in
+          let rec loop s =
+            match s with
+                Cons (_) ->
+                  " "^(string_of_mexp (car s))^(loop (cdr s))
+            | _ -> ""
+          in
+            prolog^(loop (cdr m))^")"
+        end
+
+let int_of_mexp m =
+  match m with
+    Atom (s) -> int_of_string s
+  | _ -> -1
+
+let rec length_of_mexp m =
+  match m with
+      Atom "nil" -> 0
+    | Cons (c) -> 1 + length_of_mexp (c.cdr)
+    | _ -> 0
+
+let rec list_of_mexp m =
+  match m with
+    Null -> []
+  | Atom a -> [m]
+  | Cons (c) -> List.append [c.car] (list_of_mexp c.cdr)
+
+let rec mexp_of_list m =
+  match m with
+    [] -> Null
+  | head::tail -> cons head (mexp_of_list tail)
+
+let rec notes_of_mexp m =
+  List.map (fun e ->
+	   match e with
+	    Cons (c) ->
+	      let octave = int_of_mexp c.car in
+	      let note = car c.cdr in
+	      let rest = int_of_mexp (car (cdr (c.cdr))) in
+	      (octave, note, rest)
+	   | Atom _ -> (3, m, 4)
+	   | _ -> (0, Null, 0)) (list_of_mexp m)
+</code>
+ 
+##midge.ml Nikhil Sarda
+<code>
+open Printf
+open Mexp
+
+module Midge = 
+  struct
+    type header = (int * int * int)
+    type note = (int * Mexp.t * int)
+    type channel = (int * int * int * note list)
+	      and body = channel list
+
+    let add_channel channel body =
+      List.append body [channel]
+
+    let add_note note channel =
+      (fst channel, List.append (snd channel) [note])
+
+    let rec string_of_mexp m =
+      match m with
+	Atom s -> s
+      | Cons (c) ->
+          begin
+            let prolog = "("^(string_of_mexp (c.car)) in
+            let rec loop s =
+              match s with
+                Cons (c1) ->
+                  " "^(string_of_mexp (c1.car))^(loop (c1.cdr))
+              | _ -> ""
+            in
+            prolog^(loop (cdr m))^")"
+          end
+
+    let print_midge file (temp, num, den) body =
+      let count = ref 0 in
+      let oc = open_out file in
+        fprintf oc "@head { \n $time_sig %d/%d \n $tempo %d \n }" num den temp;
+        fprintf oc "\n @body { \n";
+        List.iter (fun (patch, volume, repeat, notes) ->
+	  count := !count + 1;
+	  fprintf oc " @channel %d { \n $patch %d $volume %d \n %%repeat %d { " !count patch volume repeat;
+	  List.iter (fun (octave, note, length) -> fprintf oc " /l%d/%s%d " length (string_of_mexp note) octave) notes;
+	  fprintf oc " \n } \n }") body;
+        fprintf oc "\n }";
+      close_out oc
+  end;;
+</code>
+
+##midi.ml Nikhil Sarda
+<code>
+module type MMIDI =
+    sig
+        open Stream
+        (** MIDI data exception thrown when input data does not adhere to standard *)
+        exception MIDI_data of string
+
+        (********************************************************************)
+        (* Type Definitions                                                 *)
+        type midievent =          NoteON of (int * int)
+          |         NoteOFF of (int * int)
+          |     KeyPressure of (int * int)
+          |   ControlChange of (int * int)
+          |   ProgramChange of int
+          | ChannelPressure of int
+          |       PitchBend of (int * int)
+          |  SequenceNumber of int
+          |       TextEvent of string
+          | CopyrightNotice of string
+          |       TrackName of string
+          |  InstrumentName of string
+          |           Lyric of string
+          |          Marker of string
+          |        CuePoint of string
+          |       PatchName of string
+          |        PortName of string
+          |  MIDIChanPrefix of int
+          |  MIDIPortPrefix of int
+          |      EndOfTrack
+          |           Tempo of int
+          |     SMPTEOffset of (int * int * int * int * int)
+          |   TimeSignature of (int * int * int * int)
+          |    KeySignature of (int * int)
+          |     Proprietary of int list
+          | SystemExclusive of int list
+          | MTCQuarterFrame of int
+          |    SongPosition of int * int
+          |      SongSelect of int
+          |     TuneRequest of int
+          |       MIDIClock
+          |        MIDITick
+          |       MIDIStart
+          |    MIDIContinue
+          |        MIDIStop
+          |     ActiveSense
+             (** a MIDI track contains MIDI events of the form (delta time since
+                 last event, channel number of event (0 for non-channel events,
+                 midievent *)
+             and track =       (int * int * midievent) list
+             (** a MIDI structure is a tuple with (division, tracks) *)
+             and midi  = int * track list;;
+
+        (** read a MIDI file into a midi structure *)
+        val read  : string -> midi
+        (** write the midi structure out to a MIDI file *)
+        val write : midi -> string -> unit
+    end;;
+
+module MIDI : MMIDI = struct
+
+    open Stream;;
+    exception MIDI_data of string;;
+
+    (**************************************************************************)
+    (* Type Definitions                                                       *)
+    (** midi events occur within the tracks of a midi file *)
+    type midievent =          NoteON of (int * int)
+      |         NoteOFF of (int * int)
+      |     KeyPressure of (int * int)
+      |   ControlChange of (int * int)
+      |   ProgramChange of int
+      | ChannelPressure of int
+      |       PitchBend of (int * int)
+      |  SequenceNumber of int
+      |       TextEvent of string
+      | CopyrightNotice of string
+      |       TrackName of string
+      |  InstrumentName of string
+      |           Lyric of string
+      |          Marker of string
+      |        CuePoint of string
+      |       PatchName of string
+      |        PortName of string
+      |  MIDIChanPrefix of int
+      |  MIDIPortPrefix of int
+      |      EndOfTrack
+      |           Tempo of int
+      |     SMPTEOffset of (int * int * int * int * int)
+      |   TimeSignature of (int * int * int * int)
+      |    KeySignature of (int * int)
+      |     Proprietary of int list
+      | SystemExclusive of int list
+      | MTCQuarterFrame of int
+      |    SongPosition of int * int
+      |      SongSelect of int
+      |     TuneRequest of int
+      |       MIDIClock
+      |        MIDITick
+      |       MIDIStart
+      |    MIDIContinue
+      |        MIDIStop
+      |     ActiveSense
+             (** a MIDI track contains MIDI events of the form (delta time since
+                 last event, channel number of event (0 for non-channel events,
+                 midievent *)
+             and track =       (int * int * midievent) list
+             (** a MIDI structure is a tuple with (division, tracks) *)
+             and midi  = int * track list;;
+
+    (** read a MIDI file into a midi structure *)
+    let read inFile =
+        let ip = open_in_bin inFile in
+        let strm = Stream.of_channel ip in
+        (* discard: throw away num bytes *)
+        let rec discard num = if num<1 then () else (junk(strm); discard (num-1))
+        (* ipeek : peek that returns the integer value of char from stream *)
+        and ipeek xs =
+            match peek(strm) with
+            | Some c -> Some (Char.code c)
+            | None -> None
+        (* inpeek : npeek that returns a list of n integers *)
+        and inpeek n = List.map (fun x -> Char.code x) (npeek n strm) 
+        (* add7bit : 7 bit number addition *)
+        and add7bit x sum = ((sum lsl 7) lor (x land 127))
+        (* add8bit : 8 bit number addition *)
+        and add8bit x sum = ((sum lsl 8) lor x) in
+        (* bytes2int : extract num bytes from stream and convert to a number *)
+        let bytes2int num =
+            let rec b2i num ans = if num<1 then ans else 
+                match ipeek(strm) with
+                | Some v -> junk(strm); b2i (num-1) (add8bit v ans)
+                | None   -> ans
+            in b2i num 0
+        (* bytes2list : extract num bytes from stream *)
+        and bytes2list num =
+            let rec b2l num ans = if num < 1 then List.rev(ans) else
+                match ipeek(strm) with
+                | Some b -> junk(strm); b2l (num-1) (b::ans)
+                | None -> List.rev(ans)
+            in b2l num [] in
+        (* bytes2string : extract num bytes from stream and convert to a string *)
+        let bytes2string num =
+            let bs = bytes2list num in
+            let s = String.create (List.length bs) in
+            let rec f pos xs =
+                match xs with
+                | x::zs -> s.[pos] <- (Char.chr x); f (pos+1) zs
+                |  []   -> ();
+            in f 0 bs; s in
+        (* getTrack : convert the next bytes of the stream to a midi track. Note  *)
+        (*            that numBytes is not the number of bytes to read, but rather*)
+        (*            the actual position in the stream to stop reading. THis is  *)
+        (*            a tail recursive function with optrk the output             *)
+        let rec getTrack numBytes optrk =
+            (* limpeek: limited by track length, return None if numBytes was read *)
+            let limpeek xs = if count(strm) > numBytes then None else ipeek xs in
+            (* limnpeek: limited npeek, returns no bytes after numBytes read      *)
+            let limnpeek num =
+                if count(strm) > numBytes then [] else
+                let lim = (numBytes - count(strm)) in
+                let n = if lim < num then lim else num in inpeek n in
+            (* getList : get a list of integers of length len from the stream     *)
+            let getList len = let xs = limnpeek len in discard (List.length xs); xs in
+            (* getNum : get a number of len bytes from the stream                 *)
+            let getNum len = List.fold_left (fun sum d -> add8bit d sum) 0 (getList len) in
+            (* getString : get a string of len bytes from the stream              *)
+            let getString len =
+                let char2string c = let s = String.create 1 in s.[0] <- c; s in
+                List.fold_left (fun n d -> (n^char2string(Char.chr d))) "" (getList len) in
+            (* getVarInt : get a number of variable length from the stream        *)
+            let getVarInt () =
+                let rec f sum = match limpeek(strm) with
+                | Some x -> junk(strm);
+                        if x<128 then ((sum lsl 7) lor (x land 127))
+                        else f ((sum lsl 7) lor (x land 127))
+                | None -> raise (MIDI_data("EOF while reading delta"))
+                in f 0 in
+            (* isEnd : a kludge function to check for EndOfTrack sequence         *)
+            let isEnd () = match (inpeek 3) with
+            | 0xFF::0x2F::0x00::[] -> if (numBytes-count(strm))=3 then true else false
+            | _ -> false in
+            (* midiEvent : tail recursive function to read the track events from  *)
+            (*             the stream. Supply prev_msg for midi running status    *)
+            (*             where messages sent without the status byte are        *)
+            (*             assumed to be the same type as the previous message    *)
+            (*       Note: all events are concatenated in reverse order for speed *)
+            (*             because :: operator is faster than @ operator          *)
+            let rec midiEvent result prev_msg =
+                (* back out if numBytes has been read *)
+                if count(strm) >= numBytes then result else
+                (* isEnd() is a kludge. after seeing one MIDI file with an *)
+                (* EndTrack event with no delta time                       *)
+                let delta = if isEnd() then 0 else getVarInt() in
+                match limpeek(strm) with
+                | Some 0xFF -> junk(strm);
+                (   match (getList 2) with
+                    (* Sequence Number 0xFF 0x00 0x02 :                           *)
+                | 0x00::0x02::[] ->
+                    (   match (getList 2) with
+                    | s1::s2::zs -> midiEvent ((delta,0,SequenceNumber(add8bit s2 s1))::result) prev_msg
+                    | _ -> raise (MIDI_data("Expected data for Sequence Number event"))
+                    )
+                    (* Text Event 0xFF 0x01 :                                     *)
+                | 0x01::len ::[] -> let text = getString len in midiEvent ((delta,0,TextEvent(text))::result)  prev_msg
+                    (* Copyright Notice 0xFF 0x02 :                               *)
+                | 0x02::len ::[] -> let text = getString len in midiEvent ((delta,0,CopyrightNotice(text))::result) prev_msg
+                    (* Sequence/Track Name 0xFF 0x03 :                            *)
+                | 0x03::len ::[] -> let text = getString len in midiEvent ((delta,0,TrackName(text))::result) prev_msg
+                    (* Instrument Name 0xFF 0x04 :                                *)
+                | 0x04::len ::[] -> let text = getString len in midiEvent ((delta,0,InstrumentName(text))::result) prev_msg
+                    (* Lyric 0xFF 0x05 :                                          *)
+                | 0x05::len ::[] -> let text = getString len in midiEvent ((delta,0,Lyric(text))::result) prev_msg
+                    (* Marker 0xFF 0x06 :                                         *)
+                | 0x06::len ::[] -> let text = getString len in midiEvent ((delta,0,Marker(text))::result) prev_msg
+                    (* Cue Point 0xFF 0x07 0x02 :                                 *)
+                | 0x07::len ::[] -> let text = getString len in midiEvent ((delta,0,CuePoint(text))::result) prev_msg
+                    (* Program (Patch) Name 0xFF 0x08 :                           *)
+                | 0x08::len ::[] -> let text = getString len in midiEvent ((delta,0,PatchName(text))::result) prev_msg
+                    (* Device (Port) Name 0xFF 0x09 :                             *)
+                | 0x09::len ::[] -> let text = getString len in midiEvent ((delta,0,PortName(text))::result) prev_msg
+                    (* MIDI Channel Prefix 0xFF 0x20 0x01 :                       *)
+                | 0x20::0x01::[] -> let bb = getNum 1 in midiEvent ((delta,0,MIDIChanPrefix(bb))::result) prev_msg
+                    (* Port Prefix 0xFF 0x20 0x01 :                               *)
+                | 0x21::0x01::[] -> let bb = getNum 1 in midiEvent ((delta,0,MIDIPortPrefix(bb))::result) prev_msg
+                    (* End of Track 0xFF 0x2F :                                   *)
+                | 0x2F::0x00::[] -> midiEvent ((delta,0,EndOfTrack)::result) prev_msg
+                    (* Tempo 0xFF 0x51 0x03 : t1*0x10000 + t2*0x100 + t3          *)
+                | 0x51::0x03::[] -> let t = getNum 3 in midiEvent ((delta,0,Tempo(t))::result) prev_msg
+                    (* SMPTE Offset 0xFF 0x54 0x05 :                              *)
+                | 0x54::0x05::[] ->
+                    (   match (getList 5) with
+                    | hr::mn::se::fr::ff::[] -> midiEvent ((delta,0,SMPTEOffset(hr,mn,se,fr,ff))::result) prev_msg
+                    | _ -> raise (MIDI_data("Expected time data for SMPTE event"))
+                    )
+                    (* Time Signature 0xFF 0x58 0x04 :                            *)
+                | 0x58::0x04::[] ->
+                    (   match (getList 4) with
+                    | n::d::c::b::[] -> midiEvent ((delta,0,TimeSignature(n,d,c,b))::result) prev_msg
+                    | _ -> raise (MIDI_data("Expected data for Time Signature event"))
+                    )
+                    (* Key Signature 0xFF 0x59 0x02 :                             *)
+                | 0x59::0x02::[] ->
+                    (   match (getList 2) with
+                    | sf::mi::zs -> midiEvent ((delta,0,KeySignature(sf,mi))::result) prev_msg
+                    | _ -> raise (MIDI_data("Expected data for Time Signature event"))
+                    )
+                    (* Sequencer Specific/Proprietary 0xFF 0x7F :                 *)
+                | 0x7F::len::zs -> let d = getList len in midiEvent ((delta,0,Proprietary(d))::result) prev_msg
+                | x::y::zs -> raise (MIDI_data("Invalid meta event encountered "^(string_of_int x)))
+                | _ -> raise (MIDI_data("Stream error encountered "))
+                )
+                | Some x ->
+                (   (* separate the channel message from the channel number       *)
+                    let (msg,chan) = if (x>0x7F) then (junk(strm); ((x land 0xF0),(x land 0x0F))) else prev_msg in
+                        match msg with
+                        (* Note_OFF 0x8n : pitch and velocity bytes are 7bit => 0xxxxxxx. *)
+                        | 0x80 ->
+                        (   match (getList 2) with
+                        | pitch::velocity::[] -> midiEvent ((delta,chan,NoteOFF((pitch land 0x7F),(velocity land 0x7F)))::result) (0x80,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading NOTE_OFF message "^(string_of_int (count(strm)))^" "^(string_of_int numBytes)))
+                        )
+                        (* Note_ON 0x9n : pitch,velocity are 7bit => 0xxxxxxx     *)
+                        | 0x90 ->
+                        (   match (getList 2) with
+                        | pitch::velocity::[] -> midiEvent ((delta,chan,NoteON((pitch land 0x7F),(velocity land 0x7F)))::result) (0x90,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading NOTE_ON message"))
+                        )
+                        (* Key Pressure (Aftertouch) 0xA0 :pitch,pressure 7bit=> 0xxxxxxx *)
+                        | 0xA0 ->
+                        (   match (getList 2) with
+                        | pitch::pressure::[] -> midiEvent ((delta,chan,KeyPressure((pitch land 0x7F),(pressure land 0x7F)))::result) (0xA0,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading KEY PRESSURE message"))
+                        )
+                        (* Control Change 0xB0 : control,value are 7bit => 0xxxxxxx       *)
+                        | 0xB0 ->
+                        (   match (getList 2) with
+                        | control::value::[] -> midiEvent ((delta,chan,ControlChange((control land 0x7F),(value land 0x7F)))::result) (0xB0,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading CONTROL CHANGE message"))
+                        )
+                        (* Program Change 0xC0 : program byte is 7bit => 0xxxxxxx         *)
+                        | 0xC0 ->
+                        (   match (getList 1) with
+                        | program::[] -> midiEvent ((delta,chan,ProgramChange(program land 0x7F))::result) (0xC0,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading PROGRAM CHANGE message"))
+                        )
+                        (* Channel Pressure 0xD0 : pressure byte is 7bit => 0xxxxxxx      *)
+                        | 0xD0 ->
+                        (   match (getList 1) with
+                        | pressure::[] -> midiEvent ((delta,chan,ChannelPressure(pressure land 0x7F))::result) (0xD0,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading CHANNEL PRESSURE message"))
+                        )
+                        (* Pitch Bend 0xE0 : lsb and msb bytes are 7bit => 0xxxxxxx       *)
+                        | 0xE0 ->
+                        (   match (getList 2) with
+                        | lsb::msb::[] -> midiEvent ((delta,chan,PitchBend((lsb land 0x7F),(msb land 0x7F)))::result) (0xE0,chan)
+                        | _ -> raise (MIDI_data("Stream error encountered reading PITCH BEND message"))
+                        )
+                        | 0xF0 ->
+                        (   match chan with
+                            (* System Exclusive 0xF0 : first byte is manufacturer id *)
+                        | 0x0 ->
+                                let rec getData lst = match (limpeek strm) with
+                                | Some 0xF7 -> junk(strm); List.rev(lst)
+                                | Some x -> junk(strm); getData (x::lst) 
+                                | None -> List.rev(lst) in
+                                let ds = getData [] in midiEvent ((delta,chan,SystemExclusive(ds))::result) (0,0)
+                            (* MTC Quarter Frame Message : one data byte follows *)
+                        | 0x1 -> 
+                                let bb = getNum 1 in midiEvent ((delta,chan,MTCQuarterFrame(bb))::result) (0,0)
+                            (* Song Position Pointer *)
+                        | 0x2 -> let aa = getNum 1 in let bb = getNum 1 in midiEvent ((delta,chan,SongPosition(aa,bb))::result) (0,0)
+                            (* Song Select *)
+                        | 0x3 -> let bb = getNum 1 in midiEvent ((delta,chan,SongSelect(bb))::result) (0,0)
+                            (* Tune Request *)
+                        | 0x6 -> let bb = getNum 1 in midiEvent ((delta,chan,TuneRequest(bb))::result) (0,0)
+                            (* MIDI Clock *)
+                        | 0x8 -> midiEvent ((delta,chan,MIDIClock)::result) prev_msg
+                            (* MIDI Tick *)
+                        | 0x9 -> midiEvent ((delta,chan,MIDITick)::result) prev_msg
+                            (* MIDI Start *)
+                        | 0xA -> midiEvent ((delta,chan,MIDIStart)::result) prev_msg
+                            (* MIDI Continue *)
+                        | 0xB -> midiEvent ((delta,chan,MIDIContinue)::result) prev_msg
+                            (* MIDI Stop *)
+                        | 0xC -> midiEvent ((delta,chan,MIDIStop)::result) prev_msg
+                            (* MIDI Continue *)
+                        | 0xE -> midiEvent ((delta,chan,ActiveSense)::result) prev_msg
+                        | x -> midiEvent result (0,0) (* something bad happened if we end up here ! *)
+                        )
+                        | y -> result (* it's all gone wrong, how do we handle this case ?? *)
+                )
+                | None -> raise (MIDI_data("The input stream has died a bit too soon."))
+            (* because all events are added in reverse order, reverse the list *)
+            in List.rev (midiEvent [] (0,0))
+        (* readTracks: read numTracks from the input stream *)
+        and readTracks numTracks = 
+            let rec rd num result =
+                match num with
+                | 0 -> List.rev(result)
+                | _ ->
+                (   match (inpeek 4) with
+                    (* recognize, then discard the MTrk track header *)
+                | 77::84::114::107::[] -> discard 4;
+                        (* extract the length of the track *)
+                        let len = bytes2int 4 in
+                        (* read the track, giving it an offset in the stream to stop at *)
+                        let trk = getTrack (count(strm) + len) [] in
+                        rd (num-1) (trk::result)
+                | _ -> raise (MIDI_data("Expected Track Chunk "))
+                )
+            in rd numTracks [] in
+        (* data: extract the header information then get the tracks *)
+        let data = match (inpeek 4) with
+            (* expect a header MThd sequence *)
+        | 77::84::104::100::[] -> discard 4;
+                (* junk the next 4 byte header length. It is always 0 0 0 6 *)
+                discard 4;
+                (* extract the format, number of tracks, and the division value *)
+                let mFormat = bytes2int 2 in
+                let numTracks = bytes2int 2 in
+                let division = bytes2int 2 in
+                (* confirm that the format works with the numTracks value, though *)
+                (* this may be heavy handed as it should not be hard to recover   *)
+                let errchk =
+                    match mFormat,numTracks with
+                    | 0,1 | 1,_ | 2,_ -> true
+                    | _,_ -> raise (MIDI_data("Invalid number of tracks in header for MIDI file format 0 : format="^(string_of_int mFormat)^" num tracks="^(string_of_int numTracks)))
+                (* extract the midi file as a tuple *)
+                in (division,readTracks numTracks)
+        | _ -> raise (MIDI_data("Does not start with 'MThd', therefore not a MIDI tune"))
+        in close_in ip; data;;
+
+    (** write MIDI data to the supplied file name *) 
+    let write data outFile =
+        let chan = open_out_bin outFile in
+        (* write : write a list of bytes to the open binary channel               *)
+        let rec write xs = match xs with b::bs -> output_byte chan b; write bs | [] -> () in
+        (* int2list : convert a integer to a list of numBytes length              *)
+        let int2list num numBytes =
+            let rec f n cnt result = if cnt<1 then result else f (n lsr 8) (cnt-1) ((n land 255)::result)
+            in f num numBytes [] in
+        (* varint2list : convert a integer to a variable length list              *)
+        let varint2list ds =
+            let rec dlta d lst =
+                let dd = (d land 0x7F) in
+                if lst=[] then dlta (d lsr 7) (dd::lst)
+                else if d=0 then lst else dlta (d lsr 7) ((dd lor 0x80)::lst)
+            in dlta ds [] in
+        (* string2intlist : convert a string to a list of bytes                   *)
+        let string2intlist str =
+            let rec zoom pos lst =
+                if pos<0 then lst else zoom (pos-1) ((Char.code str.[pos])::lst)
+            in zoom ((String.length str) -1) [] in
+        (* extract the division and tracks from the midi tuple                    *)
+        let (division,tracks) = data in
+        (* header : build and write the header information                        *)
+        let header =
+            let numTracks = List.length tracks in
+            let format = if numTracks=1 then 0 else 1 in
+            write (77::84::104::100::[]);
+            write (0::0::0::6::[]);
+            write (int2list format 2);
+            write (int2list numTracks 2);
+            write (int2list division 2) in
+        (* toMIDI : convert a MIDI type to a sequence of bytes                    *)
+        let toMIDI m =
+            match m with
+            | (delta,ch,          NoteOFF(x,y)) -> ((varint2list delta)@[0x80 lor ch;x;y])
+            | (delta,ch,           NoteON(x,y)) -> ((varint2list delta)@[0x90 lor ch;x;y])
+            | (delta,ch,      KeyPressure(x,y)) -> ((varint2list delta)@[0xA0 lor ch;x;y])
+            | (delta,ch,    ControlChange(x,y)) -> ((varint2list delta)@[0xB0 lor ch;x;y])
+            | (delta,ch,      ProgramChange(x)) -> ((varint2list delta)@[0xC0 lor ch;x])
+            | (delta,ch,    ChannelPressure(x)) -> ((varint2list delta)@[0xD0 lor ch;x])
+            | (delta,ch,        PitchBend(x,y)) -> ((varint2list delta)@[0xE0 lor ch;x;y])
+            | (delta,ch,   SystemExclusive(xs)) -> ((varint2list delta)@[0xF0]@xs@[0xF7])
+            | (delta,ch,    MTCQuarterFrame(x)) -> ((varint2list delta)@[0xF1;x])
+            | (delta,ch,     SongPosition(x,y)) -> ((varint2list delta)@[0xF2;x;y])
+            | (delta,ch,         SongSelect(x)) -> ((varint2list delta)@[0xF3;x])
+            | (delta,ch,        TuneRequest(x)) -> ((varint2list delta)@[0xF6;x])
+            | (delta,ch,             MIDIClock) -> ((varint2list delta)@[0xF8])
+            | (delta,ch,              MIDITick) -> ((varint2list delta)@[0xF9])
+            | (delta,ch,             MIDIStart) -> ((varint2list delta)@[0xFA])
+            | (delta,ch,          MIDIContinue) -> ((varint2list delta)@[0xFB])
+            | (delta,ch,              MIDIStop) -> ((varint2list delta)@[0xFC])
+            | (delta,ch,           ActiveSense) -> ((varint2list delta)@[0xFE])
+            | (delta,ch,     SequenceNumber(x)) -> ((varint2list delta)@[0xFF;0x00;0x02]@(int2list x 2))
+            | (delta,ch,          TextEvent(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x01;List.length t]@t)
+            | (delta,ch,    CopyrightNotice(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x02;List.length t]@t)
+            | (delta,ch,          TrackName(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x03;List.length t]@t)
+            | (delta,ch,     InstrumentName(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x04;List.length t]@t)
+            | (delta,ch,              Lyric(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x05;List.length t]@t)
+            | (delta,ch,             Marker(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x06;List.length t]@t)
+            | (delta,ch,           CuePoint(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x07;List.length t]@t)
+            | (delta,ch,          PatchName(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x08;List.length t]@t)
+            | (delta,ch,           PortName(x)) -> let t = string2intlist x in ((varint2list delta)@[0xFF;0x09;List.length t]@t)
+            | (delta,ch,     MIDIChanPrefix(x)) -> ((varint2list delta)@[0xFF;0x20;0x01;x])
+            | (delta,ch,     MIDIPortPrefix(x)) -> ((varint2list delta)@[0xFF;0x21;0x01;x])
+            | (delta,ch,            EndOfTrack) -> ((varint2list delta)@[0xFF;0x2F;0x00])
+            | (delta,ch,              Tempo(x)) -> ((varint2list delta)@[0xFF;0x51;0x03]@(int2list x 3))
+            | (delta,ch,SMPTEOffset(v,w,x,y,z)) -> ((varint2list delta)@[0xFF;0x54;0x05;v;w;x;y;z])
+            | (delta,ch,TimeSignature(w,x,y,z)) -> ((varint2list delta)@[0xFF;0x58;0x04;w;x;y;z])
+            | (delta,ch,     KeySignature(x,y)) -> ((varint2list delta)@[0xFF;0x59;0x02;x;y])
+            | (delta,ch,        Proprietary(x)) -> ((varint2list delta)@[0xFF;0x7F]@(varint2list (List.length x))@x) in
+        (* convertTrack : start by converting the track to a list of event byte   *)
+        (*                lists. Then join all the individual event lists together*)
+        let convertTrack t = List.fold_right (fun x xs -> x@xs) (List.map toMIDI t) [] in
+        (* convert each track to a list of bytes                                  *)
+        let tracks = List.map convertTrack tracks in
+        (* addTrackHeader : tack on a track header to a list                      *)
+        let addTrackHeader t = ((77::84::114::107::(int2list (List.length t) 4))@t) in
+        (* addTrackHeader : tack on a track header to each track                  *)
+        let tracks = List.map addTrackHeader tracks in
+        (* write out each track to the output file                                *)
+        let result = List.map write tracks in close_out chan; ();;
+
+    end;;
+</code>
+
+##run-test.sh Aditya Mukerjee, Nishtha Agarwal
+<code>
+#! /bin/sh
+
+#A very basic, very hacky unit testing framework
+
+filename=$1
+
+repl_test()
+{
+    failed=0
+    echo "Begin tests"
+    while read p; do
+        mlang_input=$(echo $p | cut -d '|' -f1)
+        mlang_output=$(echo $mlang_input | ./mlang  | cut -b 1-2 --complement | head -n 1| sed 's/^ *//g' | sed 's/ *$//g')
+        desired_ouput=$(echo $p | cut -d '|' -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        if [ "$mlang_output" = "$desired_ouput" ]
+        then
+            echo ".............passed $p"
+        else
+            echo "!FAILED: $mlang_input produced $mlang_output instead of $desired_ouput"
+            failed=`expr $failed + 1`
+        fi
+    done < $filename
+    exit $failed
+    
+}
+
+repl_test $filename
+</code>
+
+##test.mlang Aditya Mukerjee, Nishtha Agarwal
+<code>
+
+(LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))        ;;SELECTS THE FIRST OF TWO ARGUMENTS
+
+(LABEL FALSE (LAMBDA (X) (LAMBDA (Y) Y)))       ;;SELECTS THE SECOND OF TWO ARGUMENTS
+
+(LABEL IFELSE (LAMBDA (X) ((X TRUE) FALSE)))   ;;IF FIRST IS TRUE, SELECTS SECOND.  FIRST IS FALSE, SELECTS THIRD 
+
+(define 0 (lambda (f) (lambda (x) x)))
+(define 1 (lambda (f) (lambda (x) (f x))))
+(define add1 (lambda (n) (lambda (f) (lambda (x) (f n f x))))) ;;This is the successor function - using it, we can recursively define all of the positive numbers
+</code>
+
+##stdlib.mlang Nikhil Sarda
+<code>
+((LABEL TRANSPOSEUP
+       (LAMBDA (X)
+	       (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) C+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) C+) ((CAR X) D (LAST X)))
+		     ((EQUAL (CAR (CDR X)) D) ((CAR X) D+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) D+) ((CAR X) E (LAST X)))
+		     ((EQUAL (CAR (CDR X)) E) ((CAR X) F (LAST X)))
+		     ((EQUAL (CAR (CDR X)) F) ((CAR X) F+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) F+) ((CAR X) G (LAST X)))
+		     ((EQUAL (CAR (CDR X)) G) ((CAR X) G+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) G+) ((CAR X) A (LAST X)))
+		     ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
+		     ((EQUAL (CAR (CDR X)) B) ((CAR X) C (INC (LAST X))))
+		     )
+	       )
+       )
+
+(LABEL TRANSPOSEDOWN
+       (LAMBDA (X)
+	       (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) B (DEC (LAST X))))
+		     ((EQUAL (CAR (CDR X)) C+) ((CAR X) C (LAST X)))
+		     ((EQUAL (CAR (CDR X)) D) ((CAR X) C+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) D+) ((CAR X) D (LAST X)))
+		     ((EQUAL (CAR (CDR X)) E) ((CAR X) D+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) F) ((CAR X) E (LAST X)))
+		     ((EQUAL (CAR (CDR X)) F+) ((CAR X) F (LAST X)))
+		     ((EQUAL (CAR (CDR X)) G) ((CAR X) F+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) G+) ((CAR X) G (LAST X)))
+		     ((EQUAL (CAR (CDR X)) A) ((CAR X) G+ (LAST X)))
+		     ((EQUAL (CAR (CDR X)) A+) ((CAR X) A (LAST X)))
+		     ((EQUAL (CAR (CDR X)) B) ((CAR X) A+ (LAST X)))
+		     )
+	       )
+       )
+(LABEL TRANSPOSEUPCHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR TRANSPOSEUP (NTH 3 X)))))
+(LABEL TRANSPOSEDOWNCHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR TRANSPOSEDOWN (NTH 3 X)))))
+(LABEL REVERSECHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (REVERSE (NTH 3 X)))))
+(LABEL REVERSEBODY
+       (LAMBDA (X)
+       	       (MAPCAR REVERSECHANNEL X)))
+(LABEL NUMNOTES
+       (LAMBDA (X)
+       	       (LENGTH (NTH 3 X))))
+(LABEL NUMTRACKS
+       (LAMBDA (X)
+       	       (LENGTH (NTH 1 X))))
+(LABEL REPEAT4 (LAMBDA (X) (X X X X)))
+(LABEL piano_grand_ac 1)
+(LABEL piano_grand_br 2)
+(LABEL piano_grand_el 3)
+(LABEL piano_ht 4)
+(LABEL piano_el_1 5)
+(LABEL piano_el_2 6)
+(LABEL harpsichord 7)
+(LABEL clavinet 8)
+(LABEL celesta 9)
+(LABEL glockenspiel 10)
+(LABEL music_box 11)
+(LABEL vibraphone 12)
+(LABEL marimba 13)
+(LABEL xylophone 14)
+(LABEL tubular_bells 15)
+(LABEL dulcimer 16)
+(LABEL organ_dbar 17)
+(LABEL organ_perc 18)
+(LABEL organ_rock 19)
+(LABEL organ_church 20)
+(LABEL organ_reed 21)
+(LABEL accordian 22)
+(LABEL harmonica 23)
+(LABEL accordian_tango 24)
+(LABEL guitar_nylon 25)
+(LABEL guitar_steel 26)
+(LABEL guitar_jazz 27)
+(LABEL guitar_clean 28)
+(LABEL guitar_muted 29)
+(LABEL guitar_od 30)
+(LABEL guitar_dist 31)
+(LABEL guitar_harm 32)
+(LABEL bass_ac 33)
+(LABEL bass_fg 34)
+(LABEL bass_pick 35)
+(LABEL bass_fless 36)
+(LABEL bass_slap_1 37)
+(LABEL bass_slap_2 38)
+(LABEL bass_syn_1 39)
+(LABEL bass_syn_2 40)
+(LABEL violin 41)
+(LABEL viola 42)
+(LABEL cello 43)
+(LABEL contrabass 44)
+(LABEL str_trem 45)
+(LABEL str_pizz 46)
+(LABEL str_orch 47)
+(LABEL timpani 48)
+(LABEL str_ens_1 49)
+(LABEL str_ens_2 50)
+(LABEL str_syn_1 51)
+(LABEL str_syn_2 52)
+(LABEL choir_aahs 53)
+(LABEL voice_oohs 54)
+(LABEL voice_syn 55)
+(LABEL orch_hit 56)
+(LABEL trumpet 57)
+(LABEL trombone 58)
+(LABEL tuba 59)
+(LABEL trumpet_muted 60)
+(LABEL horn_fr 61)
+(LABEL brass 62)
+(LABEL brass_syn_1 63)
+(LABEL brass_syn_2 64)
+(LABEL sax_sop 65)
+(LABEL sax_alt 66)
+(LABEL sax_ten 67)
+(LABEL sax_bar 68)
+(LABEL oboe 69)
+(LABEL horn_en 70)
+(LABEL bassoon 71)
+(LABEL clarinet 72)
+(LABEL piccolo 73)
+(LABEL flute 74)
+(LABEL recorder 75)
+(LABEL flute_pan 76)
+(LABEL bottle 77)
+(LABEL skakuhachi 78)
+(LABEL whistle 79)
+(LABEL ocarina 80)
+(LABEL lead_sq 81)
+(LABEL lead_saw 82)
+(LABEL lead_calliope 83)
+(LABEL lead_chiff 84)
+(LABEL lead_charang 85)
+(LABEL lead_voice 86)
+(LABEL lead_fifth 87)
+(LABEL lead_basslead 88)
+(LABEL pad_new_age 89)
+(LABEL pad_warm 90)
+(LABEL polysynth 91)
+(LABEL pad_choir 92)
+(LABEL pad_bowed 93)
+(LABEL pad_metal 94)
+(LABEL pad_halo 95)
+(LABEL pad_sweep 96)
+(LABEL fx_rain 97)
+(LABEL fx_strack 98)
+(LABEL fx_crystal 99)
+(LABEL fx_atmos 100)
+(LABEL fx_bright 101)
+(LABEL fx_goblin 102)
+(LABEL fx_echo 103)
+(LABEL fx_scifi 104)
+(LABEL sitar 105)
+(LABEL banjo 106)
+(LABEL shamisen 107)
+(LABEL koto 108)
+(LABEL kalimba 109)
+(LABEL bagpipe 110)
+(LABEL fiddle 111)
+(LABEL shanai 112)
+(LABEL bell_tinkle 113)
+(LABEL agogo 114)
+(LABEL drum_steel 115)
+(LABEL woodblock 116)
+(LABEL drum_taiko 117)
+(LABEL tom_melodic 118)
+(LABEL drum_syn 119)
+(LABEL cymbal_rev 120)
+(LABEL fx_fret 121)
+(LABEL fx_breath 122)
+(LABEL fx_sea 123)
+(LABEL fx_tweet 124)
+(LABEL fx_phone 125)
+(LABEL fx_copter 126)
+(LABEL x_applause 127)
+(LABEL fx_gun 128)
+(LABEL mozart-form (LAMBDA (X) (LAMBDA (Y) (LAMBDA (Z) (CONCAT X Y Z Z Y X)))))
+(LABEL OCTAVEINCNOTE
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (INC (NTH 2 X)))))
+(LABEL OCTAVEDECNOTE
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (DEC (NTH 2 X)))))
+(LABEL OCTAVEUPCHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR OCTAVEINCNOTE (NTH 3 X)))))
+(LABEL OCTAVEDOWNCHANNEL
+       (LAMBDA (X)
+       	       ((CAR X) (NTH 1 X) (NTH 2 X) (MAPCAR OCTAVEDECNOTE (NTH 3 X)))))
+(LABEL ASCENDDESCEND (LAMBDA (X) (CONCAT X (REVERSE X))))
+(LABEL A_4_1 (4 A 1))
+(LABEL B_4_1 (4 B 1))
+(LABEL C_4_1 (4 C 1))
+(LABEL D_4_1 (4 D 1))
+(LABEL E_4_1 (4 E 1))
+(LABEL F_4_1 (4 F 1))
+(LABEL G_4_1 (4 G 1))
+(LABEL As_4_1 (4 As 1))
+(LABEL Cs_4_1 (4 Cs 1))
+(LABEL Ds_4_1 (4 Ds 1))
+(LABEL Fs_4_1 (4 Fs 1))
+(LABEL Gs_4_1 (4 Gs 1))
+(LABEL A_4_2 (4 A 2))
+(LABEL B_4_2 (4 B 2))
+(LABEL C_4_2 (4 C 2))
+(LABEL D_4_2 (4 D 2))
+(LABEL E_4_2 (4 E 2))
+(LABEL F_4_2 (4 F 2))
+(LABEL G_4_2 (4 G 2))
+(LABEL As_4_2 (4 As 2))
+(LABEL Cs_4_2 (4 Cs 2))
+(LABEL Ds_4_2 (4 Ds 2))
+(LABEL Fs_4_2 (4 Fs 2))
+(LABEL Gs_4_2 (4 Gs 2))
+(LABEL A_4_3 (4 A 3))
+(LABEL B_4_3 (4 B 3))
+(LABEL C_4_3 (4 C 3))
+(LABEL D_4_3 (4 D 3))
+(LABEL E_4_3 (4 E 3))
+(LABEL F_4_3 (4 F 3))
+(LABEL G_4_3 (4 G 3))
+(LABEL As_4_3 (4 As 3))
+(LABEL Cs_4_3 (4 Cs 3))
+(LABEL Ds_4_3 (4 Ds 3))
+(LABEL Fs_4_3 (4 Fs 3))
+(LABEL Gs_4_3 (4 Gs 3))
+(LABEL A_4_4 (4 A 4))
+(LABEL B_4_4 (4 B 4))
+(LABEL C_4_4 (4 C 4))
+(LABEL D_4_4 (4 D 4))
+(LABEL E_4_4 (4 E 4))
+(LABEL F_4_4 (4 F 4))
+(LABEL G_4_4 (4 G 4))
+(LABEL As_4_4 (4 As 4))
+(LABEL Cs_4_4 (4 Cs 4))
+(LABEL Ds_4_4 (4 Ds 4))
+(LABEL Fs_4_4 (4 Fs 4))
+(LABEL Gs_4_4 (4 Gs 4))
+(LABEL A_8_1 (8 A 1))
+(LABEL B_8_1 (8 B 1))
+(LABEL C_8_1 (8 C 1))
+(LABEL D_8_1 (8 D 1))
+(LABEL E_8_1 (8 E 1))
+(LABEL F_8_1 (8 F 1))
+(LABEL G_8_1 (8 G 1))
+(LABEL As_8_1 (8 As 1))
+(LABEL Cs_8_1 (8 Cs 1))
+(LABEL Ds_8_1 (8 Ds 1))
+(LABEL Fs_8_1 (8 Fs 1))
+(LABEL Gs_8_1 (8 Gs 1))
+(LABEL A_8_2 (8 A 2))
+(LABEL B_8_2 (8 B 2))
+(LABEL C_8_2 (8 C 2))
+(LABEL D_8_2 (8 D 2))
+(LABEL E_8_2 (8 E 2))
+(LABEL F_8_2 (8 F 2))
+(LABEL G_8_2 (8 G 2))
+(LABEL As_8_2 (8 As 2))
+(LABEL Cs_8_2 (8 Cs 2))
+(LABEL Ds_8_2 (8 Ds 2))
+(LABEL Fs_8_2 (8 Fs 2))
+(LABEL Gs_8_2 (8 Gs 2))
+(LABEL A_8_3 (8 A 3))
+(LABEL B_8_3 (8 B 3))
+(LABEL C_8_3 (8 C 3))
+(LABEL D_8_3 (8 D 3))
+(LABEL E_8_3 (8 E 3))
+(LABEL F_8_3 (8 F 3))
+(LABEL G_8_3 (8 G 3))
+(LABEL As_8_3 (8 As 3))
+(LABEL Cs_8_3 (8 Cs 3))
+(LABEL Ds_8_3 (8 Ds 3))
+(LABEL Fs_8_3 (8 Fs 3))
+(LABEL Gs_8_3 (8 Gs 3))
+(LABEL A_8_4 (8 A 4))
+(LABEL B_8_4 (8 B 4))
+(LABEL C_8_4 (8 C 4))
+(LABEL D_8_4 (8 D 4))
+(LABEL E_8_4 (8 E 4))
+(LABEL F_8_4 (8 F 4))
+(LABEL G_8_4 (8 G 4))
+(LABEL As_8_4 (8 As 4))
+(LABEL Cs_8_4 (8 Cs 4))
+(LABEL Ds_8_4 (8 Ds 4))
+(LABEL Fs_8_4 (8 Fs 4))
+(LABEL Gs_8_4 (8 Gs 4))
+)
+
+(label last (lambda (x))
+	(IFELSE (((Null x) nil) (car x) (last (cdr x)))))
+	
+(label first (lambda (x))
+	(IFELSE (((Null x) nil) (car x) (first (car x)))))
+	
+(label concatenate
+ (lambda (x y)
+  IFELSE (x (cons (car x) (concatenate (cdr x) y)))))
+
+
+;;Fixed point combinator example
+;;Without a test suite working, we can't actually write much more than this yet, though
+(LABEL YC
+  (LAMBDA (f)
+    ((LAMBDA (x) (f (LAMBDA (v) ((x x) v))))
+     (LAMBDA (x) (f (LAMBDA (v) ((x x) v)))))))
+</code>
+
+##MLang-mode.el Sushmita Swaminathan
+
+<code>
+(require 'derived)
+(require 'font-lock)
+
+(defvar mlang-mode-hook nil)
+
+(define-key global-map (kbd "RET") 'newline-and-indent)
+
+(defvar mlang-mode-map
+  (let ((map (make-keymap)))
+    (define-key map "\C-j" 'newline-and-indent)
+    map)
+  "Keymap for Mlang major mode")
+
+;;;###highlight words
+(defconst mlang-font-lock-keywords-1
+  (list 
+    '("\\(ATOM\\|BODY\\|C\\(?:AR\\|DR\\|HANNEL\\|ON[DS]\\)\\|DEC\\|EQUAL\\|HEAD\\|INC\\|L\\(?:A\\(?:BEL\\|MBDA\\|ST\\)\\|ENGTH\\)\\|MAPCAR\\|NTH\\|\\(?:QUOT\\|\\(?:READ\\|WRITE\\)-FIL\\)E\\)" . font-lock-builtin-face))
+  "Minimal highlighting of keywords")
+
+(defvar mlang-font-lock-keywords mlang-font-lock-keywords-1 "Default highlighting")
+
+;;;###Indentation
+(defun mlang-indent-line ()
+  "Indent lines"
+  (interactive)
+  (let ((indent-col 0))
+  (save-excursion
+    (beginning-of-line)
+    (upcase-region (point-min) (point-max))
+    (condition-case nil
+	(while t
+	  (backward-up-list)
+	  (if (looking-at "(")
+	      (setq indent-col (+ indent-col default-tab-width))))
+      (error nil)))
+  (save-excursion
+    (back-to-indentation)
+    (when (and (looking-at ")") (>= indent-col default-tab-width))
+      (setq indent-col (- indent-col default-tab-width))))
+  (indent-line-to indent-col)))
+
+;;;###syntax table
+(defvar mlang-mode-syntax-table 
+  (let ((st (make-syntax-table)))
+         (modify-syntax-entry ?\n ">b" st)
+	 st)
+  "Syntax table for mlang-mode")
+
+(defun mlang-mode ()
+  "Major mode for editing Mlang workflow"
+  (interactive)
+  (kill-all-local-variables)
+  (set-syntax-table mlang-mode-syntax-table)
+  (use-local-map mlang-mode-map)
+  (set (make-local-variable 'font-lock-defaults) '(mlang-font-lock-keywords))
+  (set (make-local-variable 'indent-line-function) 'mlang-indent-line)
+  (setq major-mode 'mlang-mode)
+  (setq mode-name "MLang")
+  (run-hooks 'mlang-mode-hook))
+
+(provide 'mlang-mode)
+
+</code>
