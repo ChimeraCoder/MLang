@@ -1,0 +1,331 @@
+
+
+
+MLang Language Tutorial
+March 21, 2012
+
+1
+1 Introduction
+MLang is a language that helps its users compose music by writing and
+compiling programs. It is a homoiconic functional language that is simple,
+yet highly powerful, and modular. Many of MLang's features are similar to a
+functional programming language like LISP. Thus, familiarity with functional
+programming languages and a basic knowledge of music is preferred but not
+required.
+
+1.1 Conventions
+In this tutorial > refers to the command line prompt and {> refers to the
+output of the MLang command.
+2 Data Types
+The basic data type in MLang is an MNote. An MNote is a list of length 1
+and can be thought of as a function with no arguments.
+An MNote can be represented as (%A duration), where A refers to any mu-
+sical note.
+> %(A 500)
+{>note.midi
+Here '500' refers to the time duration for which the note will be played.
+When a user enters a single note, the note is evaluated as a function and
+returns a midi le that contains the musical equivalent of the note.
+3 Input and Output
+The input for MLang would consists of codes written at the command line
+or as part of a le with the .mlang extension. The code would be a series of
+nested loops that represent notes, duration, music feature and instrument.
+On compilations, the program would produce a le with the .midi extension
+which can be played to hear the music.
+2
+4 MLang Expressions
+The common form of an MLang expression is a function application given
+by the syntax
+(function arg1 arg2 ...)
+where the arguments can be MNotes or other functions.
+MLang expressions are case insensitive: (A 100) and (a 100) mean the same
+4.1 Functions as values
+Since MLang is a homoiconic language, functions can be treated as data that
+can be passed around.
+In MLang, all functions are evaluated to notes. Thus every function
+eventually is evaluated to a string of notes that forms the midi.
+5 Writing Your rst MLang Program
+A program in MLang is only a sequence of functions. A simple program to
+play a trill would look like this-
+>(play (trill C))
+{>.midi
+;this would play alternating B & C
+The commands can be written in any text editor and save to a le with
+the extension '.mlang'.
+6 MLang Lists
+In MLang all the functions are treated as lists. A note can be considered as
+a list with a single element. Consequently all functions evaluate to a series
+of notes which form the input stream to the midi creator.
+3
+7 MLang Loading and Compiling
+Most functions in MLang are going to be much longer than a single line. For
+complex programs, it would be desirable to edit the program with an editor
+and then compile the program to see the output.
+Eg:
+;make-music.mlang
+;by Student
+;
+;Comments at the start of the program help providing clarity of code
+;
+(play (tempo 120)
+(instrument cello
+(treble (meter 6 8)
+(c4 q tenuto) (d4 s) (ef4 e sf)
+(c4 e) (d4 s) (en4 s) (fs4 e (ngering 3)))
+(treble (meter 3 4)
+(c5 e. marcato) (d5 s bartok-pizzicato) (ef5 e)
+(c5 e staccato tenuto) (d5 s down-bow) (en5 s) (fs5 e)))
+(instrument piano
+(bar bass (meter 6 16)
+(c4 e tenuto accent rfz) (d4 s mordent) (en4 s pp) (fs4 e fermata))))
+Save the above le as make-music.mlang. Now load the denition into the
+MLang environment by typing:
+(load "make-music.mlang");
+; Loading ./make-music.mlang
+This code clearly denes what the typical programmer would want to
+achieve. This code would create a make-music.midi le that would play the
+notes mentioned in the styles of the functions for the specied duration. In
+this program, the instrument of choice is the cello.
+4
+8 Conclusion
+The language of music is extremely complex and representing it through
+programs requires much planning at the design level. We hope to be able to
+add more features as the language grows.
+5
+
+
+1 Introduction
+This manual serves to provide an in-depth description of the Turing Complete programming language MLang. It assumes a considerable familiarity in the syntax of MLang. For a tutorial introduction to MLang, see the MLang Tutorial(make to italics).
+
+1.1 MLang History
+MLang was developed in 2012 at Columbia University, New York. The motive behind the project was to create a Turing Complete programming language that could be used to create music in a grammatically accurate manner. 
+
+MLang is inspired largely by Lisp, and it is likely that there would be many syntactical similarities between MLang and Lisp. Like Lisp, MLang is a homoiconic language, with musical notes serving as the primitive data types. MLang's interpreter though is written in Ocaml.
+
+1.2 Conventions
+This details how the code is constructed in MLang.
+
+1.2.1 Terms
+Throughout the manual, references to "MLang Reader" and "MLang Printer" refer to the processes that convert the text in the program to MLang objects for evaluation and vice versa. Any use of the term "you", refer to the programmer or the person reading the manual as appropriate. 
+
+MLang functions are written as -
+
+{format}
+open-paren name-of-play duration close-paren
+
+Eg:
+
+(rondo 100) calls the function 'rondo' that plays the musical piece "rondo" for 100 ms.
+
+1.3 Acknowledgements
+
+2 MLang Data Types
+In MLang the primitive data type is the note. An MNote can be considered to be a function that takes in zero parameters and has a single fixed output.
+
+A single note in MLang can be written as -
+
+%name-of-note {format}
+
+Here '%' is a note identifier rather than a shell prompt. An example of a note can thus be given as-
+
+%A {format}
+
+This represents the musical note 'A' with a play time of 50ms. 
+
+2.1 Printed Representation
+The printed representation is the format of the output generated by the MLang execution. Every data type has a unique printed representation. The read syntax of an object is the format accepted by the MLang program for that object. When you evaluate an expression interactively, the MLang reader reads the text, produces and object and evaluates that object.
+
+2.2 Comments
+A comment is a text that is written purely to establish clarity in the program when read by the programmer or others. The text enclosed by the comments are not evaluated by the MLang interpreter. In MLang, the comments are marked by a semicolon, ';'. 
+When a text starts with the comment symbol, the entire string is not read. 
+Eg:
+
+;this is a comment
+(play (treble 5)) 
+
+(Comments can be written only at the start or end of the program - do we make this restriction? Also we're using only ';' for all types of comments)
+
+For commenting out functions, the ';' symbol must be used at the beginning of every like of the function.
+Eg:
+
+ ; this function has been commented
+ ; (play (canon 500) 
+ ;  	 	(rondo 100))
+
+3 MLang Functions
+In MLang, functions are defined by a set of enclosing parenthesis.The function is can be considered to be defined like a lambda, which is eventually evaluated to a series of notes. During evaluation, a function is treated just like a note (or a series of notes) but with arguments.
+
+4 Modules
+These are defined by the MLang standard library and will be available for use.
+
+4.1 Phrase
+A phrase consists of an arbitrary number of notes/functions with a total duration specified. The duration is not known at compile-time.
+
+An example of a phrase can be given by -
+
+
+4.2 Trill
+A trill is a musical feature that involves playing two notes in quick succession to each other. 
+
+An example of a trill can be seen below -
+
+5 Lists
+Similar to Lisp, MLang processes all the objects as lists. The primitive data type MNote can be considered as a list of size 1. Functions are a series of MNotes. If the cdr of a list contains a value, then the list is evaluated as a function, and if the cdr is empty, then the list is considered to be a single note. 
+
+6 Evaluation of an MLang Expression
+
+When a function written in MLang is called, the value of the function is computed by evaluating the expressions written in the function body. Evaluation of an expression written in MLang is done in a recursive manner i.e. it involves evaluating expressions within an expression, starting right from a single argument.  
+
+“##We can talk about environment here. I was not sure how it happens”
+
+We can have Self-evaluating functions that evaluate to the object being evaluated, and Symbol forms that refer to a symbol table to return a variable’s value. Function and Module forms are evaluated by computing the value of the expressions/ nested expressions in the function.
+
+7 Compiling and Running an Mlang Program
+
+An Mlang program is technically a series of function calls. When you compile this program, an OCaml complier simply converts these functions into a representation that can be executed more efficiently. This file is then evaluated by an OCaml interpreter to a form that can be used to generate MIDI files. (Yes! You can listen to the music you just wrote!)
+
+MLang is portable in the sense that it does not depend upon the machine’s hardware for its execution.
+
+Project plan 					
+Written by
+Sushmita Swaminathan
+Project Manager, MLang
+
+The goal of the project was to create a programming language for
+music, one that is Turing complete while also following the rules of
+classical music theory.
+
+Understanding that the design required several rounds of development
+and testing, we decided to adopt an Iterative Development Model as
+opposed to a more traditional Waterfall model.
+
+Iterative Development Model
+We divided the project into a number of sub-tasks that would be performed repeatedly until the final product was obtained. These stages were Goal Forming/Reassessing, Compiler Design, Design implementation/Development and Testing.
+
+Goal Forming/Reassessing
+As the first step of the project, the main goals and objectives were defined and communicated to all members of the team. Subsequently, at regular intervals these goals were reassessed to ensure that their relevance was still maintained. Also, new goals were formulated, while some ideas that were not pertinent were discarded. While the main goal was to develop a language that would play music, some of the smaller goals that were set for the team included getting familiar with Ocaml and Lambda Calculus.
+
+Compiler Design
+This phase is very critical, since it defines the structure of the entire project. We decided on Ocaml as our compiler language. We also decided to adopt the Lisp style of implementation for the syntax and built-ins. We also developed M-expressions to parse MLang code. 
+For the backend, we decided to use Midge for creating the .midi files that would eventually play the music.
+
+Development
+In this phase, the designs were translated into executable code. The first implementations were of the lexer and parser, followed by the creation of an MLang environment and associated built-ins. New ideas that emerged during this time were reassessed.
+
+Testing
+Closely following the development, we also tested the created applications.  The process of development and testing followed cyclically till there were no further issues to be resolved. This ensured that any bugs in the program could be immediately detected and fixed.
+
+Roles and Responsibilities
+
+Project Manager
+Keep end objective always in sight
+Project design and implementation issue tracking and management
+Ensuring constant communication among team members
+Maintain regular checks to assess progress and pace of the project
+Managing team issues
+Contributing to the design and development in a technical role
+
+Language Guru
+Principal contributor to the design of the language
+Provide domain expertise that helps clarify doubts and issues that arise implementation
+Offer suggestions to improve on existing design and implementation
+Suggest new features or offer alternatives to be incorporated in the existing language design
+Technical contributor the design and development of the language
+
+System Architect/Integrator
+Suggest and decide on the compiler language for MLang
+Principal architect of the MLang environment
+Identify the critical modules to be implemented and issues with design that need rethinking
+Ensure code flow through all the modules without break
+Main deciding factor in accepting or rejecting design decisions based on development limitations
+
+Tester
+Worked in tandem with the Architect to ensure code flow without breaks
+Identify pain-points in the code that could lead to potential errors
+Develop test cases for all the implemented modules
+Exhaustive testing of all modules to ensure their functioning
+Communicate all errors to the team and receive clarifications on implementations and bugs
+Develop a test suite that tests for errors when the Make is run
+
+Implementation style sheet
+
+
+Time line
+January	    Discussions and Brainstorming on language ideas
+		    Finalized language to be implemented as MLang and the type of language to be functional
+		    Preliminary Goal Setting – Getting familiar with Ocaml, Understading Lambda Calculus and functional programming features
+February	    Finalize compiler language to be Ocaml	
+		    Develop design implementation strategies for MLang
+		    Finalize language features such as syntax – to maintain Lisp like syntax, M-expressions to parse MLang code
+		    Language Whitepaper
+		    Begin implementation of lexer and parser modules
+March	    Complete implementation of lexer and parser
+	  	    Develop built-ins for MLang
+		    Create MLang environment, execute basic function and simple tests for errors
+		    Consider Midge as a possible back-end for creating the music
+		    MLang Reference Manual
+		    Language Tutorial
+April	Midge and Java offered as two possible back-ends for music creations
+		Team decides to go ahead with Midge for creating the .midi files
+		Midge back-end completed
+		Hello World works!
+		More built-in functions (SETCAR, SETCDR, IFELSE, CONCAT) added
+		Sample MLang programs written
+		Exhaustive testing of functions begins
+May		Midge function, MIDGE-EXPORT added
+		Built-ins such as REVERSE, NTH, LENGTH,COMBINE, READ-FILE,WRITE-FILE added
+		MLang stdlib defined with functions such as TRANSPOSEUP, TRANSPOSEDOWN, NUMNOTES, REVERSEBODY
+		Songs paranoid.mlang, reaper.mlang, happy.mlang created
+		Mlang-mode defined for emacs
+		Testing and bug-fixing continue
+		Project Report
+		Project Presentation
+
+
+
+
+
+
+
+
+
+Module	Completed on	Issues	Issued closed on
+lexer & parser	March 5,2012	Build Errors	March 5,2012
+M-expression	March 5,2012		
+Added basic test	March 5,2012		
+Added symbol table	March 10,2012		
+Added builtins & environment	March 10,2012		
+Updated Makefile with testing function	March 18,2012		
+Added car, cdr regression test	March 18,2012		
+Added LABEL statement to main	March 20,2012		
+Added Lambda/note definition	March 21,2012		
+Pushed Grammar for Mlang	April 01,2012		
+Helper functions added	April 10,2012		
+Midge included in makefile	April 15,2012		
+Hello World Works!	April 15,2012		
+Can now Read from file	April 20,2012		
+New function - concatenate added	April 22,2012		
+Mlang functions defined	April 27,2012		
+Can Write to file now	May 01,2012		
+Length, Last,nth, mapcar added	May 03,2012		
+Stdlib for Mlang created	May 03,2012	Function errors	May 04,2012
+New test added	May 03,2012		
+Update Makefile	May 03,2012	Make sure tests are added	May 06,2012
+Function equal		Breaks	May 03,2012
+Fix check.bash issues	May 03,2012		May 04,2012
+Implemented Ifelse, reduce	May 03,2012		
+Midge-Export added	May 04,2012		
+Added instruments to stdlib		
+More tests added with expected results	May 04,2012		
+reaper.mlang, paranoid.mlang pieces added	
+Mlang-mode for emacs added	May 05,2012		
+Warnings during compilation	May 01,2012		May 05,2012
+
+
+
+
+
+
+
+
+
