@@ -1,213 +1,291 @@
 
 
 
-MLang Language Tutorial
-March 21, 2012
+MLang
+=====
 
-1
+Aditya Mukherjee
+Nikhil Sarda
+Nishtha Agarwal
+Sushmita Swaminathan
+
+
 1 Introduction
-MLang is a language that helps its users compose music by writing and
-compiling programs. It is a homoiconic functional language that is simple,
-yet highly powerful, and modular. Many of MLang's features are similar to a
-functional programming language like LISP. Thus, familiarity with functional
-programming languages and a basic knowledge of music is preferred but not
-required.
+===============
 
-1.1 Conventions
+Aesthetics are by nature subjective and non-deterministic; as such, a programming language cannot fix this problem. But aesthetics are often determined by adherence to well-defined artistic conventions. Just as a simple Venician sonnet must have a fixed meter and rhyming scheme, musical compositions such as fugues, canons, and concertos must obey a well-defined structure specific to that musical form. When composing classical music, a deep understanding of music theory and strong grasp of music notation and grammar are required simply to create a piece compliant with the accepted contemporary musical structure - and that is all before beginning any part of the creative, artistic process. 
+
+However, while the underlying theory is vast, these conventions are extremely well-defined. As a result, most of this process can be facilitated by use of a piece of software specific enough to be tailored to the individual piece of music at hand, yet powerful enough to allow the composer to break free of conventions when necessary, or even to redefine or extend the set of rules. Traditionally, this software is implemented as a graphical frontend to standard music notation. The creators of MLang believe that undermines the power of music. Music is itself a language, and a composition is simply an application of the language, just as a program is an application of a programming language.
+
+The language we have described is simply the language of music - simple and minimal, yet powerful. The same is true of homoiconic functional programming languages, which made the selection of a programming paradigm MLang rather clear. Homoiconic functional languages are simple, yet highly powerful, and they derive this power through their modularity.
+
+MLang is a language that helps its users compose music by writing and compiling programs. It is a homoiconic functional language that is simple,
+yet highly powerful, and modular. Many of MLang's features are similar to a functional programming language like LISP. 
+Thus, familiarity with functional programming languages and a basic knowledge of music is preferred but not required.
+
+1.1 Modularity
+==============
+Music itself is highly modular. Not only is it common for sections of music to be repeated exactly within a given piece of music, but it is often expected that variations on these sections be repeated within the same composition. Subsequently, these sections may included in later compositions by other authors. All music is thus, in some sense, derivative - it is the nature of the art form.  
+
+MLang exposes this modularity, intrinsic in music, and turns it from a barrier to entry into a tool for the beginning composer (and instructors of music composition). Like standard music composition software, MLang allows composers to create music from scratch, by defining notes individually.  Thus, a user familiar with traditional music notation would have little trouble adjusting to MLang. Most music composition software provides this feature and little else. MLang, however, takes this a step further, by allowing the composer to extract arbitrary elements from that music and bundle these elements together into a module.
+
+
+1.2 Metaprogramming
+===================
+MLang allows the user to incorporate other pieces of MLang code - which are playable music files - into their own code as modules. A module is not limited to being just a complete musical phrase, such as a measure, a note, or an entire movement. It may be an attribute of the music, such as the key, time signature, or timbre - these attributes are not necessarily observed (ie, heard) in just a single section of the composition, but rather, they are woven into the composition as a whole. 
+
+
+1.3 Homoiconicity
+=================
+A language is said to be homoiconic if a representation of programs written in it are also a data structure in a primitive type of the language itself. In MLang, the only primitive is a series (list, these lists may be of length one) of musical tones (a note), or a function. However, because functions are themselves stored internally as series of certain musical tones, everything in MLang, including the code itself, is a representation of a series (list) of notes. Modules, the higher-level data structures, are themselves recursively composed of other modules or of primitives (notes). So the code itself has a recursive representation as a primitive datatype. For MLang, the elementary datatype is an m-expression. We define an M-expression inductively as 
+1. a musical note, or
+2. an expression of the form (x . y) where x and y are m-expressions.
+Note the analogous relationship between an m-expression and an s-expression.
+
+1.4 Functional
+==============
+MLang is stateless and free of side effects. It treats computation (generation of music) as simple evaluation of m-expressions and avoids state and mutable data. MLang is heavily influenced by the syntax and semantics of Lisp and its variants, though the interpreter itself is written in OCaml. MLang is strongly typed and dynamic.
+
+
+2. Language Tutorial
+=======================================
+
+2.1 Conventions
+================
 In this tutorial > refers to the command line prompt and {> refers to the
 output of the MLang command.
-2 Data Types
+
+2.2 Data Types
+===============
 The basic data type in MLang is an MNote. An MNote is a list of length 1
 and can be thought of as a function with no arguments.
-An MNote can be represented as (%A duration), where A refers to any mu-
+An MNote can be represented as (%rest %A %octave), where A refers to any mu-
 sical note.
-> %(A 500)
-{>note.midi
-Here '500' refers to the time duration for which the note will be played.
-When a user enters a single note, the note is evaluated as a function and
-returns a midi le that contains the musical equivalent of the note.
-3 Input and Output
-The input for MLang would consists of codes written at the command line
-or as part of a le with the .mlang extension. The code would be a series of
-nested loops that represent notes, duration, music feature and instrument.
-On compilations, the program would produce a le with the .midi extension
-which can be played to hear the music.
-2
-4 MLang Expressions
-The common form of an MLang expression is a function application given
-by the syntax
+> (label A (8 A 3))
+
+In order to play the above, we can write
+
+> (read-file stdlib.mlang)
+> (midge-export test.mg ((100 4 4) ((piano_grand_ac 80 1 (A)))))
+
+The midge-export function takes two arguments, the filename and the song m-expression. A song is represented as a head and a body. The head contains
+information such as tempo and time signature. The body consists of several channels. A channel has information such as the instrument, volume, repetitions and the notes themselves.
+
+In the above example, the head is (100 4 4) which represents a tempo of 100 bpm and a time signature of 4/4.
+There is a single channel and a single note. The instrument of choice is grand piano, volume is 80 and the A note on the 3rd octave is played once
+with a 1/8 rest.
+
+Go back to the terminal and you will see a test.mg file has been created. In order to play it type
+
+# midge test.mg
+# banshee test.mid
+
+
+2.3 Input and Output
+=====================
+The input for MLang would consists of codes written at the command line or as part of a fille with the .mlang extension.
+The code is a series of mexpressions that represent notes, functions and other metadata.
+On compilations, the program would produce a file with the .mg extension which can be postprocessed with Midge in order to produce a .mid file.
+
+2.4 MLang Expressions
+======================
+The common form of an MLang expression is a function application given by the syntax
+
 (function arg1 arg2 ...)
+
 where the arguments can be MNotes or other functions.
+
 MLang expressions are case insensitive: (A 100) and (a 100) mean the same
-4.1 Functions as values
-Since MLang is a homoiconic language, functions can be treated as data that
-can be passed around.
-In MLang, all functions are evaluated to notes. Thus every function
-eventually is evaluated to a string of notes that forms the midi.
-5 Writing Your rst MLang Program
-A program in MLang is only a sequence of functions. A simple program to
-play a trill would look like this-
->(play (trill C))
-{>.midi
-;this would play alternating B & C
-The commands can be written in any text editor and save to a le with
-the extension '.mlang'.
-6 MLang Lists
-In MLang all the functions are treated as lists. A note can be considered as
-a list with a single element. Consequently all functions evaluate to a series
-of notes which form the input stream to the midi creator.
-3
-7 MLang Loading and Compiling
-Most functions in MLang are going to be much longer than a single line. For
-complex programs, it would be desirable to edit the program with an editor
-and then compile the program to see the output.
-Eg:
-;make-music.mlang
-;by Student
-;
-;Comments at the start of the program help providing clarity of code
-;
-(play (tempo 120)
-(instrument cello
-(treble (meter 6 8)
-(c4 q tenuto) (d4 s) (ef4 e sf)
-(c4 e) (d4 s) (en4 s) (fs4 e (ngering 3)))
-(treble (meter 3 4)
-(c5 e. marcato) (d5 s bartok-pizzicato) (ef5 e)
-(c5 e staccato tenuto) (d5 s down-bow) (en5 s) (fs5 e)))
-(instrument piano
-(bar bass (meter 6 16)
-(c4 e tenuto accent rfz) (d4 s mordent) (en4 s pp) (fs4 e fermata))))
-Save the above le as make-music.mlang. Now load the denition into the
-MLang environment by typing:
-(load "make-music.mlang");
-; Loading ./make-music.mlang
-This code clearly denes what the typical programmer would want to
-achieve. This code would create a make-music.midi le that would play the
-notes mentioned in the styles of the functions for the specied duration. In
-this program, the instrument of choice is the cello.
-4
-8 Conclusion
-The language of music is extremely complex and representing it through
-programs requires much planning at the design level. We hope to be able to
-add more features as the language grows.
-5
+
+2.5 Functions as values
+=======================
+Since MLang is a homoiconic language, functions can be treated as data that can be passed around.
+In MLang, all functions are evaluated to notes. Thus every function eventually is evaluated to a string of notes that forms the midi.
+
+> (MAPCAR TRANSPOSE ((4 A 3) (4 B 3) (4 C 3)))
+
+For instance, TRANSPOSE is a function that is passed as an argument to another function, in this case MAPCAR. MAPCAR applies TRANSPOSE to each
+of the MNotes in the third m-expression
+
+Another example
+> (read-file stdlib.mlang)
+> (LABEL BASSPHRASE
+  	 (CONCAT (REPEAT4 (3 B 16)) (REPEAT4 (3 A 16)) (REPEAT4 (3 G 16)) (REPEAT4 (3 A 16))))
+
+Here REPEAT4 is a lambda function defined in stdlib.mlang. It takes a parameter and returns an mexpression containing it 4 times. CONCAT takes
+all of these m-expressions and concatenates them.
 
 
-1 Introduction
-This manual serves to provide an in-depth description of the Turing Complete programming language MLang. It assumes a considerable familiarity in the syntax of MLang. For a tutorial introduction to MLang, see the MLang Tutorial(make to italics).
+2.6 Writing Your First MLang Program
+====================================
+Here is an example .mlang program that plays the first few notes of Happy Birthday
 
-1.1 MLang History
-MLang was developed in 2012 at Columbia University, New York. The motive behind the project was to create a Turing Complete programming language that could be used to create music in a grammatically accurate manner. 
+(
+	(read-file stdlib.mlang)
+	(label head
+	       (42 4 4))
+	(label phrase1
+	       ((3 g 4) (3 g 4) (3 a 4) (3 g 8)))
+	(label channel1
+	       (bass_ac 96 1 phrase1))
+	(MIDGE-EXPORT
+		happy.mg (head (channel1)))
+)
 
-MLang is inspired largely by Lisp, and it is likely that there would be many syntactical similarities between MLang and Lisp. Like Lisp, MLang is a homoiconic language, with musical notes serving as the primitive data types. MLang's interpreter though is written in Ocaml.
+The first statement is used to load the standard library.
 
-1.2 Conventions
-This details how the code is constructed in MLang.
+The label keyword is used to bind a string with an m-expression. Here we have bound head with the mexpression (42 4 4).
+We have then defined the first phrase which consists of 4 notes. The label channel1 is made up of phrase1. An m-expression is then created
+which is fed into midge-export.
 
-1.2.1 Terms
-Throughout the manual, references to "MLang Reader" and "MLang Printer" refer to the processes that convert the text in the program to MLang objects for evaluation and vice versa. Any use of the term "you", refer to the programmer or the person reading the manual as appropriate. 
+In order to play this song from the commandline type
 
-MLang functions are written as -
-
-{format}
-open-paren name-of-play duration close-paren
-
-Eg:
-
-(rondo 100) calls the function 'rondo' that plays the musical piece "rondo" for 100 ms.
-
-1.3 Acknowledgements
-
-2 MLang Data Types
-In MLang the primitive data type is the note. An MNote can be considered to be a function that takes in zero parameters and has a single fixed output.
-
-A single note in MLang can be written as -
-
-%name-of-note {format}
-
-Here '%' is a note identifier rather than a shell prompt. An example of a note can thus be given as-
-
-%A {format}
-
-This represents the musical note 'A' with a play time of 50ms. 
-
-2.1 Printed Representation
-The printed representation is the format of the output generated by the MLang execution. Every data type has a unique printed representation. The read syntax of an object is the format accepted by the MLang program for that object. When you evaluate an expression interactively, the MLang reader reads the text, produces and object and evaluates that object.
-
-2.2 Comments
-A comment is a text that is written purely to establish clarity in the program when read by the programmer or others. The text enclosed by the comments are not evaluated by the MLang interpreter. In MLang, the comments are marked by a semicolon, ';'. 
-When a text starts with the comment symbol, the entire string is not read. 
-Eg:
-
-;this is a comment
-(play (treble 5)) 
-
-(Comments can be written only at the start or end of the program - do we make this restriction? Also we're using only ';' for all types of comments)
-
-For commenting out functions, the ';' symbol must be used at the beginning of every like of the function.
-Eg:
-
- ; this function has been commented
- ; (play (canon 500) 
- ;  	 	(rondo 100))
-
-3 MLang Functions
-In MLang, functions are defined by a set of enclosing parenthesis.The function is can be considered to be defined like a lambda, which is eventually evaluated to a series of notes. During evaluation, a function is treated just like a note (or a series of notes) but with arguments.
-
-4 Modules
-These are defined by the MLang standard library and will be available for use.
-
-4.1 Phrase
-A phrase consists of an arbitrary number of notes/functions with a total duration specified. The duration is not known at compile-time.
-
-An example of a phrase can be given by -
-
-
-4.2 Trill
-A trill is a musical feature that involves playing two notes in quick succession to each other. 
-
-An example of a trill can be seen below -
-
-5 Lists
-Similar to Lisp, MLang processes all the objects as lists. The primitive data type MNote can be considered as a list of size 1. Functions are a series of MNotes. If the cdr of a list contains a value, then the list is evaluated as a function, and if the cdr is empty, then the list is considered to be a single note. 
-
-6 Evaluation of an MLang Expression
-
-When a function written in MLang is called, the value of the function is computed by evaluating the expressions written in the function body. Evaluation of an expression written in MLang is done in a recursive manner i.e. it involves evaluating expressions within an expression, starting right from a single argument.  
-
-“##We can talk about environment here. I was not sure how it happens”
-
-We can have Self-evaluating functions that evaluate to the object being evaluated, and Symbol forms that refer to a symbol table to return a variable’s value. Function and Module forms are evaluated by computing the value of the expressions/ nested expressions in the function.
-
-7 Compiling and Running an Mlang Program
-
-An Mlang program is technically a series of function calls. When you compile this program, an OCaml complier simply converts these functions into a representation that can be executed more efficiently. This file is then evaluated by an OCaml interpreter to a form that can be used to generate MIDI files. (Yes! You can listen to the music you just wrote!)
+# ./mlang < happy.mlang && midge happy.mg && banshee happy.mid
 
 MLang is portable in the sense that it does not depend upon the machine’s hardware for its execution.
 
-Project plan 					
-Written by
-Sushmita Swaminathan
-Project Manager, MLang
+3. Language Reference Manual
+=============================
 
-The goal of the project was to create a programming language for
-music, one that is Turing complete while also following the rules of
-classical music theory.
+3.1 Lexical Conventions
+=======================
+# Aditya: Please fill up
 
-Understanding that the design required several rounds of development
-and testing, we decided to adopt an Iterative Development Model as
+
+3.2 Character Set
+=================
+
+Mlang programs are written in ASCII character set.
+
+
+3.3 Identifiers
+===============
+In MLang, an identifier is a string that starts with a letter or an underscore, and consists
+of a sequece of letters, digits, and underscores. Identifiers are case insensitive.
+
+
+3.4 Keywords
+=============
+
+The following keywords are reserved (#put in table)
+"QUOTE", "CAR", "CDR",  "SETCAR", "SETCDR", "CONS", 
+"EQUAL", "ATOM", "COND",  "IFELSE",  "LAMBDA", 
+"LABEL", "READ-FILE", "WRITE-FILE",  "LENGTH",
+"NTH",  "LAST",  "MAPCAR",  "REDUCE",  "INC" "DEC"
+"COMBINE", "REVERSE", "CONCAT", "MIDGE-EXPORT"
+
+These are simply functions whose behavior has been defined in OCaml.
+
+3.3 Types
+=========
+
+The basic type in MLang is the Mexp which is a cell. The Mexp is defined as
+
+type ('a, 'b) cell = { mutable car: 'a; mutable cdr: 'b }
+
+type t = Atom of string
+  | Cons of (t, t) cell
+  | Func of (t -> (string, t) Hashtbl.t -> t)
+  | Lambda of t * t
+  | Null
+
+Thus our language only provides symbol atoms (no integers, strings, etc)
+and cons cells. It is dynamically scoped.
+
+
+3.4 M-expressions
+=================
+
+The following are valid m-expression
+
+> (1 2 3 4)
+
+> (A B C)
+
+> (LENGTH (1 2 3))
+
+> (LABEL A (a l p h a))
+
+3.5 Grammar
+===========
+
+The grammar of Mlang is incredibly simple.
+It has expressions, which are symbolic identifiers, and lists.
+A list is a left parenthesis followed by some number of expressions (separated by spaces) followed by a right parenthesis.
+
+expr:   ID | list
+list:   ( seq )  
+seq:       | expr seq
+
+3.6 Higher-order functions
+===========================
+# Sushmita/Aditya please fill up with a description. Ping me if you
+are not sure.
+
+1) CONS
+
+2) CDR
+....
+
+n) MIDGE-EXPORT: See the next section
+
+
+3.7 Midge backend
+==================
+
+MIDGE-EXPORT takes 2 arguments, the name of the output file and an m-expression representing the song of the midi file. 
+
+(MIDGE-EXPORT name.mg SONG)
+
+The song is an m-expression represented as:
+
+(HEAD BODY)
+
+HEAD -> (TEMPO SIGNATURE_NUMERATOR SIGNATURE_DENOMINATOR)
+
+Head consists of the song of the tempo, numerator and denominator of the time signature.
+
+BODY -> (CHANNEL1 CHANNEL2 CHANNEL3....)
+
+A body is a sequence of channels.
+
+CHANNEL1 -> (INSTRUMENT VOLUME REPETITION (NOTE1 NOTE2 NOTE3...))
+
+A channel is represented by its instrument, volume in the mix, the number of times it must be repeated and finally, the sequence of notes.
+
+NOTE1 -> (rest note-literal octave)
+
+For instance the A note on 3rd octave played as a quarter note can be
+represented as
+
+(4 A 3)
+
+
+
+4. Project plan (Sushmita Swaminathan, Project manager)
+========================================================
+
+The goal of the project was to create a programming language for music, one that is Turing complete as well as homoiconic and functional.
+
+Understanding that the design required several rounds of development and testing, we decided to adopt an Test Driven Development Model as
 opposed to a more traditional Waterfall model.
 
-Iterative Development Model
-We divided the project into a number of sub-tasks that would be performed repeatedly until the final product was obtained. These stages were Goal Forming/Reassessing, Compiler Design, Design implementation/Development and Testing.
+Test Driven Development Model
+We divided the project into a number of sub-tasks that would be performed repeatedly until the final product was obtained. These stages were
+Goal Forming/Reassessing, Compiler Design, Design implementation/Development and Testing.
 
 Goal Forming/Reassessing
 As the first step of the project, the main goals and objectives were defined and communicated to all members of the team. Subsequently, at regular intervals these goals were reassessed to ensure that their relevance was still maintained. Also, new goals were formulated, while some ideas that were not pertinent were discarded. While the main goal was to develop a language that would play music, some of the smaller goals that were set for the team included getting familiar with Ocaml and Lambda Calculus.
 
 Compiler Design
-This phase is very critical, since it defines the structure of the entire project. We decided on Ocaml as our compiler language. We also decided to adopt the Lisp style of implementation for the syntax and built-ins. We also developed M-expressions to parse MLang code. 
-For the backend, we decided to use Midge for creating the .midi files that would eventually play the music.
+This phase was very critical, since it defined the structure of the entire project. We decided on Ocaml as our compiler language. The reason was
+that since we were developing a functional language, it made more sense to use a functional language to implement it too. Another reason was that
+most DSLs implemented in the industry are built on top of functional languages such as Haskell and ML so an exercise in writing a significant
+project in OCaml would prove beneficial in the long run as well.
+Since one of our design goals was homoiconicity, we had to be very careful while designing the language semantics. Thus, we decided to base our
+language on Scheme/Lisp as it is the most tried and tested homoiconic language. 
+For the backend, we decided to use Midge for creating the .midi files that would eventually play the music. This was chosen in order to keep our
+implementation sandbox pure as Midge was the least intrusive of all the options.
 
 Development
 In this phase, the designs were translated into executable code. The first implementations were of the lexer and parser, followed by the creation of an MLang environment and associated built-ins. New ideas that emerged during this time were reassessed.
@@ -217,7 +295,7 @@ Closely following the development, we also tested the created applications.  The
 
 Roles and Responsibilities
 
-Project Manager
+Project Manager (Sushmita Swaminathan)
 Keep end objective always in sight
 Project design and implementation issue tracking and management
 Ensuring constant communication among team members
@@ -225,21 +303,21 @@ Maintain regular checks to assess progress and pace of the project
 Managing team issues
 Contributing to the design and development in a technical role
 
-Language Guru
+Language Guru (Aditya Mukherjee)
 Principal contributor to the design of the language
 Provide domain expertise that helps clarify doubts and issues that arise implementation
 Offer suggestions to improve on existing design and implementation
 Suggest new features or offer alternatives to be incorporated in the existing language design
 Technical contributor the design and development of the language
 
-System Architect/Integrator
+System Architect/Integrator (Nikhil Sarda)
 Suggest and decide on the compiler language for MLang
 Principal architect of the MLang environment
-Identify the critical modules to be implemented and issues with design that need rethinking
+Identify the critical modules to be implemented and issues with language design that need rethinking
 Ensure code flow through all the modules without break
 Main deciding factor in accepting or rejecting design decisions based on development limitations
 
-Tester
+Tester (Nishtha Agarwal)
 Worked in tandem with the Architect to ensure code flow without breaks
 Identify pain-points in the code that could lead to potential errors
 Develop test cases for all the implemented modules
@@ -247,47 +325,67 @@ Exhaustive testing of all modules to ensure their functioning
 Communicate all errors to the team and receive clarifications on implementations and bugs
 Develop a test suite that tests for errors when the Make is run
 
-Implementation style sheet
+
+Implementation stylesheet
 
 
-Time line
-January	    Discussions and Brainstorming on language ideas
-		    Finalized language to be implemented as MLang and the type of language to be functional
-		    Preliminary Goal Setting – Getting familiar with Ocaml, Understading Lambda Calculus and functional programming features
-February	    Finalize compiler language to be Ocaml	
-		    Develop design implementation strategies for MLang
-		    Finalize language features such as syntax – to maintain Lisp like syntax, M-expressions to parse MLang code
-		    Language Whitepaper
-		    Begin implementation of lexer and parser modules
-March	    Complete implementation of lexer and parser
-	  	    Develop built-ins for MLang
-		    Create MLang environment, execute basic function and simple tests for errors
-		    Consider Midge as a possible back-end for creating the music
-		    MLang Reference Manual
-		    Language Tutorial
-April	Midge and Java offered as two possible back-ends for music creations
-		Team decides to go ahead with Midge for creating the .midi files
-		Midge back-end completed
-		Hello World works!
-		More built-in functions (SETCAR, SETCDR, IFELSE, CONCAT) added
-		Sample MLang programs written
-		Exhaustive testing of functions begins
-May		Midge function, MIDGE-EXPORT added
-		Built-ins such as REVERSE, NTH, LENGTH,COMBINE, READ-FILE,WRITE-FILE added
-		MLang stdlib defined with functions such as TRANSPOSEUP, TRANSPOSEDOWN, NUMNOTES, REVERSEBODY
-		Songs paranoid.mlang, reaper.mlang, happy.mlang created
-		Mlang-mode defined for emacs
-		Testing and bug-fixing continue
-		Project Report
-		Project Presentation
+January
+=======	   
+
+Discussions and Brainstorming on language ideas
+Finalized language to be implemented as MLang and the type of language to be functional
+Preliminary Goal Setting – Evaluating implementation choices (OCaml, Java, C),
+Understading Lambda Calculus and functional programming features
 
 
+February
+========
+
+Finalize compiler language to be Ocaml	
+Develop design implementation strategies for MLang
+Finalize language features such as syntax – to maintain Lisp like syntax, M-expressions to parse MLang code
+Language Whitepaper
+Begin implementation of lexer and parser modules
 
 
+March
+=====
+
+Complete implementation of lexer and parser
+Develop built-ins for MLang
+Create MLang environment, execute basic function and simple tests for errors
+Consider Midge as a possible back-end for creating the music
+MLang Reference Manual
+Language Tutorial
 
 
+April
+=====
+
+Midge and Java (JFugue) offered as two possible back-ends for music creations
+Team decides to go ahead with Midge for creating the .midi files
+Midge back-end completed
+Hello World works! Demo given to Aho in class.
+More built-in functions (SETCAR, SETCDR, IFELSE, CONCAT) added
+Sample MLang programs written
+Exhaustive testing of functions begins
 
 
+May
+===	
+
+Midge function, MIDGE-EXPORT added
+Built-ins such as REVERSE, NTH, LENGTH,COMBINE, READ-FILE,WRITE-FILE added
+MLang stdlib defined with functions such as TRANSPOSEUP, TRANSPOSEDOWN, NUMNOTES, REVERSEBODY
+Songs paranoid.mlang, reaper.mlang, happy.mlang created
+Mlang-mode defined for emacs
+Testing and bug-fixing continue
+Project Report
+Project Presentation
+
+
+Timeline
+=========
 
 Module	Completed on	Issues	Issued closed on
 lexer & parser	March 5,2012	Build Errors	March 5,2012
@@ -322,8 +420,1122 @@ Mlang-mode for emacs added	May 05,2012
 Warnings during compilation	May 01,2012		May 05,2012
 
 
+Git Project Log
+===============
+commit 60ac3effc7b8a1c5cf8a782339f961f0ca673fb3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun May 6 12:34:47 2012 -0400
+
+    Finished first draft of report.
+
+commit a22f91535ea9fbb6f579d9a47f41a2e2edb1770e
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun May 6 12:02:05 2012 -0400
+
+    Added architecure diagram.
+
+commit 7b58254c6f0e8bbe512078445e8000a591418def
+Merge: 6708e96 1005a44
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun May 6 11:29:27 2012 -0400
+
+    Merge branch 'report-br' into testing
+
+commit 1005a44536f917ee558d4fb0dbceefcd8704430f
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Sun May 6 04:55:01 2012 -0400
+
+    Final report draft
+
+commit 6708e96ee169b40c36bdf72e59f751ef797c0905
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 23:42:16 2012 -0400
+
+    Added stubs for some higher order functions.
+
+commit 061175bc692d300ce6e613b98d4b00d2328cfd44
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 22:27:50 2012 -0400
+
+    Fixed makefile. There is a directory named test that messes with
+    Make.
+
+commit 1f1b18880c31322872cf83fa4654416c97096c65
+Merge: 6368288 e6a60d7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 22:12:20 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit e6a60d71a28bff6925f3103a224a5ab4638c9008
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:07:55 2012 -0400
+
+    Removed the duplicate files in New\ folder/ from testingbranch
+
+commit 34f2669f73b6613166dc1cae0b84e23207413897
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:07:05 2012 -0400
+
+    Overwrote testing11/tests/ with files from New\ Folder/
+
+commit e1360de66125cf736b9451f0d3d9abea04aaace5
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:04:22 2012 -0400
+
+    Deleted duplicate test files from na-na's testingbranch
+
+commit b01bd8dc1dbbfab38535d2b27cad5440accf5ad3
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:03:20 2012 -0400
+
+    Added na-na's testing11/ files from testingbranch
+
+commit 8e49689cd16834854ac4448c350839dcb98cad24
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:02:17 2012 -0400
+
+    Added *.result files to .gitignore
+
+commit e3672d0cb1de9dfbd1be0a5b8e7674b69e4c62a1
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 22:00:31 2012 -0400
+
+    Added midi and midge files to .gitignore.
+
+commit f4fb9a2024dc5c983e0912ab21b62b084cc77eca
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:53:51 2012 -0400
+
+    Added more of na-na's testing files
+
+commit bdd1a702cac0e7edf76b810ab38ced27cc57a605
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:51:25 2012 -0400
+
+    Added na-na's testing11/10.test
+
+commit 997adf947b315e98d79b456edb8cae26611e1556
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:50:48 2012 -0400
+
+    Added .depend file from na-na's testingbranch
+
+commit 912090f96c7f7f4b223e5ea55e497f4caa4bb033
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 21:49:33 2012 -0400
+
+    Added happy.mlang from na-na's testbranchfixing
+
+commit 6368288e544ca2cb355f96e3f98939774d4328c7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 16:15:25 2012 -0400
+
+    Added initial version of my report in a text file.
+
+commit 4aad3fd6c4bf8bee60f13e025667769d57dbc0d6
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 17:53:02 2012 -0300
+
+    Hppy Birthday
+
+commit 69aa8ed7a968b7da342ed20ee6818b10c83896c4
+Merge: 842dc4c b5ab900
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 16:41:34 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit 842dc4c3a9efde1d916abb97b1036d35f7c72658
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 16:15:25 2012 -0400
+
+    Added initial version of my report in a text file.
+
+commit b5ab9001bad66d1ff63e4b0e29597a7dc862a173
+Author: tinkcode <sush.swami@gmail.com>
+Date:   Sat May 5 16:32:47 2012 -0300
+
+    Update mlang-mode-doc.txt
+
+commit 5c98d5e1ba1bb03eed462742204438f9c6b2b343
+Merge: 0bee0d7 b0f770b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 14:59:07 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit b0f770b56a51c367bc8dcae64c855c6d02f2a74d
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Sat May 5 13:40:42 2012 -0400
+
+    commands to add mlang-mode to emacs
+
+commit 048f27cda1666dcbff43871da22ca805e01882f3
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Sat May 5 13:31:28 2012 -0400
+
+    Mlang-mode for emacs
+
+commit 0bee0d76c999a4bb457b194055be299775ff3e2f
+Merge: 6f984e9 676aa43
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 12:10:42 2012 -0400
+
+    Merge branch 'testbranch' into testing
+
+commit 6f984e972825ee56a6b48484a942ab86995bca3b
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:23:12 2012 -0400
+
+    Added outline of fixed-point combinator; cannot be tested until make test is working
+
+commit 0a4b9c2f5138e717c2cc46d308b09289c57c56be
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:05:05 2012 -0400
+
+    Moved CONCATENATE definition to stdlib, where it belongs
+
+commit 5801978c0ed56ac40cd04d2c93ff23d00647d86e
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:02:29 2012 -0400
+
+    Removed unused variable warning
+
+commit f3705db73364512cf2d307458ca025b4d9e06238
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 03:01:55 2012 -0400
+
+    Removed non-exhaustive pattern matching error
+
+commit 0e231fa0d13c811469f12e02f1e566eabe4c5efd
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:51:37 2012 -0400
+
+    Moved definitions of FIRST and LAST into stdlib, where they belong
+
+commit 317dbfa9e018cc872e51e7bd381bc3871a13dbe8
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:37:36 2012 -0400
+
+    Removed test file that was only added to demonstrate git usage
+
+commit d1f3e0066cd202df6714efe24c58357bb2786bec
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:12:14 2012 -0400
+
+    Removed superfluous TODO file (git is not meant for issue tracking)
+
+commit 080bd893c0805bfe5510c023428c2399b4faab38
+Author: aditya <dev@chimeracoder.net>
+Date:   Sat May 5 02:03:39 2012 -0400
+
+    Merged Reference.txt from reference_manual_draft branch
+
+commit bca5825a621517bdc01084f06a84d1a7e54e8ad8
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 01:48:42 2012 -0400
+
+    Rocking to some Black Sabbath...
+
+commit 676aa430209c13598e41b18827640b85275f911e
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 01:14:03 2012 -0400
+
+    Was working on Happy birthday.mlang
+    Isn't complete yet
+
+commit 4eb3d9a08427138f46ad3aa1c7d900296e25011f
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 01:08:43 2012 -0400
+
+    test files along with ther expected outputs
+
+commit 0edb95fd9457bc70c345a4bddd69adc6b0fde728
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Sat May 5 00:58:15 2012 -0400
+
+    testing myfile
+
+commit d9616efebc1b2718eaf2dde010ae113552365f57
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat May 5 00:00:21 2012 -0400
+
+    Added an ascend-descend function
+
+commit 9317b17383b890d236da64c4eaea9117fdc01a68
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:55:32 2012 -0400
+
+    Added some more tests.
+
+commit 2297a9fd9a1cd34d82927161aa50942c468abea0
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:30:58 2012 -0400
+
+    Fixed tests.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 144346c2b8599509bba03caff7494d2038ba499b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:14:40 2012 -0400
+
+    Added a TODO file
+
+commit ca6eb4822a13f65c90fb2724ba5616e8eab470d6
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 23:08:28 2012 -0400
+
+    Fixed stdlib.
+
+commit a35c4941ec989b4a7bac2c35fa4a2eb21445d185
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 21:27:50 2012 -0400
+
+    Added some more stdlib functions.
+
+commit ab15bd36deb077b6c42a64c4c08dc3a464b283c7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 22:56:17 2012 -0400
+
+    Added filename arg to MIDGE-EXPORT
+
+commit 9e30a5625ee9b0c723e70bb0f528a31ed4be24db
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 21:06:38 2012 -0400
+
+    Finished reaper.mlang
+    
+    Its really interesting that midge does not have a proper patch for
+    drums. The whole thing is one giant hack.
+
+commit 41a47146e37f2922186dcc7959ec79d7799d3fa6
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 19:57:50 2012 -0400
+
+    Added instruments in stdlib.
+
+commit 728e971b34da6bd7aa0e959c8b2478b16b75f1a7
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 18:59:33 2012 -0400
+
+    First step at adding midge support for chords. The midge printer
+    will need to be restructured a bit it seems...
+
+commit 8b445cead7ade7065991002f07b6c414ec5fe53f
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 18:02:18 2012 -0400
+
+    MIDGE-EXPORT will croak if unevaluated expressions are passed to
+    it. So we explicitly evaluate it before doing anything.
+    
+    See reaper.mlang for a mlang stdlib function in action.
+
+commit 2663f7b7ebc7b8a8fa02b7fb196d85b97f3bccdd
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 17:02:12 2012 -0400
+
+    Added reaper.mlang
+    
+    Load up mlang repl and type
+    > (READ-FILE reaper.mlang)
+    
+    Go back to the terminal and type
+    
+    Enjoy!
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 24c15edbc8eb08af82b5378d86ae17d3e89458da
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 16:28:55 2012 -0400
+
+    Added SETCAR and SETCDR
+
+commit 07035b8fef44ebe4be316e72c2f568b2b05e3057
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 16:27:00 2012 -0400
+
+    Added some more mlang functions.
+
+commit 8ac1c8dbd31d607bfb8f085b7c77f6c43d9d48c3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri May 4 14:45:11 2012 -0400
+
+    Created complete end-to-end prototype. Keyword is MIDGE-EXPORT.
+    
+    See reaper.mlang for an example.
+
+commit 2dd1947088a2c892edd31149d0c5cf4759692458
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 23:23:52 2012 -0400
+
+    Made pattern matching of REDUCE more comprehensive.
+
+commit f0df46e092284147e828936c3440f245613e4eee
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 23:08:37 2012 -0400
+
+    Implemented REDUCE.
+    
+    > (LABEL GG (LAMBDA (X Y) (X Y X)))
+    > (REDUCE GG (A B C) D)
+    (((D A D) B (D A D)) C ((D A D) B (D A D)))
+    > (REDUCE GG (A) B)
+    (B A B)
+    > (REDUCE GG (A B) C)
+    ((C A C) B (C A C))
+    
+    I am not sure if this is canonical or not, but it has semantics
+    similar to fold_left
+
+commit 1003a78d9961825c28ddda13b5a83ace0362bf51
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 22:18:44 2012 -0400
+
+    Implemented IFELSE
+
+commit 76ed49820307c724ff3d3bd804224d1163365fcb
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 22:08:16 2012 -0400
+
+    Added notes for 4 octaves and rest of 4 and 8 in the stdlib
+
+commit 84b2e173d43a01e312d3ff071fbd5e9c02d642c3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 21:46:42 2012 -0400
+
+    Fixed EQUAL so that it addresses Aditya's concerns.
+
+commit 0d92c5dc70cbe69a4d07d287f682084cea9c5f4a
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 21:27:42 2012 -0400
+
+    Added REVERSE. I strongly hold that certain functions should be
+    built in for performance reasons. We are implementing a homoiconic
+    language for music, not a general purpose homoiconic language.
+    
+    No functions to manipulate music will be written in Ocaml.
+
+commit 916d74c47eeecc777187a35a1d48b2bc8375a7ac
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 20:36:56 2012 -0400
+
+    Added a COMBINE function. Could be useful when sorting out variable
+    bindings.
+
+commit 5668d700d905b74de1ced564d6000a3eb255a10b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 16:09:11 2012 -0400
+
+    Readfile is broken. Only reads one mexp at a time. Also we have
+    implemented TRANSPOSEDOWN.
+
+commit bf898f08655b6817ed9397f418524fb2cc7e2dd6
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 16:04:34 2012 -0400
+
+    We no longer wrap around the octave on transpose
+
+commit 0ab307c9ec216f1ea0e50555d09c71e944e709ee
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 15:53:29 2012 -0400
+
+    Added a stdlib for mlang programs. The first mlang function we did
+    is the transpose function.
+    
+    > (LABEL TRANSPOSE
+           (LAMBDA (X)
+                   (COND ((EQUAL (CAR (CDR X)) C) ((CAR X) C+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) C+) ((CAR X) D (LAST X)))
+                         ((EQUAL (CAR (CDR X)) D) ((CAR X) D+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) D+) ((CAR X) E (LAST X)))
+                         ((EQUAL (CAR (CDR X)) E) ((CAR X) F (LAST X)))
+                         ((EQUAL (CAR (CDR X)) F) ((CAR X) F+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) F+) ((CAR X) G (LAST X)))
+                         ((EQUAL (CAR (CDR X)) G) ((CAR X) G+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) G+) ((CAR X) A (LAST X)))
+                         ((EQUAL (CAR (CDR X)) A) ((CAR X) A+ (LAST X)))
+                         ((EQUAL (CAR (CDR X)) A+) ((CAR X) B (LAST X)))
+                         ((EQUAL (CAR (CDR X)) B) ((CAR X) C (LAST X)))
+                         )
+                   )
+           )
+    > (TRANSPOSE (4 D 3))
+    (4 D+ 3)
+    > (MAPCAR TRANSPOSE ((4 A 3) (4 B 3) (4 C 3)))
+    ((4 A+ 3) (4 C 3) (4 C+ 3))
+
+commit 0b1e190d8dd9c7645978bbc4b5a0294ed5ce6767
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 14:20:43 2012 -0400
+
+    Length now returns an mexp.
+
+commit a5da8b7786c8f56f8910f2861be17f013d0bc9cd
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 14:14:03 2012 -0400
+
+    Added MAPCAR.
+
+commit 45b4520919d2a876cc3ee3ed1c2eccce25e99a8c
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 12:59:14 2012 -0400
+
+    Added "LAST" function.
+
+commit ca1ca367540509fc839212eeb4662cab5a198bef
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 12:48:56 2012 -0400
+
+    Added the NTH function. This allows us to get the "NTH" atom.
+
+commit 2026f82977d94341a9b219dea7bf34b967a52063
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Thu May 3 00:48:11 2012 -0400
+
+    Added LENGTH keyword. Returns the length of an mexp.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 77f2d8814965275f821ca03e630023183ab6fe5d
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Wed May 2 02:59:34 2012 -0400
+
+    Read & Write to file
+
+commit 0b991001981c74f606c8859b977ad423c9422832
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Wed May 2 02:58:50 2012 -0400
+
+    Read & Write to file
+
+commit 4bab7897c8a44d93dae3eb7e2c5ad5206fdddfbd
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri Apr 27 14:43:19 2012 -0400
+
+    Fixed concatenate.mlang
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 211d952210c862314a086e541849e2d2332a8b33
+Merge: 9ce1ce3 e643597
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri Apr 27 14:41:22 2012 -0400
+
+    Merge branch 'testing' of https://github.com/ChimeraCoder/MLang into testing
+
+commit 9ce1ce33f9aaba7f92dbfb08a93913b67003a967
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Fri Apr 27 14:40:27 2012 -0400
+
+    Fixed pretty print so that we actually generate well formed mexps.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit e64359793d930c0c559b1e38ca76338d45c27d4f
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Fri Apr 27 06:35:51 2012 -0400
+
+    check this version for testing labe, and thereafters
+
+commit f1b3256a5434150eca5abe03c696ef7733a16577
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Wed Apr 25 22:19:37 2012 -0400
+
+    defined some mlang functions
+
+commit ce748ca0aec60fc3cf9f91ff5b41c3652acf0356
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Wed Apr 25 19:28:47 2012 -0300
+
+    include test for null
+
+commit ead81c384b7745a9de8bb1595d31dc403abad1e5
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Wed Apr 25 18:23:09 2012 -0400
+
+    Concatenate function in MLang. Havent tested yet.
+
+commit 040681eec6e603dc7263b3a1bcbd247018a3ec60
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Apr 22 13:04:04 2012 -0400
+
+    Merge branch 'testing', remote-tracking branch 'github/testing' into testing
+
+commit cc551896e7dbf5c1e6c46b4feed950f0a244be94
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Fri Apr 20 19:48:38 2012 -0400
+
+    text file
+
+commit d0dab9b94b5f7be9ce747cf1abe0e77e50af52f2
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Fri Apr 20 19:45:00 2012 -0400
+
+    made changes to what aditya had written.
+
+commit 476e0c13756065de2e12a6e13fed69bc948a7dc9
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Fri Apr 20 14:18:03 2012 -0400
+
+    Read from file: Function def
+
+commit c104277beba6d878fe9bf4fc866bf17fab0dae4d
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Fri Apr 20 14:15:18 2012 -0400
+
+    Read from file: FILE label
+
+commit 45d3aa40e1aa84af219420d4a18986a6b6b0fe09
+Author: Sushmita Swaminathan <sush.swami@gmail.com>
+Date:   Fri Apr 20 14:12:30 2012 -0400
+
+    Read from file: Accept extns
+
+commit 7dd583d63709b521929636fd72724c1b3ca6cf9d
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Apr 15 20:55:15 2012 -0400
+
+    We can now parse sharps and flats
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 3e24410fa8f1c81c275410b743d9a022dfefc0b4
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Apr 15 20:44:07 2012 -0400
+
+    Hello world works!
+    
+    On repl, do this
+    
+    (c d e f g a b)
+    
+    This will play on electric bass, at a tempo of 120, quarter notes
+    of the C major scale.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 9eda081403138dc0a2e76666b242da3d3139dd19
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Apr 15 17:16:41 2012 -0400
+
+    Added changes to makefile to include Midge
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 14560777f1dc3878df6d35c339a19ca128484811
+Merge: eb69b05 ea9f56a
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat Apr 14 21:17:04 2012 -0400
+
+    Merge branch 'mlang-backend' into testing
+
+commit ea9f56a2f2c63d622fa8e35ee8fb636e16abc65b
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat Apr 14 19:52:20 2012 -0400
+
+    Made note a bit more descriptive.
+    
+    (4,"e",3);(4,"f",3);(4,"g",3);(4,"a",3);(4,"b",3);(4,"c",3)])];;
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit fff4caa5b244928724e95095bb00f5523e4dbdf3
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Sat Apr 14 19:31:03 2012 -0400
+
+    Midge output complete. Given a data structure we can output it
+    to a file.
+    
+    Example:
+    
+    "a";"b"])];;
+    - : unit = ()
+    
+    This produces a soundtrack that plays the scale of C major, 3rd
+    octave using a bass guitar.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 561ef1e761509cd20d87f11beb2137de6c971cb5
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Tue Apr 10 22:12:30 2012 -0400
+
+    Added some helper functions.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit 361746bb7f49b300f62bf539dbc1457c3fdaf2bf
+Author: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+Date:   Mon Apr 9 15:37:44 2012 -0400
+
+    A simple data structure to represent what a midge file would
+    look like.
+    
+    Signed-off-by: Nikhil Sarda <nikhil@ubuntu.ubuntu-domain>
+
+commit eb69b05db494cfbde43419abc4a0204e853583ff
+Author: Nikhil Sarda <diff.operator@gmail.com>
+Date:   Mon Apr 2 20:49:13 2012 -0300
+
+    Fixed spelling
+
+commit ba02559db2f012c45c731b3854c473a370e3172b
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Mon Apr 2 02:00:52 2012 -0400
+
+    Grammar for MLang. v1
+
+commit 91f089fc1b00d51b78180282f1fdbf6a465b08a3
+Author: na-na <nnishtha.agarwal@gmail.com>
+Date:   Mon Apr 2 01:28:20 2012 -0400
+
+    test123
+
+commit 14237d36a5ae1fe02356013c1b7534657647f9e3
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Apr 2 00:19:47 2012 -0400
+
+    Fixed typographical error in mozart-form function call
+    
+    * There was an erroneous -phrases statement
+
+commit f7aad7f9d0cfd4760e1bff6cb42c0be740703f80
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Apr 1 21:21:38 2012 -0400
+
+    Added sample program that demonstrates MLang's homoiconicity.
+
+commit b0ea4467bb3163f848924e32b4a2c6cfd877bb0a
+Merge: 08d1372 c2f0888
+Author: aditya <dev@chimeracoder.net>
+Date:   Fri Mar 23 01:25:54 2012 -0400
+
+    Merge branch 'master' into testing
+
+commit c2f088874d6d939c91e0cdff292c445b7b1a0ab5
+Author: aditya <dev@chimeracoder.net>
+Date:   Fri Mar 23 01:25:42 2012 -0400
+
+    Updated git_practices.markdown
+
+commit 08d13723f639e1749858dbd716294997f26ad8d1
+Author: aditya <dev@chimeracoder.net>
+Date:   Fri Mar 23 01:23:26 2012 -0400
+
+    Merged Language-Tutorial into testing
+
+commit 538c93be9cfcf6d3ddb1d8a205451598afa4ad42
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 03:02:09 2012 -0400
+
+    Added lambda/note definitions of 0, 1, and the successor function
+
+commit 50fef0c702f50cb29ef0507c0926316494b5252e
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:38:54 2012 -0400
+
+    Added explanation of why fn_equal is partly broken
+
+commit 4748785543ea141cb5c124ee36728aa2f7a37cfb
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:36:10 2012 -0400
+
+    Defined standard extensions for TRUE/FALSE/IFELSE
+    
+    * Also provided explanation of currying in Lisp, with examples
+
+commit 7bfb9aac2f9bbe15573ed3f5d001cdf10c85c043
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:35:41 2012 -0400
+
+    Added more informative error messages to mexp definitions
+
+commit 88b689cd547ea5893ebba111e366602b536074a4
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:35:21 2012 -0400
+
+    Added LABEL statement to main.ml
+
+commit 57b4efd6676813e41fc14a118413e3d37198565a
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 02:33:55 2012 -0400
+
+    Created separate file for standard functions defined in pure MLang
+
+commit 6fe4da674d676713c83783fb72c614816a56d078
+Author: aditya <dev@chimeracoder.net>
+Date:   Wed Mar 21 01:24:36 2012 -0400
+
+    Fixed LABEL test
+
+commit 650333b24d2a7431ba11f199fa70255350c829f5
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:29:25 2012 -0400
+
+    Added cdr and (car (cdr .)) regression tests
+
+commit ec45acdcb34c4617ab6270707a064336b247917c
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:11:58 2012 -0400
+
+    Added whitepaper to repository
+
+commit a57aba9ff04148834181393aef56ec9f50ecb81f
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:17:20 2012 -0400
+
+    Added TeX auxiliary files (and Vim swapfiles) to .gitignore
+
+commit 161e51a221eb585ff83c6ac6c9050b24da8853c0
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:17:20 2012 -0400
+
+    Added TeX auxiliary files (and Vim swapfiles) to .gitignore
+
+commit 8d31eef73266c3010adde094e13420a537f5e297
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:11:58 2012 -0400
+
+    Added whitepaper to repository
+
+commit 29d023e928f249ae6bcdef0c87b997ccb8833d85
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Mar 19 00:06:25 2012 -0400
+
+    Added comments to test_repl_input
+
+commit fc3376a81f9954efcb2babdb2d509a7ec12cd3f4
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Mar 18 23:52:44 2012 -0400
+
+    Added the test_repl_input file to the repository
+
+commit 59281194747be90ba3c7bfad86ae958fb5c574ee
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Mar 18 23:43:33 2012 -0400
+
+    Added testing function to Makefile ('make test')
+
+commit b6be135a6c2f02d76011ffe4cefc3f1532177e58
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Mar 18 23:31:31 2012 -0400
+
+    Created a simple REPL input-output bash script
+
+commit 05f0f70f90f34870792d5123b8bd7286eb13048b
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Wed Mar 14 21:08:50 2012 -0400
+
+    Added some midge specific keywords. Will need to fill up later.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit cabf26aac7422f4413650e2ca81cb8ab947ca309
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Tue Mar 13 19:56:07 2012 -0400
+
+    Fixed some build errors. Added Makefile
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit b1a9926020a37c1853c7cb5b4f774302302178e7
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:43:16 2012 -0500
+
+    Added repl
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit ca04e4f7a6c34236995badba645e5399e5210575
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:38:25 2012 -0500
+
+    Added some native language features.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 3570163aaa3113bbf2b22b64f2c851e5b6a0bb7c
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:32:06 2012 -0500
+
+    Added symbol table
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 3da76b1372ad943657a26d5025ca5bb696dfff84
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:31:47 2012 -0500
+
+    Added Mexp definition
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit e04ee75c018e8d467db57934a6f8b5703537d0c3
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 5 14:08:40 2012 +0800
+
+    Added lexer and parser for a very basic Lisp-ish like syntax.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 5c98a95f16ce77f1193427b7fd1e9128561f9c10
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 5 13:25:36 2012 +0800
+
+    First commit.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit 2c594056a7fdac8aa5fb640937b3277e5c42d6c0
+Author: Aditya Mukerjee <chimeracoder@gmail.com>
+Date:   Thu Mar 8 01:43:57 2012 -0500
+
+    Specified CLISP as LISP interpreter in parsing example.
+
+commit 02dfb1021af3690af5d16236747fe0001e94b4b2
+Author: aditya <dev@chimeracoder.net>
+Date:   Thu Mar 8 01:42:30 2012 -0500
+
+    Added parsing process description
+
+commit dc28c5dfe6aef63188b8ef596c1f8a9435604828
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 19 08:50:33 2012 -0500
+
+    Added the MIDI backend (courtsey Neil Burroughs)
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit fbb53ea24a3d43a7ff0706399ce5d94f1eb5b7bf
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Feb 12 22:01:38 2012 -0500
+
+    Fixed definition for a trill
+
+commit a85d830aa4b28ab39455d788df154793c2b0aba4
+Author: aditya <dev@chimeracoder.net>
+Date:   Sun Feb 12 21:57:36 2012 -0500
+
+    Created Markdown file describing datatypes to be implemented
+
+commit 964dcbea04a230f7378a1cbe57c3f6f2597a1c5b
+Author: Aditya Mukerjee <chimeracoder@gmail.com>
+Date:   Mon Feb 6 18:59:06 2012 -0500
+
+    Updated guide with explanation of git paradigm (including branching)
+
+commit afd4be0e9932f406f29795cf429225b4024a2c56
+Author: nikhil <nikhil@ubuntu.ubuntu-domain>
+Date:   Sun Feb 5 13:25:36 2012 +0800
+
+    First commit.
+    
+    Signed-off-by: nikhil <nikhil@ubuntu.ubuntu-domain>
+
+commit cf39915cd41f24a7f1ba8b85847ccf984c6b35b8
+Author: aditya <dev@chimeracoder.net>
+Date:   Tue Jan 31 12:49:56 2012 -0500
+
+    Fixed formatting/intro.
+
+commit ec2000f8e91e96b2bc4f046c6a2fd1400ff920a7
+Author: aditya <dev@chimeracoder.net>
+Date:   Tue Jan 31 12:48:06 2012 -0500
+
+    Fixed formatting of intro
+
+commit 52b1f1a8966b353ec6faf0ecc1be42cd50dcc4a1
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 22:42:01 2012 -0500
+
+    Created a test file to push to testing.
+
+commit 05055043c55426d37ab52f195dcd6ed99ca37cfa
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 21:46:38 2012 -0500
+
+    Made some changes to the markdown formatting
+
+commit 09943b631a687fb0486b2ac2b45200a8fc5dcbee
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 21:39:13 2012 -0500
+
+    Added git best-practices style guide
+
+commit d7a44bf3535257f9e4005b8d1e1b1b3e72a134a2
+Author: aditya <dev@chimeracoder.net>
+Date:   Mon Jan 30 20:50:32 2012 -0500
+
+    First commit
 
 
+
+6. Translator Architecture (Nikhil Sarda, System Architect)
+============================================================
+
+Architecture
+============
+
+#Put ArchitectureDiagram.jpeg here
+
+The above is a high-level overview of the architecture of the MLang compilation process. The mlang program goes through the lexer and parser that
+generate an ML representation of a m-expression. This representation is then evaluated and processed into an m-expression that can be understood
+by the Midge backend. If at this point definitions present in the standard library are needed, they are loaded as well.
+We have defined some in built functions as well as several functions written in MLang itself. Functions written in OCaml were done so in order to
+take advantage of tail-call optimization and other performance reasons. However, keeping in line with the design goal of MLang as a homoiconic
+music language, NO music specific function was written in OCaml. M-expression evaluation is quite straightforward. As we walk the AST, we pattern-
+match specific m-expression forms. For instance, if we encounter an atom, we check it against a hash-table that represents all the environment
+variables and their respective mexpression bindings. If a binding exists, it is replaced in place of that atom and evaluated with the rest of the
+m-expression treated as arguments. If not, we move on to the next m-expression. Forms such as lambdas and function calls are evaluated similarly.
+The backend then generates intermediate .mg files which is then converted to MIDI. If a MIDI synthesizer is present on the system, it can be played 
+with any conventional player.
+
+Interesting technical notes
+===========================
+
+MLang has no side-effects. The only IO it can do is through the READ-FILE, WRITE-FILE and EXPORT-MIDGE keywords. This functionality piggy-backs on
+OCaml.
+
+Evaluation in MLang is eager.
+
+Garbage collection in MLang piggy-backs on the OCaml run-time.
+
+Module Contributions
+====================
+
+Nikhil Sarda: Lexer, parser, most of the interpreter/evaluator, midge backend, most of the standard library.
+Sushmita Swaminathan: READ-FILE, WRITE-FILE function
+Aditya Mukherjee: Fixed-point combinator, fixes to the interpreter, some standard library functions
+
+
+
+
+7. Development and run-time environment (Nikhil Sarda)
+======================================================
+
+Environment
+===========
+
+We used OCaml for all our development purposes. The compiler used was The Objective Caml toplevel, version 3.12.1 along with the Batteries Included
+standard library. We used GNU Make for our build process after evaluating and rejecting OCamlBuild. Shell scripts were used as glue.
+For most editing tasks, we used vim and emacs. Keeping in line with our preferences for extensible and fast editors instead of full
+blown IDEs, we developed an emacs-mode for MLang as well. For version control, we used Git. This allowed us to work with multiple branches in a
+completely distributed manner and allowed for easy merging when we needed to integrate the various components that different people were working on.
+We used Github for source code hosting as well as for issue tracking. Email was used extensively for technical discussions.
+
+Makefile
+=========
+
+a) Makefile
+
+OCAMLC=ocamlc
+OCAMLOPT=ocamlopt
+OCAMLDEP=ocamldep
+INCLUDES=
+OCAMLFLAGS=$(INCLUDES) -g
+OCAMLOPTFLAGS=$(INCLUDES)
+
+MAIN_OBJS=mexp.cmo midge.cmo parser.cmo lexer.cmo symtab.cmo environment.cmo builtins.cmo main.cmo
+
+mlang: .depend $(MAIN_OBJS)
+	$(OCAMLC) -o mlang $(OCAMLFLAGS) $(MAIN_OBJS)
+
+.SUFFIXES: .ml .mli .cmo .cmi .cmx .mll .mly
+
+.mll.ml:
+	ocamllex $<
+.mly.ml:
+	ocamlyacc $<
+.ml.cmo:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.mli.cmi:
+	$(OCAMLC) $(OCAMLFLAGS) -c $<
+
+.ml.cmx:
+	$(OCAMLOPT) $(OCAMLOPTFLAGS) -c $<
+
+testmlang: $(MLANG)
+	./run_test.sh test_repl_input.txt
+
+clean:
+	rm -f mlang
+	rm -f *~
+	rm -f *.cm[iox]
+	rm -f parser.ml parser.mli
+	rm -f lexer.ml
+
+parser.cmo : parser.cmi
+parser.mli : parser.mly
+parser.ml : parser.mly
+
+
+.depend:
+	$(OCAMLDEP) $(INCLUDES) *.mli *.ml *.mly *.mll > .depend
+
+include .depend
+
+b) .depend
+
+builtins.cmo: symtab.cmo mexp.cmo environment.cmo midge.cmo
+builtins.cmx: symtab.cmx mexp.cmx environment.cmx midge.cmx
+environment.cmo: mexp.cmo
+environment.cmx: mexp.cmx
+main.cmo: symtab.cmo mexp.cmo environment.cmo builtins.cmo midge.cmo
+main.cmx: symtab.cmx mexp.cmx environment.cmx builtins.cmx midge.cmx
+midge.cmo: mexp.cmo
+midge.cmx: mexp.cmx
+mexp.cmo:
+mexp.cmx:
+symtab.cmo: mexp.cmo
+symtab.cmx: mexp.cmx
+
+c) run_test.sh
+
+#! /bin/sh
+
+#A very basic, very hacky unit testing framework
+
+filename=$1
+
+repl_test()
+{
+    failed=0
+    echo "Begin tests"
+    while read p; do
+        mlang_input=$(echo $p | cut -d '|' -f1)
+        mlang_output=$(echo $mlang_input | ./mlang  | cut -b 1-2 --complement | head -n 1| sed 's/^ *//g' | sed 's/ *$//g')
+        desired_ouput=$(echo $p | cut -d '|' -f2 | sed 's/^ *//g' | sed 's/ *$//g')
+        if [ "$mlang_output" = "$desired_ouput" ]
+        then
+            echo ".............passed $p"
+        else
+            echo "!FAILED: $mlang_input produced $mlang_output instead of $desired_ouput"
+            failed=`expr $failed + 1`
+        fi
+    done < $filename
+    exit $failed
+    
+}
+
+repl_test $filename
+
+Run-time Environment
+====================
+
+Instead of creating a separate compiler, we leveraged the REPL to act as a compiler. This was accomplished by adding a keyword MIDGE-EXPORT, which
+creates the respective .mg file. We then post-process it using midge and run it with our music player of choice. For instance, if you wished to
+compile a .mlang program, you would write
+
+# ./mlang < my-program.mlang && midge my-program.mg && banshee my-program.mid
+
+To simplify this, we created a small shell script called mlangc which does all of this automatically.
+
+Please note that in order to run an mlang program, the user must install Midge as well as a MIDI synthesizer. Midge has a further dependency on
+Perl.
 
 
 
