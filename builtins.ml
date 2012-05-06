@@ -355,3 +355,12 @@ let fn_reduce args env =
 	fn (cons symbol (cons acc (cons e Null))) env)
 	initial (list_of_mexp mexp)
   | _ -> mexp
+
+let fn_filter args env =
+  tee
+
+let fn_forall args env =
+  tee
+
+let fn_revmap args env =
+  tee
