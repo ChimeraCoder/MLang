@@ -875,11 +875,24 @@ More complex songs involving a number of instruments were also added by Nikhil. 
 And yes, the best judge of the correctness of these songs were ofcourse, our ears!
 
 
-\section{Aditya Mukerjee}
+\section{Language evolution (Aditya Mukerjee)}
+
+The front-end of our compiler was created with the OCaml versions of lex and yacc. As can be seen in the Ocamlyacc file, the grammar is very minimal and based entirely on S-expressions.
+
+The beauty of an S-expression-based grammar is that it provides the maximum flexibility while avoiding the problems associated with unnecessarily complex (and oftentimes ambiguous) grammars associated with many common languages. S-expressions, on the other hand, require minimal effort on behalf of the parser, while providing maximum flexibility.
+
+The original goal for the language was to use OCaml to implement the bare minimum set of functios required to define a Turing-complete language with MLang's grammar, and then use MLang to write the remaining functions in MLang itself.
+
+This rather unusual approach is the best way to ensure a homoiconic language; one only has to ensure that the few OCaml-implemented functions are homoiconic, and the remaining are implemented as recursive function compositions of the base homoiconic set. 
+
+Each OCaml-implemented function has to be compatible with all others; that is, homoiconicity is a way of defining a representation for an arbitrary function in MLang, as well as an interface for MLang to interact with that representation as a fundamental datatype. This interface must be compatible with each of the analogous interfaces defined by the other functions. Because checking proper homoiconic implementations of a function  is not provably transitive\footnote{In theory, this may be the case, but in practice, edge cases do pop up if the implementation contains bugs; therefore, all possible pairs should be checked}, this quickly becomes an $O(n!)$ problem. Function composition, however, \emph{must} be homoiconic if the component functions are themselves homoiconic\footnote{This is a necessary corollary of the fact that s-expressions and lists are both recursively defined (ie, defined as compositions of s-expressions and lists, respectively)}.
 
 
+As one can see, datatypes are a critical design choice when creating a homoiconic language. Because this choice is so important, the primitive datatype\footnote{the note, function or list - all three are equivalent, just as lists and functions are equivalent in Lisp} was outlined rigorously in a document written at the beginning of the project, long before the whitepaper was written. This document (which can be found in the appendices) describes the primitive datatype, its implementation, and possible compositions of this datatype (ie, non-primitive datatypes and higher-order functions). Therefore, keeping the compiler consistent with the language reference manual was essentially as simple a task as maintaining consistency with this original pre-whitepaper document\footnote{This document was itself the basis for the whitepaper and much of the language reference manual. It does not comprise a complete specification of the language, but for a homoiconic language, the homoiconic datatype is the crux of the language, so a thorough specification of the homoiconic datatype is \emph{almost} sufficient to specify the actual use of the language, if not the details of its syntax and complete set of built-in functions.}.
 
+This document describes the built-in library functions as well, which describe ways that the language should be able to modify music in a stateless manner. All of these functions were intended to be implemented in \textbf{pure MLang}, as described above, not in OCaml, demonstrating the modularity self-extensibility of the language itself!
 
+While this document was not followed perfectly, due to factors associated with the evolution of a distributed, multi-developer project, continuously correcting the language as it was written to follow this document was a major focus throughout the semester.
 
 \section{Conclusions}
 
@@ -917,6 +930,24 @@ A solid knowledge of the infrastructure being used to develop the project is als
 to start early and to commit code often. There is a dichotomy in this observation however as many open source projects will not accept broken code.
 However for smaller sized projects it is essential to commit code (broken or not) early. This way we can get feedback immediately.
 However when we are in a tight situation it is also important not to break the build.
+
+\subsection{Lessons Learnt - Aditya Mukerjee, Language Guru}
+
+\begin{itemize}
+    \item
+        Homoiconicity is deceptively simple. Yes, homoiconicity is `just' a symmetry between data and code. However, it is not symmetric like a mirror - in two dimensions - but more like a fractal - symmetric in countless dimensions simultaneously. The design decisions propage through, so any changes to the underlying OCaml implementation have to be closely monitoried.
+    \item
+        That said, homoiconicity is incredibly beautiful - just when you think you understand its implications, you realize that it has yet another layer of complexity. Homoiconicity is all about recursion, and after a semester of studying it, I've yet to find its base case!
+    \item
+        When your code is being held up by another part of the project that another person is responsible for, don't wait too long for it, or you may find yourself in a bind. If necessary, hack it together yourself - this is one lesson I wish I had discovered earlier.
+    \item
+        Version control is key. I was a champion of version control even before taking this class (I use it on solo-projects, even non-programming projects), but working on a four-way distributed project makes a DVCS \emph{indespensible}.
+        
+\end{itemize}
+
+\appendix
+\section{Datatypes Reference Document}
+\lstinputlisting{datatypes.markdown}
 
 
 
