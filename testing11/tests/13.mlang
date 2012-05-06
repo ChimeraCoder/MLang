@@ -1,0 +1,1 @@
+(LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))

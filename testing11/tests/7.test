@@ -1,0 +1,5 @@
+((LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))
+((TRUE A)A)
+((TRUE A)B)
+((TRUE B)A)
+((TRUE B)B))
