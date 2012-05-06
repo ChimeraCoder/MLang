@@ -1,1 +1,0 @@
-(WRITE-FILE (write_test.mlang (QUOTE (A B C))))

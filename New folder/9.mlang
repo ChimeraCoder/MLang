@@ -1,1 +1,0 @@
-(LABEL FALSE (LAMBDA (X) (LAMBDA (Y) Y)))

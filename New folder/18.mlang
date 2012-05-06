@@ -1,2 +1,0 @@
-(LABEL TRUE (LAMBDA (X) (LAMBDA (Y) X)))
-((TRUE (LAST(A S D))) C)

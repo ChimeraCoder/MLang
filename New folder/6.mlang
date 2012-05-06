@@ -1,2 +1,0 @@
-(quote (a))
-(cdr (a b c))
