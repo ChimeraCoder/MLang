@@ -4,4 +4,7 @@
 *.aux
 *.log
 *.pdf
+*.midi
+*.mid
+*.mg
 
