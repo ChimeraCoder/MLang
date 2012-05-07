@@ -2,6 +2,12 @@ Presentation Outline
 ===================
 
 
+Motivation
+-----------
+
+* Designing a language that is simple
+* A language that is extensible
+* Homoiconic
 
 
 Homoiconicity
@@ -11,14 +17,46 @@ Homoiconicity
 * What benefits does it provide?
 
 
-
-
-Other stuff (let's fill this in)
+Tutorial
 ---------
 
-* ?
-* ?
-* ?
+* Basic tutorial for MLang
+* Show a song written in MLang from start to finish
+
+
+Implementation
+---------------
+
+Put ArchitectureDiagram.jpeg here
+
+
+Implementation (cond)
+---------------------
+
+Show lexer, parser and type t
+
+
+Lessons learned
+----------------
+
+* Knowledge of infrastructure important
+* 
+
+Project stats
+--------------
+
+
+Conclusions
+-----------
+
+* Learning by doing
+* Practice meeting theory
+
+
+Dan's Demo
+-----------
+
+Dan can take a shot at writing some MLang
 
 
 
