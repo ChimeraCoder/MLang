@@ -1,13 +1,21 @@
 Presentation Outline
 ===================
 
+Introduction
+----------------
 
-Motivation
+* Why homoiconicity?
+
+
+[Insert picture of Bach here - any picture will do]
+
+
+Defining Characteristics (Motivation)
 -----------
 
-* Designing a language that is simple
-* A language that is extensible
 * Homoiconic
+* A language that is extensible
+* Designing a language that is modular
 
 
 Homoiconicity
