@@ -16,7 +16,6 @@ Homoiconicity
 * What is homoiconicity?
 * What benefits does it provide?
 
-
 Tutorial
 ---------
 
@@ -35,6 +34,9 @@ Implementation (cond)
 
 Show lexer, parser and type t
 
+Test Plan
+---------
+Decribe how the tests were conducted.
 
 Lessons learned
 ----------------
